@@ -1,6 +1,8 @@
 from dtrpg.data.loaders.schema_loader import SchemaLoader
 from dtrpg.data.loaders.type_loader import TypeLoader
 
+from dtrpg.core import Config
+
 from typing import Dict
 
 import os
@@ -21,16 +23,16 @@ class DataLoader:
         self._loaders = None
         self._world = None
 
-    def load(self, schema_path: str, world_dir: str):
+    def load(self, schema_path: str, world_dir: str) -> None:
         self._loaders = self._load_schema(schema_path)
         self._world = self._load_world(world_dir)
 
-    def _load_world(self, world_dir):
+    def _load_world(self, world_dir: str) -> dict:
         obj_dicts = self._load_world_files(world_dir)
         objects = self._parse_obj_dicts(obj_dicts)
         return objects
 
-    def _load_world_files(self, world_dir):
+    def _load_world_files(self, world_dir: str) -> dict:
         obj_dicts = {}
         for root, _, filenames in os.walk(world_dir):
             for filename in filenames:
@@ -47,7 +49,7 @@ class DataLoader:
 
         return obj_dicts
 
-    def _parse_obj_dicts(self, obj_dicts):
+    def _parse_obj_dicts(self, obj_dicts: dict) -> dict:
         objects = {name: self._loaders[type_].preload() for name, (type_, _) in obj_dicts.items()}
 
         for name, (type_, dict_) in obj_dicts.items():
@@ -57,7 +59,7 @@ class DataLoader:
 
         return objects
 
-    def _split_name_type(self, value):
+    def _split_name_type(self, value: str) -> None:
         tokens = value.split()
         if len(tokens) > 2 or len(tokens) < 1:
             raise InvalidIdError(f'Invalid identifier: {value}')
@@ -70,3 +72,10 @@ class DataLoader:
         with open(path, 'r') as schema_file:
             structure = yaml.safe_load(schema_file)
             return self._schema_loader.parse_schema(structure)
+
+    def get_config(self, config_name: str) -> Config:
+        config = self._world[config_name]
+        if not isinstance(config, Config):
+            raise TypeError('Config must be of type Config!')
+
+        return config

@@ -46,11 +46,11 @@ class SchemaLoader:
             'float': BuiltInLoader(float)
         }
 
-    def _parse_type(self, schema: dict, obj: TypeLoader):
+    def _parse_type(self, schema: dict, obj: TypeLoader) -> None:
         for name, value in schema.items():
             self._parse_element(name, value, obj)
 
-    def _parse_element(self, name: str, value: str, obj: TypeLoader):
+    def _parse_element(self, name: str, value: str, obj: TypeLoader) -> None:
         try:
             if name.startswith('_'):
                 self._parse_special_element(name, value, obj)
@@ -64,7 +64,7 @@ class SchemaLoader:
         except AttributeRedefinitionError as e:
             raise SchemaError(f'Redefinition of element {name}') from e
 
-    def _parse_special_element(self, name: str, value: str, obj: TypeLoader):
+    def _parse_special_element(self, name: str, value: str, obj: TypeLoader) -> None:
         if name == '_class':
             try:
                 module = '.'.join(value.split('.')[:-1])
@@ -88,7 +88,7 @@ class SchemaLoader:
         else:
             raise SchemaError('Invalid attribute type')
 
-    def _parse_simple_attribute(self, attribute) -> SimpleAttributeLoader:
+    def _parse_simple_attribute(self, attribute: str) -> SimpleAttributeLoader:
         try:
             return SimpleAttributeLoader(self._type_loaders[attribute])
         except KeyError as e:

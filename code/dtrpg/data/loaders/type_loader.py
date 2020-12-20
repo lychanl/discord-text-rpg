@@ -17,10 +17,10 @@ class TypeLoader(Loader):
         return self._class
 
     @class_.setter
-    def class_(self, c: type):
+    def class_(self, c: type) -> None:
         self._class = c
 
-    def add_attribute(self, name: str, loader: Loader, qualifiers: Qualifiers):
+    def add_attribute(self, name: str, loader: Loader, qualifiers: Qualifiers) -> None:
         if name in self._attributes:
             raise KeyError
 

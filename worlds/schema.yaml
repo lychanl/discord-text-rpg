@@ -4,3 +4,11 @@ Location:
 Route:
   _class: dtrpg.core.map.Route
   required locations: [ x2 Location ]
+
+PlayerFactory:
+  _class: dtrpg.core.player.PlayerFactory
+  required default_location: Location
+
+Config:
+  _class: dtrpg.core.Config
+  required player_factory: PlayerFactory
