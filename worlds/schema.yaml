@@ -2,5 +2,5 @@ Location:
   _class: dtrpg.core.map.Location
 
 Route:
-  _class: dtrpg.core.map.Location
+  _class: dtrpg.core.map.Route
   required locations: [ x2 Location ]

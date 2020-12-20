@@ -8,6 +8,10 @@ class QualifierError(Exception):
     pass
 
 
+class QualifierCheckFailed(Exception):
+    pass
+
+
 class Qualifier:
     @property
     def collection_only(self):
@@ -26,8 +30,9 @@ class NumberQualifier(Qualifier):
     def collection_only(self) -> bool:
         return self._mx > 1
 
-    def check(self, num: int) -> bool:
-        return self._mn <= num <= self._mx
+    def check(self, num: int):
+        if not (self._mn <= num <= self._mx):
+            raise QualifierCheckFailed('Number qualifier check failed')
 
 
 class Qualifiers:
@@ -49,7 +54,5 @@ class Qualifiers:
     def collection_only(self) -> bool:
         return self._number_qualifier.collection_only
 
-    def check(self, values: Collection['AttributeLoader']) -> bool:
-        if not self._number_qualifier.check(len(values)):
-            return False
-        return True
+    def check(self, values: Collection['AttributeLoader']):
+        self._number_qualifier.check(len(values))

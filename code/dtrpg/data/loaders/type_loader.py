@@ -28,3 +28,25 @@ class TypeLoader(Loader):
             raise QualifierError('Invalid collection-only qualifiers')
 
         self._attributes[name] = loader, qualifiers
+
+    def preload(self) -> object:
+        return self._class()
+
+    def load(self, obj: object, objects_dict: dict, values: dict) -> object:
+        if obj is None:
+            obj = self._class()
+
+        attribute_values = {}
+        for name, value in values.items():
+            attribute_values[name] = self._attributes[name][0].load(None, objects_dict, value)
+
+        for name, (_, qualifiers) in self._attributes.items():
+            if name in attribute_values:
+                qualifiers.check([attribute_values[name]])
+            else:
+                qualifiers.check([])
+
+        for name, value in attribute_values.items():
+            setattr(obj, name, value)
+
+        return obj
