@@ -1,7 +1,5 @@
 from typing import Collection, Mapping, TYPE_CHECKING
 
-import importlib
-
 if TYPE_CHECKING:
     from dtrpg.data.loaders.type_loader import TypeLoader
     from dtrpg.data.locale.localized_object import LocalizedObject
