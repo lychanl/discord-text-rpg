@@ -1,11 +1,14 @@
+from dtrpg.core.game_object import GameObject
+
 from typing import Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.core.map.location import Location
 
 
-class Route:
+class Route(GameObject):
     def __init__(self):
+        super().__init__()
         self._locations = (None, None)
 
     @property
@@ -13,7 +16,7 @@ class Route:
         return self._locations
 
     @locations.setter
-    def locations(self, locs: Tuple['Location', 'Location']):
+    def locations(self, locs: Tuple['Location', 'Location']) -> None:
         loc1, loc2 = locs
         self._locations = (loc1, loc2)
         loc1.add_route(self)

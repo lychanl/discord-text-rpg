@@ -1,8 +1,10 @@
+from dtrpg.core.game_object import GameObject
 from dtrpg.core.player import PlayerFactory
 
 
-class Config:
+class Config(GameObject):
     def __init__(self):
+        super().__init__()
         self._player_factory = None
 
     @property

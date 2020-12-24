@@ -1,10 +1,12 @@
 from dtrpg.data.loaders.schema_loader import SchemaLoader
 from dtrpg.data.loaders.type_loader import TypeLoader
+from dtrpg.data.locale.locale_loader import LocaleLoader
 
 from dtrpg.core import Config
 
 from typing import Dict
 
+import csv
 import os
 import yaml
 
@@ -22,10 +24,14 @@ class DataLoader:
         self._schema_loader = SchemaLoader()
         self._loaders = None
         self._world = None
+        self._locale = None
 
-    def load(self, schema_path: str, world_dir: str) -> None:
+    def load(self, schema_path: str, world_dir: str, locale_path: str) -> None:
         self._loaders = self._load_schema(schema_path)
         self._world = self._load_world(world_dir)
+        self._locale_loader = self._load_locale(locale_path)
+
+        self._locale_loader.apply(self._world, self._loaders)
 
     def _load_world(self, world_dir: str) -> dict:
         obj_dicts = self._load_world_files(world_dir)
@@ -79,3 +85,13 @@ class DataLoader:
             raise TypeError('Config must be of type Config!')
 
         return config
+
+    def _load_locale(self, locale_path: str) -> LocaleLoader:
+        locale_rows = []
+        for root, _, fnames in os.walk(locale_path):
+            for fname in fnames:
+                if os.path.splitext(fname)[-1] == '.csv':
+                    with open(os.path.join(root, fname)) as fp:
+                        locale_rows.extend(list(csv.DictReader(fp)))
+
+        return LocaleLoader(locale_rows)

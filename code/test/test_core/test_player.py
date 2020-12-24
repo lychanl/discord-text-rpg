@@ -5,7 +5,7 @@ import dtrpg.core.player as player
 
 
 class TestPlayer(unittest.TestCase):
-    def test_player_move(self):
+    def test_player_move(self) -> None:
         loc1 = map_.Location()
         loc2 = map_.Location()
 
@@ -21,7 +21,7 @@ class TestPlayer(unittest.TestCase):
 
 
 class TestPlayerFactory(unittest.TestCase):
-    def test_player_factory(self):
+    def test_player_factory(self) -> None:
         factory = player.PlayerFactory()
         loc = map_.Location()
 

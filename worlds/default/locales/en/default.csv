@@ -1,0 +1,2 @@
+object,string,value
+Location,YOU_ARE_HERE,"You are in {player.location.strings[NAME]}"

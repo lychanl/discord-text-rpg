@@ -4,7 +4,7 @@ import dtrpg.core.map as map_
 
 
 class TestMap(unittest.TestCase):
-    def test_route_location_setting(self):
+    def test_route_location_setting(self) -> None:
         loc1 = map_.Location()
         loc2 = map_.Location()
         loc3 = map_.Location()
