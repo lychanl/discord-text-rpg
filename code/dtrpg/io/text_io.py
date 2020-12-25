@@ -26,8 +26,8 @@ class TextIO:
         if args:
             self._invalid_args()
         try:
-            self._game.create_player(player_id)
-            return ''
+            player = self._game.create_player(player_id)
+            return player.strings['WELCOME']
         except DuplicatePlayerError:
             return self._game.config().strings['DUPLICATE_PLAYER']
 

@@ -1,4 +1,4 @@
-from dtrpg.core.game_object import GameObject
+from dtrpg.core.game_object import GameObject, GameObjectFactory
 
 from typing import TYPE_CHECKING
 
@@ -24,9 +24,9 @@ class Player(GameObject):
         self._location = route.other(self._location)
 
 
-class PlayerFactory(GameObject):
+class PlayerFactory(GameObjectFactory):
     def __init__(self):
-        super().__init__()
+        super().__init__(Player)
         self._default_location = None
 
     @property
@@ -37,8 +37,8 @@ class PlayerFactory(GameObject):
     def default_location(self, location: 'Location') -> None:
         self._default_location = location
 
-    def create(self) -> 'Player':
-        player = Player()
+    def create(self) -> Player:
+        player = self._create()
 
         player.location = self.default_location
 

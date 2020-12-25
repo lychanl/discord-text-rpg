@@ -9,6 +9,13 @@ class DuplicateStringError(Exception):
 class LocalizedObject:
     _class_strings = {}
 
+    def __init__(self):
+        if type(self) not in self._class_strings:
+            self._class_strings[type(self)] = {}
+
+        self._obj_strings = {}
+        self._strings_mapper = ObjectStrings(self._obj_strings, self._class_strings[type(self)], self)
+
     @property
     def strings(self) -> Mapping[str, str]:
         return self._strings_mapper
@@ -24,12 +31,19 @@ class LocalizedObject:
             raise DuplicateStringError
         self._obj_strings[string] = value
 
-    def __init__(self):
-        if type(self) not in self._class_strings:
-            self._class_strings[type(self)] = {}
 
-        self._obj_strings = {}
-        self._strings_mapper = ObjectStrings(self._obj_strings, self._class_strings[type(self)], self)
+class LocalizedObjectFactory(LocalizedObject):
+    def __init__(self, clss: type):
+        super().__init__()
+        self._cls = clss
+
+    def _create(self) -> LocalizedObject:
+        obj = self._cls()
+        obj._obj_strings.update(self._obj_strings)
+        return obj
+
+    def create(self) -> LocalizedObject:
+        return self._create()
 
 
 class ObjectStrings:

@@ -1,6 +1,6 @@
 import unittest
 
-from dtrpg.data.locale import LocalizedObject
+from dtrpg.data.locale import LocalizedObject, LocalizedObjectFactory
 
 
 class TestLocale(unittest.TestCase):
@@ -51,3 +51,19 @@ class TestLocale(unittest.TestCase):
         obj = TestObject()
 
         self.assertEqual(obj.strings['TEST {self.a}'], 'TEST 1')
+
+    def test_factory_get_object_string(self) -> None:
+        class TestObject(LocalizedObject):
+            pass
+
+        class TestFactory(LocalizedObjectFactory):
+            def __init__(self):
+                super().__init__(TestObject)
+
+        factory = TestFactory()
+
+        factory.add_string('TEST', 'object string')
+
+        obj = factory.create()
+
+        self.assertEqual(obj.strings['TEST'], 'object string')

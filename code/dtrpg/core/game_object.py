@@ -1,6 +1,9 @@
-from dtrpg.data.locale import LocalizedObject
+from dtrpg.data.locale import LocalizedObject, LocalizedObjectFactory
 
 
 class GameObject(LocalizedObject):
-    def __init__(self):
-        super().__init__()
+    pass
+
+
+class GameObjectFactory(LocalizedObjectFactory):
+    pass
