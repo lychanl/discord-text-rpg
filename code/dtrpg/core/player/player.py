@@ -4,7 +4,6 @@ from typing import Iterable, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.core.map.route import Location
-    from dtrpg.core.map.route import Route
     from dtrpg.core.action import Action
 
 
@@ -24,9 +23,6 @@ class Player(GameObject):
     @property
     def available_actions(self) -> Iterable['Action']:
         return self._location.travel_actions
-
-    def move(self, route: 'Route') -> 'Location':
-        self._location = route.other(self._location)
 
 
 class PlayerFactory(GameObjectFactory):
