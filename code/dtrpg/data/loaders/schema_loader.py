@@ -96,7 +96,7 @@ class SchemaLoader:
 
     def _parse_qualifier(self, qualifier: str) -> NumberQualifier:
         if qualifier == 'required':
-            return NumberQualifier(1, 1)
+            return NumberQualifier(1, None)
         elif qualifier == 'optional':
             return NumberQualifier(0, 1)
         elif qualifier.startswith('x') and qualifier[1:].isdigit():

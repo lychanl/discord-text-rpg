@@ -9,12 +9,15 @@ class DuplicateStringError(Exception):
 class LocalizedObject:
     _class_strings = {}
 
-    def __init__(self):
-        if type(self) not in self._class_strings:
-            self._class_strings[type(self)] = {}
+    @classmethod
+    def _get_class_strings(cls) -> Mapping[str, str]:
+        if cls not in cls._class_strings:
+            cls._class_strings[cls] = {}
+        return cls._class_strings[cls]
 
+    def __init__(self):
         self._obj_strings = {}
-        self._strings_mapper = ObjectStrings(self._obj_strings, self._class_strings[type(self)], self)
+        self._strings_mapper = ObjectStrings(self._obj_strings, self._get_class_strings(), self)
 
     @property
     def strings(self) -> Mapping[str, str]:
@@ -22,9 +25,10 @@ class LocalizedObject:
 
     @classmethod
     def add_class_string(cls, string: str, value: str) -> None:
-        if string in cls._class_strings[cls]:
+        class_strings = cls._get_class_strings()
+        if string in class_strings:
             raise DuplicateStringError
-        cls._class_strings[cls][string] = value
+        class_strings[string] = value
 
     def add_string(self, string: str, value: str) -> None:
         if string in self._obj_strings:

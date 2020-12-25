@@ -1,40 +1,54 @@
 from dtrpg.core import Game, InvalidPlayerError, DuplicatePlayerError
 
-from typing import Any, Iterable
+import re
+
+from typing import Any, Hashable, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from dtrpg.core.action import Event
 
 
 class TextIO:
     def __init__(self, game: Game):
         self._game = game
-        self._commands = {
+        self._basic_commands = {
             'start': self._start,
             'here': self._here
         }
 
-    def command(self, player_id: Any, command: str, *args: Iterable[str]) -> str:
-        return self._commands.get(command, self._invalid_command)(player_id, *args)
+    def command(self, player_id: Hashable, command: str) -> str:
+        command = command.strip().lower()
+        if command in self._basic_commands:
+            return self._basic_commands[command](player_id)
+        event = self.action(player_id, command)
+        if event:
+            return event.strings['EVENT_NOW']
 
-    def _here(self, player_id: Any, *args: Iterable[str]) -> str:
-        if args:
-            self._invalid_args()
+        return self._invalid_command()
+
+    def action(self, player_id: Hashable, command: str) -> 'Event':
+        player = self._game.player(player_id)
+        for action in player.available_actions:
+            match = re.fullmatch(action.strings['REGEX'], command, flags=re.IGNORECASE)
+            if match:
+                return action.take(player, match.groups())
+
+        return None
+
+    def _here(self, player_id: Hashable) -> str:
         try:
-            return self._game.player(player_id).location.strings['YOU_ARE_HERE']
+            return self._game.player(player_id).location.strings['HERE']
         except InvalidPlayerError:
             return self._game.config().strings['INVALID_PLAYER']
 
-    def _start(self, player_id: Any, *args: Iterable[str]) -> str:
-        if args:
-            self._invalid_args()
+    def _start(self, player_id: Hashable) -> str:
         try:
             player = self._game.create_player(player_id)
             return player.strings['WELCOME']
         except DuplicatePlayerError:
             return self._game.config().strings['DUPLICATE_PLAYER']
 
-    def _invalid_args(self) -> str:
-        return self._game.config().strings['INVALID_ARGS']
-
-    def _invalid_command(self, player_id: Any, *args: Iterable[str]) -> str:
+    def _invalid_command(self) -> str:
         return self._game.config().strings['INVALID_COMMAND']
 
     def run(self, *args: Any, **kwargs: Any) -> Any:

@@ -37,12 +37,7 @@ class SimpleAttributeLoader(AttributeLoader):
 class CollectionLoader(AttributeLoader):
     def __init__(self, *attributes: Collection[Tuple[SimpleAttributeLoader, Qualifiers]]):
         super(CollectionLoader, self).__init__()
-        self._attributes = {
-            a[0].type_loader.class_: a
-            for a in attributes
-        }
-        if len(self._attributes) != len(attributes):
-            raise TypeError("Duplicate types in collection scheme")
+        self._attributes = attributes
 
     def load(self, obj: object, objects_dict: dict, values: dict) -> object:
         collection = []
@@ -50,10 +45,10 @@ class CollectionLoader(AttributeLoader):
         for value in values:
             if isinstance(value, str):
                 obj = objects_dict[value]
-                if not any(isinstance(obj, t) for t in self._attributes):
+                if not any(isinstance(obj, t[0].type_loader.class_) for t in self._attributes):
                     raise TypeError
             else:
-                if len(self._attributes) > 0:
+                if len(self._attributes) > 1:
                     raise AmbigousTypeError
                 loader = next(iter(self._attributes))[0]
                 obj = loader.load(None, objects_dict, value)
@@ -66,7 +61,7 @@ class CollectionLoader(AttributeLoader):
             else:
                 objs_by_type[type(o)] = [o]
 
-        for type_, (_, qualifiers) in self._attributes.items():
-            qualifiers.check(objs_by_type[type_])
+        for loader, qualifiers in self._attributes:
+            qualifiers.check(objs_by_type[loader.type_loader.class_])
 
         return collection

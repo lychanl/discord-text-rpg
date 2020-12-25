@@ -3,17 +3,21 @@ from dtrpg.core.game_object import GameObject
 from typing import Sequence, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from dtrpg.core.map.route import Route
+    from dtrpg.core.map.travel import TravelAction
 
 
 class Location(GameObject):
     def __init__(self):
         super().__init__()
-        self._routes = []
-
-    def add_route(self, route: 'Route') -> None:
-        self._routes.append(route)
+        self._travel_actions = []
 
     @property
-    def routes(self) -> Sequence['Route']:
-        return self._routes
+    def travel_actions(self) -> Sequence['TravelAction']:
+        return self._travel_actions
+
+    @travel_actions.setter
+    def travel_actions(self, travel_actions: Sequence['TravelAction']) -> None:
+        for travel_action in travel_actions:
+            travel_action._from = self
+
+        self._travel_actions = travel_actions

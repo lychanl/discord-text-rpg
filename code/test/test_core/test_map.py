@@ -4,21 +4,15 @@ import dtrpg.core.map as map_
 
 
 class TestMap(unittest.TestCase):
-    def test_route_location_setting(self) -> None:
+    def test_travel_action_location_setting(self) -> None:
         loc1 = map_.Location()
         loc2 = map_.Location()
-        loc3 = map_.Location()
 
-        route = map_.Route()
+        travel_action = map_.TravelAction()
+        travel_action.to = loc2
 
-        route.locations = loc1, loc2
+        loc1.travel_actions = [travel_action]
 
-        self.assertIn(loc1, route.locations)
-        self.assertIn(loc2, route.locations)
-        self.assertNotIn(loc3, route.locations)
-        self.assertIs(route.other(loc1), loc2)
-        self.assertIs(route.other(loc2), loc1)
-        self.assertRaises(ValueError, lambda: route.other(loc3))
-
-        self.assertIn(route, loc1.routes)
-        self.assertIn(route, loc2.routes)
+        self.assertIn(travel_action, loc1.travel_actions)
+        self.assertIs(travel_action.from_, loc1)
+        self.assertIs(travel_action.to, loc2)

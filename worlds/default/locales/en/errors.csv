@@ -1,5 +1,4 @@
 object,string,value
 config,INVALID_PLAYER,You have not started the game. Try 'start'
 config,DUPLICATE_PLAYER,Your character already exists!
-config,INVALID_COMMAND,There is a place and time for everything... But not this. (Invalid command)
-config,INVALID_ARGS,You can't do that with that... (Invalid command arguments)
+config,INVALID_COMMAND,You can't do that... (Invalid command)

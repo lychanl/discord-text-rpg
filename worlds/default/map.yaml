@@ -1,11 +1,12 @@
-Location loc_nothingthere_village: {}
+Location loc_nothingthere_village:
+  travel_actions:
+    - { to: loc_nothingthere_coast }
+    - { to: loc_nothingthere_forest }
 
-Location loc_nothingthere_coast: {}
+Location loc_nothingthere_coast:
+  travel_actions:
+    - { to: loc_nothingthere_village }
 
-Location loc_nothingthere_forest: {}
-
-Route rt_nothingthere_0:
-  locations: [loc_nothingthere_village, loc_nothingthere_coast]
-
-Route rt_nothingthere_1:
-  locations: [loc_nothingthere_village, loc_nothingthere_forest]
+Location loc_nothingthere_forest:
+  travel_actions:
+    - { to: loc_nothingthere_village }

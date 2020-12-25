@@ -1,4 +1,4 @@
-from typing import Collection, TYPE_CHECKING
+from typing import Collection, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.data.loaders.attribute_loader import AttributeLoader
@@ -19,8 +19,8 @@ class Qualifier:
 
 
 class NumberQualifier(Qualifier):
-    def __init__(self, mn: int, mx: int):
-        assert mn <= mx
+    def __init__(self, mn: int, mx: Optional[int]):
+        assert not mx or mn <= mx
         super(NumberQualifier, self).__init__()
 
         self._mn = mn
@@ -28,10 +28,12 @@ class NumberQualifier(Qualifier):
 
     @property
     def collection_only(self) -> bool:
-        return self._mx > 1
+        return self._mx and self._mx > 1
 
-    def check(self, num: int):
-        if not (self._mn <= num <= self._mx):
+    def check(self, num: int) -> None:
+        if not (self._mn <= num):
+            raise QualifierCheckFailed('Number qualifier check failed')
+        if self._mx and not (num <= self._mx):
             raise QualifierCheckFailed('Number qualifier check failed')
 
 
@@ -48,7 +50,7 @@ class Qualifiers:
                 raise TypeError
 
         if not self._number_qualifier:
-            self._number_qualifier = NumberQualifier(1, 1)
+            self._number_qualifier = NumberQualifier(1, None)
 
     @property
     def collection_only(self) -> bool:

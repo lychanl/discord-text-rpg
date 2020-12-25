@@ -9,15 +9,19 @@ class TestPlayer(unittest.TestCase):
         loc1 = map_.Location()
         loc2 = map_.Location()
 
-        route = map_.Route()
-        route.locations = loc1, loc2
+        travel_action = map_.TravelAction()
+        travel_action.to = loc2
+        loc1.travel_actions = [travel_action]
 
         p = player.Player()
         p.location = loc1
 
-        p.move(route)
+        e = travel_action.take(p)
 
         self.assertIs(p.location, loc2)
+        self.assertIs(e.from_, loc1)
+        self.assertIs(e.to, loc2)
+        self.assertIs(e.player, p)
 
 
 class TestPlayerFactory(unittest.TestCase):
