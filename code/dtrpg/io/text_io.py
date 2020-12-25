@@ -17,12 +17,15 @@ class TextIO:
         }
 
     def command(self, player_id: Hashable, command: str) -> str:
-        command = command.strip().lower()
-        if command in self._basic_commands:
-            return self._basic_commands[command](player_id)
-        event = self.action(player_id, command)
-        if event:
-            return event.strings['EVENT_NOW']
+        try:
+            command = command.strip().lower()
+            if command in self._basic_commands:
+                return self._basic_commands[command](player_id)
+            event = self.action(player_id, command)
+            if event:
+                return event.strings['EVENT_NOW']
+        except InvalidPlayerError:
+            return self._game.config().strings['INVALID_PLAYER']
 
         return self._invalid_command()
 
@@ -36,10 +39,7 @@ class TextIO:
         return None
 
     def _here(self, player_id: Hashable) -> str:
-        try:
-            return self._game.player(player_id).location.strings['HERE']
-        except InvalidPlayerError:
-            return self._game.config().strings['INVALID_PLAYER']
+        return self._game.player(player_id).location.strings['HERE']
 
     def _start(self, player_id: Hashable) -> str:
         try:
