@@ -18,15 +18,15 @@ To run the game:
 I'm working to create something that could be called the _alpha_ version.
 
 Goals (developement):
-[V] Fully configurable worlds
-[V] Localized texts
-[ ] Discord bot UI (single global game, for now)
-[ ] In-game help
+ - [V] Fully configurable worlds
+ - [V] Localized texts
+ - [ ] Discord bot UI (single global game, for now)
+ - [ ] In-game help
 
 Goals (gameplay):
-[V] Creating a player
-[V] Locations, travelling
-[ ] Action points system, with regenerating action points
-[ ] Location-based actions
-[ ] Items, resources, trading (with 'NPCs' only, for now)
-[ ] Monsters, random encounters, fighting
+ - [V] Creating a player
+ - [V] Locations, travelling
+ - [ ] Action points system, with regenerating action points
+ - [ ] Location-based actions
+ - [ ] Items, resources, trading (with 'NPCs' only, for now)
+ - [ ] Monsters, random encounters, fighting
