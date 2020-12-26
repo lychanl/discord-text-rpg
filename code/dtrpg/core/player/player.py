@@ -3,7 +3,7 @@ from dtrpg.core.game_object import GameObject, GameObjectFactory
 from typing import Iterable, Mapping, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from dtrpg.core.map.route import Location
+    from dtrpg.core.map.location import Location
     from dtrpg.core.action import Action
     from dtrpg.core.player.resource import Resource, ResourceFactory
 
@@ -24,7 +24,7 @@ class Player(GameObject):
 
     @property
     def available_actions(self) -> Iterable['Action']:
-        return self._location.travel_actions
+        return self._location.travel_actions + self._location.local_actions
 
     @property
     def resources(self) -> Mapping[str, 'Resource']:

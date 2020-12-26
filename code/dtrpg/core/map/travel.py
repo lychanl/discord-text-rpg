@@ -1,4 +1,4 @@
-from dtrpg.core.action import Event, EventFactory, Action
+from dtrpg.core.action import Event, Action
 
 from typing import Iterable, TYPE_CHECKING
 
@@ -63,7 +63,7 @@ class TravelAction(Action):
         self._to = to
 
     def take(self, player: 'Player', *args: Iterable[str]) -> TravelEvent:
-        event = self.create()
+        event = self._take(player)
 
         event.to = self._to
         event.from_ = self._from

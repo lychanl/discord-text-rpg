@@ -1,9 +1,19 @@
 Location:
   _class: dtrpg.core.map.Location
   travel_actions: [ TravelAction ]
+  optional local_actions: [ ResourceChangesAction ]
+
+ResourceChangesAction:
+  _class: dtrpg.core.action.ResourceChangesAction
+  optional costs: [ ResourceCost ]
+  required resource_changes: [ ResourceChange ]
+
+ResourceChangeEvent:
+  _class: dtrpg.core.action.ResourceChangeEvent
 
 TravelAction:
   _class: dtrpg.core.map.TravelAction
+  optional costs: [ ResourceCost ]
   required to: Location
 
 PlayerFactory:
@@ -24,6 +34,16 @@ ResourceFactory:
 
 Resource:
   _class: dtrpg.core.player.Resource
+
+ResourceChange:
+  _class: dtrpg.core.player.ResourceChange
+  required id: str
+  required value: int
+
+ResourceCost:
+  _class: dtrpg.core.player.ResourceCost
+  required id: str
+  required cost: int
 
 Config:
   _class: dtrpg.core.Config

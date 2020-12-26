@@ -1,4 +1,5 @@
 from dtrpg.core import Game, InvalidPlayerError, DuplicatePlayerError
+from dtrpg.core.player import InsufficientResourceError, Resource
 
 import re
 
@@ -27,6 +28,8 @@ class TextIO:
                 return event.strings['EVENT_NOW']
         except InvalidPlayerError:
             return self._game.config.strings['INVALID_PLAYER']
+        except InsufficientResourceError as e:
+            return self._insufficient_resource(e.resource, e.required)
 
         return self._invalid_command()
 
@@ -54,6 +57,9 @@ class TextIO:
 
     def _invalid_command(self) -> str:
         return self._game.config.strings['INVALID_COMMAND']
+
+    def _insufficient_resource(self, resource: 'Resource', required: int) -> str:
+        return self._game.config.strings['INSUFFICIENT_RESOURCE', {'resource': resource, 'required': required}]
 
     def run(self, *args: Any, **kwargs: Any) -> Any:
         raise NotImplementedError

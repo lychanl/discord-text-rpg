@@ -1,9 +1,17 @@
 from dtrpg.core.game_object import GameObject, GameObjectFactory
 
-from typing import TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.core.clock import Clock
+    from dtrpg.core.player.player import Player
+
+
+class InsufficientResourceError(Exception):
+    def __init__(self, resource: 'Resource', required: int, *args: Any, **kwargs: Any):
+        super().__init__(*args, **kwargs)
+        self.resource = resource
+        self.required = required
 
 
 class Resource(GameObject):
@@ -136,3 +144,48 @@ class ResourceFactory(GameObjectFactory):
         resource.clock = self._clock
 
         return resource
+
+
+class ResourceChange(GameObject):
+    def __init__(self):
+        super().__init__()
+        self._id = None
+        self._value = None
+
+    @property
+    def id(self) -> str:
+        return self._id
+
+    @id.setter
+    def id(self, id: str) -> None:
+        self._id = id
+
+    @property
+    def value(self) -> int:
+        return self._value
+
+    @value.setter
+    def value(self, value: int) -> None:
+        self._value = value
+
+    def apply(self, player: 'Player') -> int:
+        player.resources[self.id].value = player.resources[self.id].value + self._value
+        return self._value
+
+
+class ResourceCost(ResourceChange):
+    @property
+    def cost(self) -> int:
+        return -self.value
+
+    @cost.setter
+    def cost(self, cost: int) -> None:
+        self.value = -cost
+
+    def can_take(self, player: 'Player') -> bool:
+        return player.resources[self.id].value >= self.cost
+
+    def apply(self, player: 'Player') -> None:
+        if not self.can_take(player):
+            raise InsufficientResourceError(player.resources[self.id], self.cost)
+        super().apply(player)

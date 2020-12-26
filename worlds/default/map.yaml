@@ -2,6 +2,8 @@ Location loc_nothingthere_village:
   travel_actions:
     - { to: loc_nothingthere_coast }
     - { to: loc_nothingthere_forest }
+  local_actions:
+    - nothingthere_job
 
 Location loc_nothingthere_coast:
   travel_actions:
@@ -10,3 +12,12 @@ Location loc_nothingthere_coast:
 Location loc_nothingthere_forest:
   travel_actions:
     - { to: loc_nothingthere_village }
+
+ResourceChangesAction nothingthere_job:
+  costs:
+    - id: action_points
+      cost: 1
+
+  resource_changes:
+    - id: gold
+      value: 5

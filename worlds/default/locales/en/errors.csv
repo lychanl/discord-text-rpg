@@ -2,3 +2,4 @@ object,string,value
 config,INVALID_PLAYER,You have not started the game. Try 'start'
 config,DUPLICATE_PLAYER,Your character already exists!
 config,INVALID_COMMAND,You can't do that... (Invalid command)
+config,INSUFFICIENT_RESOURCE,"You don't have enough {resource.strings['NAME']}, {required} needed."

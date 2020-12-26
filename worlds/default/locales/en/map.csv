@@ -4,3 +4,7 @@ loc_nothingthere_village,REGEX_NAME,"(village)|(nothingthere)|(village Nothingth
 loc_nothingthere_coast,NAME,"coast"
 loc_nothingthere_coast,YOU_ARE_HERE,"You are at the coast near the Nothingthere village."
 loc_nothingthere_forest,NAME,"forest"
+nothingthere_job,REGEX,"((find |take |get )(a )?)?job"
+nothingthere_job,NAME,Find a job
+nothingthere_job,CAUSE_NOW,You got a job helping some fishermen.
+nothingthere_job,CAUSE_PAST,You got a job helping some fishermen.
