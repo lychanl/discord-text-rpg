@@ -32,7 +32,7 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('here'), r'.*not started.*start.*')
         self.assertRegex(io.test('start'), r'.*Welcome.*')
         self.assertRegex(io.test('invalid'), r'.*Invalid.*')
-        self.assertRegex(io.test('me'), r'.*have 0.*You are in.*village.*')
+        self.assertRegex(io.test('me'), r'.*have 60/60 action points.*have 0.*You are in.*village.*')
         self.assertRegex(io.test('here'), r'.*You are in.*village.*Travel to coast.*')
         self.assertRegex(io.test('Travel to coast'), r'.*travel.*coast.*')
         self.assertRegex(io.test('here'), r'.*You are at.*coast.*Travel to village.*')

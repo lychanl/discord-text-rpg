@@ -26,7 +26,7 @@ class TextIO:
             if event:
                 return event.strings['EVENT_NOW']
         except InvalidPlayerError:
-            return self._game.config().strings['INVALID_PLAYER']
+            return self._game.config.strings['INVALID_PLAYER']
 
         return self._invalid_command()
 
@@ -50,10 +50,10 @@ class TextIO:
             player = self._game.create_player(player_id)
             return player.strings['WELCOME']
         except DuplicatePlayerError:
-            return self._game.config().strings['DUPLICATE_PLAYER']
+            return self._game.config.strings['DUPLICATE_PLAYER']
 
     def _invalid_command(self) -> str:
-        return self._game.config().strings['INVALID_COMMAND']
+        return self._game.config.strings['INVALID_COMMAND']
 
     def run(self, *args: Any, **kwargs: Any) -> Any:
         raise NotImplementedError

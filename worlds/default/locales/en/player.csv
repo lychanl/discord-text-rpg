@@ -1,3 +1,4 @@
 object,string,value
 player_factory,WELCOME,Welcome!
 gold_factory,VALUE,{value}$
+action_points_factory,VALUE,{value}/{self.max} action points

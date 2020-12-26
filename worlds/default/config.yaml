@@ -1,2 +1,5 @@
 Config config:
   player_factory: player_factory
+
+Clock clock:
+  base: 3600

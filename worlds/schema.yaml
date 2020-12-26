@@ -17,7 +17,10 @@ Player:
 ResourceFactory:
   _class: dtrpg.core.player.ResourceFactory
   required id: str
-  optional inital: int
+  optional initial: int
+  optional max: int
+  optional base_gen_rate: float
+  optional clock: Clock
 
 Resource:
   _class: dtrpg.core.player.Resource
@@ -29,3 +32,6 @@ Config:
 TravelEvent:
   _class: dtrpg.core.map.TravelEvent
 
+Clock:
+  _class: dtrpg.core.Clock
+  optional base: int

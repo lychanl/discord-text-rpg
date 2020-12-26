@@ -1,7 +1,15 @@
 PlayerFactory player_factory:
   default_location: loc_nothingthere_village
   resource_factories: 
+    - action_points_factory
     - gold_factory
 
 ResourceFactory gold_factory:
   id: gold
+
+ResourceFactory action_points_factory:
+  id: action_points
+  initial: 60
+  max: 60
+  base_gen_rate: 12
+  clock: clock

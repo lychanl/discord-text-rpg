@@ -1,4 +1,5 @@
 from dtrpg.core.config import Config
+from dtrpg.core.clock import Clock
 from dtrpg.core.player import Player
 
 from typing import Hashable
@@ -15,8 +16,14 @@ class InvalidPlayerError(Exception):
 class Game:
     def __init__(self, config: Config):
         self._config = config
+        self._clock = Clock()
         self._players = {}
 
+    @property
+    def clock(self) -> Clock:
+        return self._clock
+
+    @property
     def config(self) -> Config:
         return self._config
 
