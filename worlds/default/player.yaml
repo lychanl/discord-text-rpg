@@ -1,2 +1,7 @@
 PlayerFactory player_factory:
   default_location: loc_nothingthere_village
+  resource_factories: 
+    - gold_factory
+
+ResourceFactory gold_factory:
+  id: gold

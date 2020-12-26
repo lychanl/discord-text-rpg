@@ -25,7 +25,7 @@ class SimpleAttributeLoader(AttributeLoader):
         return self._type_loader
 
     def load(self, obj: object, objects_dict: dict, values: dict) -> object:
-        if isinstance(values, str):
+        if isinstance(values, str) and self._type_loader.class_ is not str:
             obj = objects_dict[values]
             if not isinstance(obj, self._type_loader.class_):
                 raise TypeError

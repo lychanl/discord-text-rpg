@@ -7,9 +7,12 @@ class Loader:
 
 
 class BuiltInLoader(Loader):
-    def __init__(self, _type: type):
+    def __init__(self, class_: type):
         super(BuiltInLoader, self).__init__()
-        self._type = _type
+        self.class_ = class_
+
+    def class_(self) -> type:
+        return self.class_
 
     def load(self, obj: object, objects_dict: dict, values: dict) -> object:
-        return self._type(values)
+        return self.class_(values)

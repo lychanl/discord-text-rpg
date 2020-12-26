@@ -1,2 +1,3 @@
 object,string,value
 player_factory,WELCOME,Welcome!
+gold_factory,VALUE,{value}$

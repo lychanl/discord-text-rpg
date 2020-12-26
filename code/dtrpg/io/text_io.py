@@ -13,7 +13,8 @@ class TextIO:
         self._game = game
         self._basic_commands = {
             'start': self._start,
-            'here': self._here
+            'here': self._here,
+            'me': self._me
         }
 
     def command(self, player_id: Hashable, command: str) -> str:
@@ -40,6 +41,9 @@ class TextIO:
 
     def _here(self, player_id: Hashable) -> str:
         return self._game.player(player_id).location.strings['HERE']
+
+    def _me(self, player_id: Hashable) -> str:
+        return self._game.player(player_id).strings['ME']
 
     def _start(self, player_id: Hashable) -> str:
         try:

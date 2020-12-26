@@ -34,3 +34,26 @@ class TestPlayerFactory(unittest.TestCase):
         p = factory.create()
 
         self.assertIs(p.location, loc)
+
+    def test_player_factory_resources(self) -> None:
+        factory = player.PlayerFactory()
+        rf = player.ResourceFactory()
+        rf.id = 'id'
+        rf.initial = 1
+
+        factory.resource_factories = [rf]
+
+        p = factory.create()
+
+        self.assertIn('id', p.resources)
+        self.assertEqual(p.resources['id'].value, 1)
+
+
+class TestResourceFactory(unittest.TestCase):
+    def test_resource_factory(self) -> None:
+        factory = player.ResourceFactory()
+        factory.initial = 1
+
+        r = factory.create()
+
+        self.assertEqual(r.value, 1)

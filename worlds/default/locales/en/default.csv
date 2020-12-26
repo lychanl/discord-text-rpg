@@ -9,3 +9,7 @@ TravelAction,REGEX,Travel( to)? {self.to.strings['REGEX_NAME']}
 TravelAction,NAME,Travel to {self.to.strings['NAME']}
 TravelEvent,EVENT_NOW,You travel to {self.to.strings['NAME']}.
 TravelEvent,EVENT_PAST,You traveled from {self.from_.strings['NAME']} to {self.to.strings['NAME']]}.
+Resource,YOU_HAVE,"You have {self.strings['VALUE', {'value': self.value}]}"
+Player,ME,"{'\n'.join([r.strings['YOU_HAVE'] for r in self.resources.values()])}
+
+{self.location.strings['YOU_ARE_HERE']}"

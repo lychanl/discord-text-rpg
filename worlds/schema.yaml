@@ -9,6 +9,18 @@ TravelAction:
 PlayerFactory:
   _class: dtrpg.core.player.PlayerFactory
   required default_location: Location
+  optional resource_factories: [ ResourceFactory ]
+
+Player:
+  _class: dtrpg.core.player.Player
+
+ResourceFactory:
+  _class: dtrpg.core.player.ResourceFactory
+  required id: str
+  optional inital: int
+
+Resource:
+  _class: dtrpg.core.player.Resource
 
 Config:
   _class: dtrpg.core.Config
@@ -16,3 +28,4 @@ Config:
 
 TravelEvent:
   _class: dtrpg.core.map.TravelEvent
+
