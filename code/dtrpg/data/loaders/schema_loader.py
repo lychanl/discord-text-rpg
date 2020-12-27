@@ -73,6 +73,10 @@ class SchemaLoader:
                 obj.class_ = class_
             except (ImportError, AttributeError) as e:
                 raise SchemaError(f'Invalid class {value}') from e
+        elif name == '_abstract':
+            obj.abstract = bool(value)
+        elif name == '_base':
+            obj.base = self._type_loaders[value]
         else:
             raise SchemaError('Invalid special element')
 
