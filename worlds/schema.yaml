@@ -1,7 +1,7 @@
 Location:
   _class: dtrpg.core.map.Location
   travel_actions: [ TravelAction ]
-  optional local_actions: [ ResourceChangesAction ]
+  optional local_actions: [ ResourceChangesAction, ItemReceiveAction ]
 
 ResourceChangesAction:
   _class: dtrpg.core.action.ResourceChangesAction
@@ -11,6 +11,14 @@ ResourceChangesAction:
 ResourceChangeEvent:
   _class: dtrpg.core.action.ResourceChangeEvent
 
+ItemReceiveAction:
+  _class: dtrpg.core.action.ItemReceiveAction
+  optional costs: [ ResourceCost ]
+  required item_factory: ItemStackFactory
+
+ItemReceivedEvent:
+  _class: dtrpg.core.action.ItemReceivedEvent
+
 TravelAction:
   _class: dtrpg.core.map.TravelAction
   optional costs: [ ResourceCost ]
@@ -19,10 +27,27 @@ TravelAction:
 PlayerFactory:
   _class: dtrpg.core.player.PlayerFactory
   required default_location: Location
+  required container_factory: ContainerFactory
   optional resource_factories: [ ResourceFactory ]
 
 Player:
   _class: dtrpg.core.player.Player
+
+Container:
+  _class: dtrpg.core.item.Container
+
+ContainerFactory:
+  _class: dtrpg.core.item.ContainerFactory
+  required max_items: int
+
+Item:
+  _class: dtrpg.core.item.Item
+  optional max_stack: int
+
+ItemStackFactory:
+  _class: dtrpg.core.item.ItemStackFactory
+  required item: Item
+  optional stack: int
 
 ResourceFactory:
   _class: dtrpg.core.player.ResourceFactory

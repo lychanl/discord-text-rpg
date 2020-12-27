@@ -51,6 +51,8 @@ class LocalizedObjectFactory(LocalizedObject):
 
 
 class ObjectStrings:
+    AVAILABLE_BUILTINS = {'len': len, 'int': int, 'float': float, 'str': str}
+
     formatter = LocaleFormatter()
 
     def __init__(self, obj_strings: Mapping[str, str], cls_strings: Mapping[str, str], obj: LocalizedObject):
@@ -67,7 +69,7 @@ class ObjectStrings:
             ctx = dict(ctx)
 
         ctx.update({
-            '__builtins__': None,
+            '__builtins__': self.AVAILABLE_BUILTINS,
             'self': self._obj,
         })
 

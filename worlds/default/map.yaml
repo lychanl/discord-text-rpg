@@ -8,6 +8,8 @@ Location loc_nothingthere_village:
 Location loc_nothingthere_coast:
   travel_actions:
     - { to: loc_nothingthere_village }
+  local_actions:
+    - nothingthere_fish
 
 Location loc_nothingthere_forest:
   travel_actions:
@@ -21,3 +23,11 @@ ResourceChangesAction nothingthere_job:
   resource_changes:
     - id: gold
       value: 5
+
+ItemReceiveAction nothingthere_fish:
+  costs:
+    - id: action_points
+      cost: 1
+  item_factory:
+    item: item_fish
+    stack: 1

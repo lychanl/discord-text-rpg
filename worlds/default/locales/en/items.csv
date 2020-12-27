@@ -1,0 +1,3 @@
+object,string,value
+item_fish,NAME,fish
+item_fish,REGEX_NAME,fish(es)?

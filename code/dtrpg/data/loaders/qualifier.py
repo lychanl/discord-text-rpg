@@ -50,7 +50,7 @@ class Qualifiers:
                 raise TypeError
 
         if not self._number_qualifier:
-            self._number_qualifier = NumberQualifier(1, None)
+            self._number_qualifier = NumberQualifier(0, None)
 
     @property
     def collection_only(self) -> bool:

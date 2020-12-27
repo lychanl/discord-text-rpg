@@ -3,6 +3,7 @@ PlayerFactory player_factory:
   resource_factories: 
     - action_points_factory
     - gold_factory
+  container_factory: player_items
 
 ResourceFactory gold_factory:
   id: gold
@@ -13,3 +14,6 @@ ResourceFactory action_points_factory:
   max: 60
   base_gen_rate: 12
   clock: clock
+
+ContainerFactory player_items:
+  max_items: 10

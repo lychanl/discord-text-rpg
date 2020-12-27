@@ -40,18 +40,22 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('here'), r'.*not started.*start.*')
         self.assertRegex(io.test('start'), r'.*Welcome.*')
         self.assertRegex(io.test('invalid'), r'.*Invalid.*')
-        self.assertRegex(io.test('me'), r'.*have 60/60 action points.*have 0.*You are in.*village.*')
+        self.assertRegex(io.test('me'), r'.*have 60/60 action points.*have 0 gold.*have 0/10 items.*in.*village.*')
+        self.assertRegex(io.test('items'), r'.*No items.*0/10.*')
         self.assertRegex(io.test('here'), r'.*You are in.*village.*Travel to coast.*')
         self.assertRegex(io.test('Travel to coast'), r'.*travel.*coast.*')
         self.assertRegex(io.test('here'), r'.*You are at.*coast.*Travel to village.*')
+        self.assertRegex(io.test('fish'), r'.*fish.* get 1x fish.*')
+        self.assertRegex(io.test('fishing'), r'.*fish.* get 1x fish.*')
+        self.assertRegex(io.test('items'), r'.*2x fish.*1/10.*')
         self.assertRegex(io.test('travel village'), r'.*travel.*village.*')
         self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
         self.assertRegex(io.test('get a job'), r'.*job.*get.*5.*gold.*')
-        self.assertRegex(io.test('me'), r'.*have 58/60 action points.*have 10.*You are in.*village.*')
+        self.assertRegex(io.test('me'), r'.*have 56/60 action points.*have 10 gold.*have 1/10 items.*in.*village.*')
 
         clock.now_with_diff.return_value = object(), 0.1
 
-        self.assertRegex(io.test('me'), r'.*have 59/60 action points.*have 10.*You are in.*village.*')
+        self.assertRegex(io.test('me'), r'.*have 57/60 action points.*have 10.*You are in.*village.*')
 
         clock.now_with_diff.return_value = object(), 0
 

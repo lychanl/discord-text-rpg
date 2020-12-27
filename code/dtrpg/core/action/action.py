@@ -1,5 +1,7 @@
-from dtrpg.core.action.event import EventFactory, Event, ResourceChangeEvent
+from dtrpg.core.action.event import EventFactory, Event, ResourceChangeEvent, ItemReceivedEvent
 from dtrpg.core.player import Player, ResourceChange, ResourceCost, InsufficientResourceError
+from dtrpg.core.item import ContainerOverflowException, ItemStackFactory
+
 
 from typing import Iterable
 
@@ -54,5 +56,33 @@ class ResourceChangesAction(Action):
             diff = change.apply(player)
             changes[player.resources[change.id]] = diff
         event.resource_changes = changes
+
+        return event
+
+
+class ItemReceiveAction(Action):
+    def __init__(self):
+        super().__init__(ItemReceivedEvent)
+        self._item_factory = None
+
+    @property
+    def item_factory(self) -> 'ItemStackFactory':
+        return self._item_factory
+
+    @item_factory.setter
+    def item_factory(self, item_factory: 'ItemStackFactory') -> None:
+        self._item_factory = item_factory
+
+    def take(self, player: 'Player', *args: Iterable[str]) -> ItemReceivedEvent:
+        event = self._take(player)
+        stack = self._item_factory.create()
+
+        event.item = stack.item
+        event.number = stack.stack
+
+        try:
+            player.items.add(stack)
+        except ContainerOverflowException as e:
+            event.overflow = e
 
         return event

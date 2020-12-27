@@ -1,6 +1,7 @@
 import unittest
 from unittest import mock
 
+import dtrpg.core.item as item
 import dtrpg.core.map as map_
 import dtrpg.core.player as player
 
@@ -29,12 +30,15 @@ class TestPlayerFactory(unittest.TestCase):
     def test_player_factory(self) -> None:
         factory = player.PlayerFactory()
         loc = map_.Location()
+        cf = item.ContainerFactory()
 
         factory.default_location = loc
+        factory.container_factory = cf
 
         p = factory.create()
 
         self.assertIs(p.location, loc)
+        self.assertIsInstance(p.items, item.Container)
 
     def test_player_factory_resources(self) -> None:
         factory = player.PlayerFactory()
@@ -43,6 +47,7 @@ class TestPlayerFactory(unittest.TestCase):
         rf.initial = 1
 
         factory.resource_factories = [rf]
+        factory.container_factory = item.ContainerFactory()
 
         p = factory.create()
 

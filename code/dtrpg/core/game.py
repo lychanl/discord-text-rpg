@@ -1,5 +1,4 @@
 from dtrpg.core.config import Config
-from dtrpg.core.clock import Clock
 from dtrpg.core.player import Player
 
 from typing import Hashable

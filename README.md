@@ -28,5 +28,6 @@ Goals (gameplay):
  - [x] Locations, travelling
  - [x] Action points system, with regenerating action points
  - [x] Location-based actions
+ - [ ] Player-based actions
  - [ ] Items, resources, trading (with 'NPCs' only, for now)
  - [ ] Monsters, random encounters, fighting

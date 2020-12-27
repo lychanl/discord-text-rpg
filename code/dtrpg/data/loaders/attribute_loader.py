@@ -62,6 +62,6 @@ class CollectionLoader(AttributeLoader):
                 objs_by_type[type(o)] = [o]
 
         for loader, qualifiers in self._attributes:
-            qualifiers.check(objs_by_type[loader.type_loader.class_])
+            qualifiers.check(objs_by_type.get(loader.type_loader.class_, []))
 
         return collection
