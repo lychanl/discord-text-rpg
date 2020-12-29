@@ -4,6 +4,11 @@ PlayerFactory player_factory:
     - action_points_factory
     - gold_factory
   container_factory: player_items
+  base_actions:
+    - me_action
+    - here_action
+    - items_action
+    - drop_action
 
 ResourceFactory gold_factory:
   id: gold
@@ -17,3 +22,14 @@ ResourceFactory action_points_factory:
 
 ContainerFactory player_items:
   max_items: 10
+
+InfoAction me_action: {}
+
+InfoAction here_action: {}
+
+InfoAction items_action: {}
+
+RemoveItemAction drop_action:
+  args:
+    - int
+    - Item

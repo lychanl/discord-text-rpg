@@ -1,12 +1,18 @@
-from dtrpg.core import Game, InvalidPlayerError, DuplicatePlayerError
+from dtrpg.core import Game, GameObject, InvalidPlayerError, DuplicatePlayerError
 from dtrpg.core.player import InsufficientResourceError, Resource
 
 import re
 
-from typing import Any, Hashable, TYPE_CHECKING
+from typing import Any, Hashable, Iterable, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from dtrpg.core.action import Event
+    from dtrpg.core.action import Action, Event
+
+
+class ArgumentError(Exception):
+    def __init__(self, value: str):
+        super().__init__()
+        self.value = value
 
 
 class TextIO:
@@ -14,9 +20,6 @@ class TextIO:
         self._game = game
         self._basic_commands = {
             'start': self._start,
-            'here': self._here,
-            'me': self._me,
-            'items': self._items
         }
 
     def command(self, player_id: Hashable, command: str) -> str:
@@ -27,6 +30,8 @@ class TextIO:
             event = self.action(player_id, command)
             if event:
                 return event.strings['EVENT_NOW']
+        except ArgumentError as e:
+            return self._invalid_agument(e.value)
         except InvalidPlayerError:
             return self._game.config.strings['INVALID_PLAYER']
         except InsufficientResourceError as e:
@@ -34,12 +39,36 @@ class TextIO:
 
         return self._invalid_command()
 
+    def _get_object(self, name: str, t: type) -> object:
+        if not name:
+            return None
+        if issubclass(t, GameObject):
+            for obj in self._game.game_objects(t):
+                if 'NAME' in obj.strings and name == obj.strings['NAME']:
+                    return obj
+                if 'REGEX_NAME' in obj.strings and re.match(obj.strings['REGEX_NAME'], name):
+                    return obj
+            raise ArgumentError(name)
+        else:
+            try:
+                return t(name)
+            except ValueError:
+                raise ArgumentError(name)
+
+    def _parse_args(self, action: 'Action', match: re.Match) -> Iterable[object]:
+        return reversed([
+            self._get_object(arg, t)
+            for arg, t
+            in zip(reversed(match.groups()), reversed(action.args))
+        ])
+
     def action(self, player_id: Hashable, command: str) -> 'Event':
         player = self._game.player(player_id)
         for action in player.available_actions:
             match = re.fullmatch(action.strings['REGEX'], command, flags=re.IGNORECASE)
             if match:
-                return action.take(player, match.groups())
+                args = self._parse_args(action, match)
+                return action.take(player, *args)
 
         return None
 
@@ -58,6 +87,9 @@ class TextIO:
             return player.strings['WELCOME']
         except DuplicatePlayerError:
             return self._game.config.strings['DUPLICATE_PLAYER']
+
+    def _invalid_agument(self, value: str) -> str:
+        return self._game.config.strings['INVALID_ARGUMENT', {'value': value}]
 
     def _invalid_command(self) -> str:
         return self._game.config.strings['INVALID_COMMAND']

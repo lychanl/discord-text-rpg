@@ -4,7 +4,7 @@ from dtrpg.data.locale.locale_loader import LocaleLoader
 
 from dtrpg.core import Config
 
-from typing import Dict
+from typing import Dict, Iterable
 
 import csv
 import os
@@ -85,6 +85,9 @@ class DataLoader:
             raise TypeError('Config must be of type Config!')
 
         return config
+
+    def get_world(self) -> Iterable[object]:
+        return list(self._world.values())
 
     def _load_locale(self, locale_path: str) -> LocaleLoader:
         locale_rows = []

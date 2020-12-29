@@ -1,5 +1,5 @@
 from dtrpg.data.loaders.qualifier import NumberQualifier, QualifierError, Qualifiers
-from dtrpg.data.loaders import BuiltInLoader
+from dtrpg.data.loaders import BuiltInLoader, TypenameLoader
 from dtrpg.data.loaders.attribute_loader import (
     AttributeLoader,
     SimpleAttributeLoader,
@@ -40,11 +40,14 @@ class SchemaLoader:
         return self._type_loaders
 
     def _get_default_type_loaders(self) -> Dict[str, TypeLoader]:
-        return {
+        loaders = {
             'str': BuiltInLoader(str),
             'int': BuiltInLoader(int),
             'float': BuiltInLoader(float)
         }
+        loaders['type'] = TypenameLoader(loaders)
+
+        return loaders
 
     def _parse_type(self, schema: dict, obj: TypeLoader) -> None:
         for name, value in schema.items():

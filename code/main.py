@@ -15,7 +15,8 @@ def prepare_game(schema_path: str, world_path: str, config_name: str, locale_pat
     loader = DataLoader()
     loader.load(schema_path, world_path, locale_path)
     config = loader.get_config(config_name)
-    return Game(config)
+    objects = loader.get_world()
+    return Game(config, objects)
 
 
 def main(schema_path: str, world_path: str, config_name: str, locale_path: str, interface_name: str) -> None:

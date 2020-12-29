@@ -1,5 +1,6 @@
-from typing import Mapping, Tuple, Union
 from dtrpg.data.locale.formatter import LocaleFormatter
+
+from typing import Mapping, Tuple, Union
 
 
 class DuplicateStringError(Exception):
@@ -79,3 +80,6 @@ class ObjectStrings:
 
         formatted = self.formatter.format(out, **ctx)
         return formatted
+
+    def __contains__(self, item: object) -> bool:
+        return item in self._obj_strings or item in self._cls_strings

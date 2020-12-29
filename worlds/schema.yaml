@@ -7,6 +7,7 @@ Action:
   _class: dtrpg.core.action.Action
   _abstract: True
   optional costs: [ ResourceCost ]
+  optional args: [ type ]
 
 ResourceChangesAction:
   _class: dtrpg.core.action.ResourceChangesAction
@@ -29,11 +30,25 @@ TravelAction:
   _base: Action
   required to: Location
 
+TravelEvent:
+  _class: dtrpg.core.map.TravelEvent
+
+InfoAction:
+  _class: dtrpg.core.action.InfoAction
+  _base: Action
+
+RemoveItemAction:
+  _class: dtrpg.core.action.RemoveItemAction
+  _base: Action
+  optional item: Item
+  optional number: int
+
 PlayerFactory:
   _class: dtrpg.core.player.PlayerFactory
   required default_location: Location
   required container_factory: ContainerFactory
   optional resource_factories: [ ResourceFactory ]
+  optional base_actions: [ Action ]
 
 Player:
   _class: dtrpg.core.player.Player
@@ -78,9 +93,6 @@ ResourceCost:
 Config:
   _class: dtrpg.core.Config
   required player_factory: PlayerFactory
-
-TravelEvent:
-  _class: dtrpg.core.map.TravelEvent
 
 Clock:
   _class: dtrpg.core.Clock

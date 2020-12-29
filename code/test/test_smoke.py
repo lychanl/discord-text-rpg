@@ -63,3 +63,7 @@ class TestSmoke(unittest.TestCase):
 
         self.assertRegex(io.test('me'), r'.*have 0/60 action points.*')
         self.assertRegex(io.test('find a job'), r'.*don.*have.*action points.*1 needed.*')
+
+        self.assertRegex(io.test('drop 2 fishes'), r'.*drop 2x fish*')
+        self.assertRegex(io.test('items'), r'.*No items.*0/10.*')
+        self.assertRegex(io.test('drop fish'), r".*don't have enough items*")

@@ -3,7 +3,7 @@ from dtrpg.core.game_object import GameObject, GameObjectFactory
 from typing import Mapping, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from dtrpg.core.player import Resource
+    from dtrpg.core.player import Player, Resource
     from dtrpg.core.item import Item, ContainerOverflowException
 
 
@@ -14,6 +14,20 @@ class Event(GameObject):
 class EventFactory(GameObjectFactory):
     def __init__(self, event_type: type):
         super().__init__(event_type)
+
+
+class InfoEvent(GameObject):
+    def __init__(self):
+        super().__init__()
+        self._player = None
+
+    @property
+    def player(self) -> 'Player':
+        return self._player
+
+    @player.setter
+    def player(self, player: 'Player') -> None:
+        self._player = player
 
 
 class ResourceChangeEvent(Event):
@@ -60,3 +74,35 @@ class ItemReceivedEvent(Event):
     @overflow.setter
     def overflow(self, overflow: 'ContainerOverflowException') -> None:
         self._overflow = overflow
+
+
+class RemoveItemEvent(Event):
+    def __init__(self):
+        super().__init__()
+        self._item = None
+        self._number = 0
+        self._failed = False
+
+    @property
+    def item(self) -> 'Item':
+        return self._item
+
+    @item.setter
+    def item(self, item: 'Item') -> None:
+        self._item = item
+
+    @property
+    def number(self) -> item:
+        return self._number
+
+    @number.setter
+    def number(self, number: int) -> None:
+        self._number = number
+
+    @property
+    def failed(self) -> bool:
+        return self._failed
+
+    @failed.setter
+    def failed(self, failed: bool) -> None:
+        self._failed = failed

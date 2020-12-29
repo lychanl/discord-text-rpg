@@ -25,7 +25,7 @@ class SimpleAttributeLoader(AttributeLoader):
         return self._type_loader
 
     def load(self, obj: object, objects_dict: dict, values: dict) -> object:
-        if isinstance(values, str) and self._type_loader.class_ is not str:
+        if isinstance(values, str) and self._type_loader.class_ not in (str, type):
             obj = objects_dict[values]
             if not isinstance(obj, self._type_loader.class_):
                 raise TypeError
@@ -43,7 +43,7 @@ class CollectionLoader(AttributeLoader):
         collection = []
 
         for value in values:
-            if isinstance(value, str):
+            if isinstance(value, str) and next(iter(self._attributes))[0].type_loader.class_ not in (str, type):
                 obj = objects_dict[value]
                 if not any(isinstance(obj, t[0].type_loader.class_) for t in self._attributes):
                     raise TypeError

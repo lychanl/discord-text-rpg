@@ -1,23 +1,10 @@
 object,string,value
 Location,YOU_ARE_HERE,"You are in {self.strings['NAME']}"
-Location,HERE,"{self.strings['YOU_ARE_HERE']}
-
-You may:
-{'\n'.join(['- ' + a.strings['NAME'] for a in self.local_actions + self.travel_actions])}"
 Location,REGEX_NAME,{self.strings['NAME']}
 TravelAction,REGEX,Travel( to)? {self.to.strings['REGEX_NAME']}
 TravelAction,NAME,Travel to {self.to.strings['NAME']}
 TravelEvent,EVENT_NOW,You travel to {self.to.strings['NAME']}.
-TravelEvent,EVENT_PAST,You traveled from {self.from_.strings['NAME']} to {self.to.strings['NAME']]}.
 Resource,YOU_HAVE,"You have {self.strings['VALUE', {'value': self.value}]}"
-Player,ME,"{'\n'.join([r.strings['YOU_HAVE'] for r in self.resources.values()])}
-
-You have {self.items.strings['USAGE']} items.
-
-{self.location.strings['YOU_ARE_HERE']}"
-Player,ITEMS,"{self.items.strings['ITEMS']}
-({self.items.strings['USAGE']})"
-Player,ITEM_DROP,"You dropped {number}x {item.strings['NAME']}."
 ResourceChangeEvent,EVENT_NOW,"{self.strings['CAUSE_NOW']} {' '.join(['You get ' + r.strings['VALUE', {'value': v}] + '.' for r, v in self.resource_changes.items()])}"
 ItemReceivedEvent,EVENT_NOW,"{self.strings['CAUSE_NOW']} You get {self.number}x {self.item.strings['NAME']}.{'You dropped ' + str(self.overflow.stack.number) + ' because you have no more space.' if self.overflow else ''}"
 Container,USAGE,{len(self.items)}/{self.max_items}

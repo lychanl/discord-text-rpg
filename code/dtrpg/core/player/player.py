@@ -15,6 +15,7 @@ class Player(GameObject):
         self._location = None
         self._resources = {}
         self._items = None
+        self._base_actions = []
 
     @property
     def location(self) -> 'Location':
@@ -26,7 +27,7 @@ class Player(GameObject):
 
     @property
     def available_actions(self) -> Iterable['Action']:
-        return self._location.travel_actions + self._location.local_actions
+        return self._base_actions + self._location.travel_actions + self._location.local_actions
 
     @property
     def resources(self) -> Mapping[str, 'Resource']:
@@ -44,6 +45,14 @@ class Player(GameObject):
     def items(self, items: 'Container') -> None:
         self._items = items
 
+    @property
+    def base_actions(self) -> Iterable['Action']:
+        return self._base_actions
+
+    @base_actions.setter
+    def base_actions(self, actions: Iterable['Action']) -> None:
+        self._base_actions = actions
+
 
 class PlayerFactory(GameObjectFactory):
     def __init__(self):
@@ -51,6 +60,7 @@ class PlayerFactory(GameObjectFactory):
         self._default_location = None
         self._resource_factories = ()
         self._container_factory = None
+        self._base_actions = []
 
     @property
     def default_location(self) -> 'Location':
@@ -76,6 +86,14 @@ class PlayerFactory(GameObjectFactory):
     def resource_factories(self, rf: Iterable['ResourceFactory']) -> None:
         self._resource_factories = rf
 
+    @property
+    def base_actions(self) -> Iterable['Action']:
+        return self._base_actions
+
+    @base_actions.setter
+    def base_actions(self, actions: Iterable['Action']) -> None:
+        self._base_actions = actions
+
     def create(self) -> Player:
         player = self._create()
 
@@ -84,5 +102,7 @@ class PlayerFactory(GameObjectFactory):
             f.id: f.create() for f in self._resource_factories
         }
         player.items = self._container_factory.create()
+
+        player.base_actions = self._base_actions
 
         return player
