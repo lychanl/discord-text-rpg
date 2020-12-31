@@ -4,42 +4,50 @@ Location:
   optional local_actions: [ Action ]
 
 Action:
-  _class: dtrpg.core.action.Action
-  _abstract: True
+  _class: dtrpg.core.events.Action
   optional costs: [ ResourceCost ]
-  optional args: [ type ]
+  optional args: { str: type }
+  required event: Event
 
-ResourceChangesAction:
-  _class: dtrpg.core.action.ResourceChangesAction
-  _base: Action
+Event:
+  _class: dtrpg.core.events.Event
+  _abstract: True
+
+ResourceChangesEvent:
+  _class: dtrpg.core.events.ResourceChangesEvent
+  _base: Event
   required resource_changes: [ ResourceChange ]
 
-ResourceChangeEvent:
-  _class: dtrpg.core.action.ResourceChangeEvent
+ResourceChangeEventResult:
+  _class: dtrpg.core.events.ResourceChangeEventResult
 
-ItemReceiveAction:
-  _class: dtrpg.core.action.ItemReceiveAction
-  _base: Action
+ItemReceiveEvent:
+  _class: dtrpg.core.events.ItemReceiveEvent
+  _base: Event
   required item_factory: ItemStackFactory
 
-ItemReceivedEvent:
-  _class: dtrpg.core.action.ItemReceivedEvent
+ItemReceivedEventResult:
+  _class: dtrpg.core.events.ItemReceivedEventResult
 
 TravelAction:
   _class: dtrpg.core.map.TravelAction
-  _base: Action
   required to: Location
 
 TravelEvent:
   _class: dtrpg.core.map.TravelEvent
+  _base: Event
+  required to: Location
 
-InfoAction:
-  _class: dtrpg.core.action.InfoAction
-  _base: Action
+TravelEventResult:
+  _class: dtrpg.core.map.TravelEventResult
 
-RemoveItemAction:
-  _class: dtrpg.core.action.RemoveItemAction
-  _base: Action
+InfoEvent:
+  _class: dtrpg.core.events.InfoEvent
+  _base: Event
+
+RemoveItemEvent:
+  _class: dtrpg.core.events.RemoveItemEvent
+  _base: Event
   optional item: Item
   optional number: int
 

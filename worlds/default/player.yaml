@@ -23,13 +23,19 @@ ResourceFactory action_points_factory:
 ContainerFactory player_items:
   max_items: 10
 
-InfoAction me_action: {}
+Action me_action: { event: me_event }
+InfoEvent me_event: {}
 
-InfoAction here_action: {}
+Action here_action: { event: here_event }
+InfoEvent here_event: {}
 
-InfoAction items_action: {}
+Action items_action: {event: items_event}
+InfoEvent items_event: {}
 
-RemoveItemAction drop_action:
+Action drop_action:
+  event: drop_event
   args:
-    - int
-    - Item
+    number: int
+    item: Item
+
+RemoveItemEvent drop_event: {}

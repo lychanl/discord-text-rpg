@@ -1,4 +1,4 @@
-from dtrpg.core.game_object import GameObject, GameObjectFactory
+from dtrpg.core.game_object import GameObject
 
 from typing import Mapping, TYPE_CHECKING
 
@@ -7,16 +7,11 @@ if TYPE_CHECKING:
     from dtrpg.core.item import Item, ContainerOverflowException
 
 
-class Event(GameObject):
+class EventResult(GameObject):
     pass
 
 
-class EventFactory(GameObjectFactory):
-    def __init__(self, event_type: type):
-        super().__init__(event_type)
-
-
-class InfoEvent(GameObject):
+class InfoEventResult(GameObject):
     def __init__(self):
         super().__init__()
         self._player = None
@@ -30,7 +25,7 @@ class InfoEvent(GameObject):
         self._player = player
 
 
-class ResourceChangeEvent(Event):
+class ResourceChangeEventResult(EventResult):
     def __init__(self):
         super().__init__()
         self._resource_changes = {}
@@ -44,7 +39,7 @@ class ResourceChangeEvent(Event):
         self._resource_changes = changes
 
 
-class ItemReceivedEvent(Event):
+class ItemReceivedEventResult(EventResult):
     def __init__(self):
         super().__init__()
         self._item = None
@@ -76,7 +71,7 @@ class ItemReceivedEvent(Event):
         self._overflow = overflow
 
 
-class RemoveItemEvent(Event):
+class RemoveItemEventResult(EventResult):
     def __init__(self):
         super().__init__()
         self._item = None

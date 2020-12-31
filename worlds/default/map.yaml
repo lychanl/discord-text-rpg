@@ -15,19 +15,24 @@ Location loc_nothingthere_forest:
   travel_actions:
     - { to: loc_nothingthere_village }
 
-ResourceChangesAction nothingthere_job:
+Action nothingthere_job:
   costs:
     - id: action_points
       cost: 1
+  event: nothingthere_job_event
 
+ResourceChangesEvent nothingthere_job_event:
   resource_changes:
     - id: gold
       value: 5
 
-ItemReceiveAction nothingthere_fish:
+Action nothingthere_fish:
   costs:
     - id: action_points
       cost: 1
+  event: nothingthere_fish_event
+
+ItemReceiveEvent nothingthere_fish_event:
   item_factory:
     item: item_fish
     stack: 1

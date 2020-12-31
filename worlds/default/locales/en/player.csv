@@ -5,20 +5,20 @@ action_points_factory,VALUE,{value}/{self.max} action points
 gold_factory,NAME,gold
 action_points_factory,NAME,action points
 here_action,REGEX,here
-here_action,EVENT_NOW,"{self.player.location.strings['YOU_ARE_HERE']}
+here_event,EVENT_NOW,"{self.player.location.strings['YOU_ARE_HERE']}
 
 You may:
 {'\n'.join(['- ' + a.strings['NAME'] for a in self.player.location.local_actions + self.player.location.travel_actions])}"
 me_action,REGEX,me
-me_action,EVENT_NOW,"{'\n'.join([r.strings['YOU_HAVE'] for r in self.player.resources.values()])}
+me_event,EVENT_NOW,"{'\n'.join([r.strings['YOU_HAVE'] for r in self.player.resources.values()])}
 
 You have {self.player.items.strings['USAGE']} items.
 
 {self.player.location.strings['YOU_ARE_HERE']}"
 items_action,REGEX,items
-items_action,EVENT_NOW,"{self.player.items.strings['ITEMS']}
+items_event,EVENT_NOW,"{self.player.items.strings['ITEMS']}
 ({self.player.items.strings['USAGE']})"
-drop_action,REGEX,drop (\d* )?(.*)
-drop_action,SUCCESS,"You drop {self.number}x {self.item.strings['NAME']}"
-drop_action,FAIL,You don't have enough items to do that.
-drop_action,EVENT_NOW,{self.strings['FAIL'] if self.failed else self.strings['SUCCESS']}
+drop_action,REGEX,drop (?P<number>\d+ )?(?P<item>.+)
+drop_event,SUCCESS,"You drop {self.number}x {self.item.strings['NAME']}"
+drop_event,FAIL,You don't have enough items to do that.
+drop_event,EVENT_NOW,{self.strings['FAIL'] if self.failed else self.strings['SUCCESS']}

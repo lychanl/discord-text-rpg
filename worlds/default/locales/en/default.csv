@@ -3,9 +3,9 @@ Location,YOU_ARE_HERE,"You are in {self.strings['NAME']}"
 Location,REGEX_NAME,{self.strings['NAME']}
 TravelAction,REGEX,Travel( to)? {self.to.strings['REGEX_NAME']}
 TravelAction,NAME,Travel to {self.to.strings['NAME']}
-TravelEvent,EVENT_NOW,You travel to {self.to.strings['NAME']}.
+TravelEventResult,EVENT_NOW,You travel to {self.to.strings['NAME']}.
 Resource,YOU_HAVE,"You have {self.strings['VALUE', {'value': self.value}]}"
-ResourceChangeEvent,EVENT_NOW,"{self.strings['CAUSE_NOW']} {' '.join(['You get ' + r.strings['VALUE', {'value': v}] + '.' for r, v in self.resource_changes.items()])}"
-ItemReceivedEvent,EVENT_NOW,"{self.strings['CAUSE_NOW']} You get {self.number}x {self.item.strings['NAME']}.{'You dropped ' + str(self.overflow.stack.number) + ' because you have no more space.' if self.overflow else ''}"
+ResourceChangeEventResult,EVENT_NOW,"{self.strings['CAUSE_NOW']} {' '.join(['You get ' + r.strings['VALUE', {'value': v}] + '.' for r, v in self.resource_changes.items()])}"
+ItemReceivedEventResult,EVENT_NOW,"{self.strings['CAUSE_NOW']} You get {self.number}x {self.item.strings['NAME']}.{'You dropped ' + str(self.overflow.stack.number) + ' because you have no more space.' if self.overflow else ''}"
 Container,USAGE,{len(self.items)}/{self.max_items}
 Container,ITEMS,{'\n'.join(str(i.stack) + 'x ' + i.item.strings['NAME'] + ' (max ' + str(i.item.max_stack) + ')' for i in self.items) if self.items else 'No items.'}

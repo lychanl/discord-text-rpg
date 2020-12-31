@@ -56,11 +56,9 @@ class TextIO:
                 raise ArgumentError(name)
 
     def _parse_args(self, action: 'Action', match: re.Match) -> Iterable[object]:
-        return reversed([
-            self._get_object(arg, t)
-            for arg, t
-            in zip(reversed(match.groups()), reversed(action.args))
-        ])
+        return {
+            arg: self._get_object(value, action.args[arg]) for arg, value in match.groupdict().items() if value
+        }
 
     def action(self, player_id: Hashable, command: str) -> 'Event':
         player = self._game.player(player_id)
@@ -68,7 +66,7 @@ class TextIO:
             match = re.fullmatch(action.strings['REGEX'], command, flags=re.IGNORECASE)
             if match:
                 args = self._parse_args(action, match)
-                return action.take(player, *args)
+                return action.take(player, **args)
 
         return None
 

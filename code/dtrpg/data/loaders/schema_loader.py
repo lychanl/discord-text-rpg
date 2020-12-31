@@ -3,7 +3,8 @@ from dtrpg.data.loaders import BuiltInLoader, TypenameLoader
 from dtrpg.data.loaders.attribute_loader import (
     AttributeLoader,
     SimpleAttributeLoader,
-    CollectionLoader
+    CollectionLoader,
+    DictLoader
 )
 from dtrpg.data.loaders.type_loader import (
     AttributeRedefinitionError,
@@ -90,6 +91,8 @@ class SchemaLoader:
     def _parse_attribute(self, type_: str) -> AttributeLoader:
         if isinstance(type_, str):
             return self._parse_simple_attribute(type_)
+        elif isinstance(type_, dict):
+            return self._parse_dict_attribute(type_)
         elif isinstance(type_, Iterable):
             return self._parse_collection_attribute(type_)
         else:
@@ -117,3 +120,11 @@ class SchemaLoader:
         ]
 
         return CollectionLoader(*elements)
+
+    def _parse_dict_attribute(self, attribute: Dict[str, str]) -> DictLoader:
+        if len(attribute) != 1:
+            raise SchemaError('Dict attribute must have single key-value pair')
+
+        key, value = next(iter(attribute.items()))
+
+        return DictLoader(self._parse_simple_attribute(key), self._parse_simple_attribute(value))

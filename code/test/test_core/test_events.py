@@ -1,13 +1,13 @@
 import unittest
 
-import dtrpg.core.action as action
+import dtrpg.core.events as events
 import dtrpg.core.item as item
 import dtrpg.core.player as player
 
 
-class TestPlayer(unittest.TestCase):
-    def test_resource_change_action(self) -> None:
-        a = action.ResourceChangesAction()
+class TestEvents(unittest.TestCase):
+    def test_resource_change_event(self) -> None:
+        a = events.ResourceChangesEvent()
         rc1 = player.ResourceChange()
         rc1.id = 'r1'
         rc1.value = -1
@@ -23,15 +23,15 @@ class TestPlayer(unittest.TestCase):
         r2.value = 3
         p.resources = {'r1': r1, 'r2': r2}
 
-        e = a.take(p)
+        e = a.fire(p)
 
         self.assertEqual(p.resources['r1'].value, 1)
         self.assertEqual(p.resources['r2'].value, 7)
         self.assertEqual(e.resource_changes[r1], -1)
         self.assertEqual(e.resource_changes[r2], 4)
 
-    def test_item_receive_action(self) -> None:
-        a = action.ItemReceiveAction()
+    def test_item_receive_event(self) -> None:
+        a = events.ItemReceiveEvent()
         i = item.Item()
         i.max_stack = 1
 
@@ -42,13 +42,13 @@ class TestPlayer(unittest.TestCase):
         p.items = item.Container()
         p.items.max_items = 3
 
-        e1 = a.take(p)
+        e1 = a.fire(p)
         self.assertIs(e1.item, i)
         self.assertEqual(e1.number, 2)
         self.assertIsNone(e1.overflow)
         self.assertEqual(p.items.count(i), 2)
 
-        e2 = a.take(p)
+        e2 = a.fire(p)
         self.assertIs(e2.item, i)
         self.assertEqual(e2.number, 2)
         self.assertIs(e2.overflow.stack.item, i)
@@ -56,7 +56,7 @@ class TestPlayer(unittest.TestCase):
         self.assertEqual(p.items.count(i), 3)
 
     def test_action_cost(self) -> None:
-        a = action.ResourceChangesAction()
+        a = events.Action()
         rc1 = player.ResourceCost()
         rc1.id = 'r1'
         rc1.cost = 1
@@ -64,6 +64,7 @@ class TestPlayer(unittest.TestCase):
         rc2.id = 'r2'
         rc2.cost = 4
         a.costs = [rc1, rc2]
+        a.event = events.InfoEvent()
 
         p = player.Player()
         r1 = player.Resource()
@@ -80,7 +81,7 @@ class TestPlayer(unittest.TestCase):
         self.assertEqual(p.resources['r2'].value, 0)
 
     def test_action_cost_insufficient(self) -> None:
-        a = action.ResourceChangesAction()
+        a = events.Action()
         rc1 = player.ResourceCost()
         rc1.id = 'r1'
         rc1.cost = 1
@@ -88,6 +89,7 @@ class TestPlayer(unittest.TestCase):
         rc2.id = 'r2'
         rc2.cost = 4
         a.costs = [rc1, rc2]
+        a.event = events.InfoEvent()
 
         p = player.Player()
         r1 = player.Resource()

@@ -1,5 +1,5 @@
 # flake8: noqa: F401
-import dtrpg.core.action as action
+import dtrpg.core.events as events
 import dtrpg.core.item as item
 import dtrpg.core.map as map
 import dtrpg.core.player as player

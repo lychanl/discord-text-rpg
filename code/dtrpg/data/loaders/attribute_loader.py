@@ -12,7 +12,15 @@ class AmbigousTypeError(Exception):
 
 
 class AttributeLoader(Loader):
-    pass
+    def _load_single(self, objects_dict: dict, values: dict, default_loader: 'TypeLoader') -> object:
+        if default_loader and default_loader.class_ in (str, type) or not isinstance(values, str):
+            obj = default_loader.load(None, objects_dict, values)
+            if default_loader and not isinstance(obj, default_loader.class_):
+                raise TypeError
+            return obj
+        elif isinstance(values, str):
+            return objects_dict[values]
+        raise AmbigousTypeError
 
 
 class SimpleAttributeLoader(AttributeLoader):
@@ -25,13 +33,7 @@ class SimpleAttributeLoader(AttributeLoader):
         return self._type_loader
 
     def load(self, obj: object, objects_dict: dict, values: dict) -> object:
-        if isinstance(values, str) and self._type_loader.class_ not in (str, type):
-            obj = objects_dict[values]
-            if not isinstance(obj, self._type_loader.class_):
-                raise TypeError
-            return obj
-        else:
-            return self._type_loader.load(None, objects_dict, values)
+        return self._load_single(objects_dict, values, self._type_loader)
 
 
 class CollectionLoader(AttributeLoader):
@@ -43,15 +45,10 @@ class CollectionLoader(AttributeLoader):
         collection = []
 
         for value in values:
-            if isinstance(value, str) and next(iter(self._attributes))[0].type_loader.class_ not in (str, type):
-                obj = objects_dict[value]
-                if not any(isinstance(obj, t[0].type_loader.class_) for t in self._attributes):
-                    raise TypeError
-            else:
-                if len(self._attributes) > 1:
-                    raise AmbigousTypeError
-                loader = next(iter(self._attributes))[0]
-                obj = loader.load(None, objects_dict, value)
+            default_loader = next(iter(self._attributes))[0].type_loader if len(self._attributes) == 1 else None
+            obj = self._load_single(objects_dict, value, default_loader)
+            if not any(isinstance(obj, t[0].type_loader.class_) for t in self._attributes):
+                raise TypeError
             collection.append(obj)
 
         objs_by_type = {}
@@ -65,3 +62,21 @@ class CollectionLoader(AttributeLoader):
             qualifiers.check(objs_by_type.get(loader.type_loader.class_, []))
 
         return collection
+
+
+class DictLoader(AttributeLoader):
+    def __init__(self, key: SimpleAttributeLoader, value: SimpleAttributeLoader):
+        super(DictLoader, self).__init__()
+        self._key = key
+        self._value = value
+
+    def load(self, obj: object, objects_dict: dict, values: dict) -> object:
+        dict_ = {}
+
+        for key, value in values.items():
+            key_obj = self._load_single(objects_dict, key, self._key.type_loader)
+            val_obj = self._load_single(objects_dict, value, self._value.type_loader)
+
+            dict_[key_obj] = val_obj
+
+        return dict_

@@ -20,7 +20,7 @@ class Location(GameObject):
     @travel_actions.setter
     def travel_actions(self, travel_actions: Sequence['TravelAction']) -> None:
         for travel_action in travel_actions:
-            travel_action._from = self
+            travel_action.event._from = self
 
         self._travel_actions = travel_actions
 
