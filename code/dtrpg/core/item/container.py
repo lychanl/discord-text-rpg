@@ -12,7 +12,7 @@ class ContainerOverflowException(Exception):
 class Container(GameObject):
     def __init__(self):
         super().__init__()
-        self._max_items = 1
+        self.max_items = 1
         self._items = []
 
     def add(self, stack: ItemStack) -> None:
@@ -22,7 +22,7 @@ class Container(GameObject):
                 stack.stack -= max_change
                 s.stack += max_change
 
-        while len(self._items) < self._max_items and stack.stack > 0:
+        while len(self._items) < self.max_items and stack.stack > 0:
             if stack.stack <= stack.item.max_stack:
                 self._items.append(stack)
                 return
@@ -51,14 +51,6 @@ class Container(GameObject):
         return sum(stack.stack for stack in self._items if stack.item is item)
 
     @property
-    def max_items(self) -> str:
-        return self._max_items
-
-    @max_items.setter
-    def max_items(self, max_items: str) -> None:
-        self._max_items = max_items
-
-    @property
     def items(self) -> Iterable[Item]:
         return self._items
 
@@ -69,17 +61,9 @@ class Container(GameObject):
 class ContainerFactory(GameObjectFactory):
     def __init__(self):
         super().__init__(Container)
-        self._max_items = 1
-
-    @property
-    def max_items(self) -> str:
-        return self._max_items
-
-    @max_items.setter
-    def max_items(self, max_items: str) -> None:
-        self._max_items = max_items
+        self.max_items = 1
 
     def create(self) -> Container:
         c = self._create()
-        c.max_items = self._max_items
+        c.max_items = self.max_items
         return c

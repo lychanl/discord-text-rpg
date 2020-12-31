@@ -3,8 +3,8 @@ from dtrpg.core.events.event_result import (
     EventResult, ResourceChangeEventResult, ItemReceivedEventResult,
     InfoEventResult, RemoveItemEventResult
 )
-from dtrpg.core.item import ContainerOverflowException, ItemStackFactory, Item, InsufficientItemsException
-from dtrpg.core.player import Player, ResourceChange
+from dtrpg.core.item import ContainerOverflowException, InsufficientItemsException
+from dtrpg.core.player import Player
 
 from typing import Mapping
 
@@ -12,8 +12,8 @@ from typing import Mapping
 class Event(GameObjectFactory):
     def fire(self, player: 'Player', **kwargs: Mapping[str, object]) -> EventResult:
         params = {
-            p: getattr(self, p) for p in dir(type(self))
-            if isinstance(getattr(type(self), p), property) and p not in dir(GameObjectFactory)
+            p: getattr(self, p) for p in self.__dict__
+            if p not in dir(GameObjectFactory)
         }
 
         params.update(kwargs)
@@ -37,15 +37,7 @@ class InfoEvent(Event):
 class ResourceChangesEvent(Event):
     def __init__(self):
         super().__init__(ResourceChangeEventResult)
-        self._resource_changes = []
-
-    @property
-    def resource_changes(self) -> Mapping[str, 'ResourceChange']:
-        return self._resource_changes
-
-    @resource_changes.setter
-    def resource_changes(self, changes: Mapping[str, 'ResourceChange']) -> None:
-        self._resource_changes = changes
+        self.resource_changes = []
 
     def _fire(self, player: 'Player', **params: Mapping[str, object]) -> ResourceChangeEventResult:
         event = self.create()
@@ -62,15 +54,7 @@ class ResourceChangesEvent(Event):
 class ItemReceiveEvent(Event):
     def __init__(self):
         super().__init__(ItemReceivedEventResult)
-        self._item_factory = None
-
-    @property
-    def item_factory(self) -> 'ItemStackFactory':
-        return self._item_factory
-
-    @item_factory.setter
-    def item_factory(self, item_factory: 'ItemStackFactory') -> None:
-        self._item_factory = item_factory
+        self.item_factory = None
 
     def _fire(self, player: 'Player', **params: Mapping[str, object]) -> ItemReceivedEventResult:
         event = self.create()
@@ -90,24 +74,8 @@ class ItemReceiveEvent(Event):
 class RemoveItemEvent(Event):
     def __init__(self):
         super().__init__(RemoveItemEventResult)
-        self._item = None
-        self._number = 1
-
-    @property
-    def item(self) -> 'Item':
-        return self._item
-
-    @item.setter
-    def item(self, item: 'Item') -> None:
-        self._item = item
-
-    @property
-    def number(self) -> int:
-        return self._number
-
-    @number.setter
-    def number(self, number: int) -> None:
-        self._number = number
+        self.item = None
+        self.number = 1
 
     def _fire(self, player: 'Player', **params: Mapping[str, object]) -> RemoveItemEventResult:
         event = self.create()
