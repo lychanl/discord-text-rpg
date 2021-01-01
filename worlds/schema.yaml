@@ -150,3 +150,22 @@ Config:
 Clock:
   _class: dtrpg.core.Clock
   optional base: int
+
+Tester:
+  _class: dtrpg.core.Tester
+  _abstract: True
+
+ProportionalTester:
+  _class: dtrpg.core.ProportionalTester
+  _base: Tester
+
+DifferentialTester:
+  _class: dtrpg.core.DifferentialTester
+  _base: Tester
+  
+  optional const: int
+  optional perc_limit: int
+
+ThresholdTester:
+  _class: dtrpg.core.ThresholdTester
+  _base: Tester

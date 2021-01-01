@@ -1,6 +1,6 @@
 from dtrpg.core.game_object import GameObject
 from dtrpg.core.events import BuyAction, SellAction, OffersInfoAction
-from dtrpg.core.item import Item, TradeOffer
+from dtrpg.core.item import TradeOffer
 
 from typing import Sequence, Iterable, TYPE_CHECKING
 
