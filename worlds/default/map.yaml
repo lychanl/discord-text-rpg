@@ -1,4 +1,15 @@
-Location loc_nothingthere_village:
+Market loc_nothingthere_village:
+  offers:
+    - item: item_fish
+      resource_id: gold
+      buy_value: 15
+      sell_value: 6
+    - item: item_herbs
+      resource_id: gold
+      sell_value: 8
+    - item: item_fishing_rod
+      resource_id: gold
+      buy_value: 25
   travel_actions:
     - { to: loc_nothingthere_coast }
     - { to: loc_nothingthere_forest }

@@ -67,3 +67,19 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('drop 2 fishes'), r'.*drop 2x fish*')
         self.assertRegex(io.test('items'), r'.*No items.*0/10.*')
         self.assertRegex(io.test('drop fish'), r".*don't have enough items*")
+
+        self.assertRegex(io.test('here'), r".*See offers.*Buy item.*Sell item.*")
+        self.assertRegex(io.test('see offers'), r".*fish.*sell 6.*buy 15.*herbs.*sell 8.*fishing rod.*buy 25.*")
+        self.assertRegex(io.test('travel coast'), r'.*travel.*coast.*')
+
+        game.player(TestIO.TEST_PLAYER).resources['action_points'].value = 10
+
+        self.assertRegex(io.test('fish'), r'.*fish.* get 1x fish.*')
+        self.assertRegex(io.test('fish'), r'.*fish.* get 1x fish.*')
+        self.assertRegex(io.test('fish'), r'.*fish.* get 1x fish.*')
+        self.assertRegex(io.test('travel village'), r'.*travel.*village.*')
+        self.assertRegex(io.test('sell 2 fishes'), r'.*sell 2x fish for 12*')
+        self.assertRegex(io.test('sell 2 fishes'), r".*don't have enough items*")
+        self.assertRegex(io.test('buy rod'), r".*don't have enough gold*")
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('buy rod'), r".*buy 1x fishing rod.*25*")

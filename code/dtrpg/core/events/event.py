@@ -3,7 +3,8 @@ from dtrpg.core.events.event_result import (
     EventResult, ResourceChangeEventResult, ItemReceivedEventResult,
     InfoEventResult, RemoveItemEventResult
 )
-from dtrpg.core.item import ContainerOverflowException, InsufficientItemsException
+from dtrpg.core.item.container import ContainerOverflowException
+from dtrpg.core.item.item import InsufficientItemsException
 from dtrpg.core.player import Player
 
 from typing import Mapping

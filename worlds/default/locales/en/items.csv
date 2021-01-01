@@ -1,3 +1,7 @@
 object,string,value
 item_fish,NAME,fish
 item_fish,REGEX_NAME,fish(es)?
+item_herbs,NAME,herbs
+item_herbs,REGEX_NAME,herb(s)?
+item_fishing_rod,NAME,fishing rod
+item_fishing_rod,REGEX_NAME,(fishing )?rod

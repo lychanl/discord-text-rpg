@@ -4,3 +4,6 @@ config,DUPLICATE_PLAYER,Your character already exists!
 config,INVALID_COMMAND,You can't do that... (Invalid command)
 config,INVALID_ARGUMENT,You can't do that with {value} (Invalid argument)
 config,INSUFFICIENT_RESOURCE,"You don't have enough {resource.strings['NAME']}, {required} needed."
+config,INSUFFICIENT_ITEMS,You don't have enough items to do that.
+config,OFFER_NOT_FOUND,Your offer was not accepted.
+config,CONTAINER_CAPACITY,You don't have enough space for these items.

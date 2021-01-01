@@ -1,5 +1,6 @@
 from dtrpg.core import Game, GameObject, InvalidPlayerError, DuplicatePlayerError
 from dtrpg.core.player import InsufficientResourceError, Resource
+from dtrpg.core.item import ContainerCapacityException, OfferNotFoundException, InsufficientItemsException
 
 import re
 
@@ -36,6 +37,12 @@ class TextIO:
             return self._game.config.strings['INVALID_PLAYER']
         except InsufficientResourceError as e:
             return self._insufficient_resource(e.resource, e.required)
+        except InsufficientItemsException:
+            return self._game.config.strings['INSUFFICIENT_ITEMS']
+        except OfferNotFoundException:
+            return self._game.config.strings['OFFER_NOT_FOUND']
+        except ContainerCapacityException:
+            return self._game.config.strings['CONTAINER_CAPACITY']
 
         return self._invalid_command()
 

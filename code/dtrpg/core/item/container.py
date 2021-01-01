@@ -9,6 +9,10 @@ class ContainerOverflowException(Exception):
         self.stack = stack
 
 
+class ContainerCapacityException(Exception):
+    pass
+
+
 class Container(GameObject):
     def __init__(self):
         super().__init__()
@@ -49,6 +53,9 @@ class Container(GameObject):
 
     def count(self, item: Item) -> int:
         return sum(stack.stack for stack in self._items if stack.item is item)
+
+    def can_add(self, item: Item, number: int) -> bool:
+        return -self.count(item) % item.max_stack + item.max_stack * (self.max_items - len(self._items)) >= number
 
     @property
     def items(self) -> Iterable[Item]:

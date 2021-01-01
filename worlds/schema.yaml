@@ -3,6 +3,18 @@ Location:
   travel_actions: [ TravelAction ]
   optional local_actions: [ Action ]
 
+Market:
+  _class: dtrpg.core.map.Market
+  _base: Location
+  required offers: [ TradeOffer ]
+
+TradeOffer:
+  _class: dtrpg.core.item.TradeOffer
+  optional buy_value: int
+  optional sell_value: int
+  required resource_id: str
+  required item: Item
+
 Action:
   _class: dtrpg.core.events.Action
   optional costs: [ ResourceCost ]
@@ -50,6 +62,39 @@ RemoveItemEvent:
   _base: Event
   optional item: Item
   optional number: int
+
+OffersInfoAction:
+  _class: dtrpg.core.events.OffersInfoAction
+  _base: Action
+
+OffersInfoEvent:
+  _class: dtrpg.core.events.OffersInfoEvent
+  _base: Event
+
+OffersInfoEventResult:
+  _class: dtrpg.core.events.OffersInfoEventResult
+
+BuyAction:
+  _class: dtrpg.core.events.BuyAction
+  _base: Action
+
+BuyEvent:
+  _class: dtrpg.core.events.BuyEvent
+  _base: Event
+
+BuyEventResult:
+  _class: dtrpg.core.events.BuyEventResult
+
+SellAction:
+  _class: dtrpg.core.events.SellAction
+  _base: Action
+
+SellEvent:
+  _class: dtrpg.core.events.SellEvent
+  _base: Event
+
+SellEventResult:
+  _class: dtrpg.core.events.SellEventResult
 
 PlayerFactory:
   _class: dtrpg.core.player.PlayerFactory

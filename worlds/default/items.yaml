@@ -1,2 +1,8 @@
 Item item_fish:
   max_stack: 10
+
+Item item_herbs:
+  max_stack: 20
+
+Item item_fishing_rod:
+  max_stack: 1
