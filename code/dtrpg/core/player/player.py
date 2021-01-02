@@ -11,6 +11,7 @@ class Player(GameObject):
         super().__init__()
         self.location = None
         self.resources = {}
+        self.skills = {}
         self.items = None
         self.base_actions = []
 
@@ -24,6 +25,7 @@ class PlayerFactory(GameObjectFactory):
         super().__init__(Player)
         self.default_location = None
         self.resource_factories = ()
+        self.skill_factories = ()
         self.container_factory = None
         self.base_actions = []
 
@@ -33,6 +35,9 @@ class PlayerFactory(GameObjectFactory):
         player.location = self.default_location
         player.resources = {
             f.resource: f.create() for f in self.resource_factories
+        }
+        player.skills = {
+            f.skill: f.create() for f in self.skill_factories
         }
         player.items = self.container_factory.create()
 

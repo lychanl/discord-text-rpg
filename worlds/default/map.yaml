@@ -25,6 +25,8 @@ Location loc_nothingthere_coast:
 Location loc_nothingthere_forest:
   travel_actions:
     - { to: loc_nothingthere_village }
+  local_actions:
+    - nothingthere_forest_herbs
 
 Action nothingthere_job:
   costs:
@@ -47,3 +49,24 @@ ItemReceiveEvent nothingthere_fish_event:
   item_factory:
     item: item_fish
     stack: 1
+
+Action nothingthere_forest_herbs:
+  costs:
+    - resource: action_points
+      cost: 1
+  event: nothingthere_forest_herbs_event
+
+SkillTestEvent nothingthere_forest_herbs_event:
+  success: nothingthere_forest_herbs_success
+  failure: nothingthere_forest_herbs_failure
+  test:
+    skill: herbalism
+    difficulty: 1
+    tester: default_tester
+
+ItemReceiveEvent nothingthere_forest_herbs_success:
+  item_factory:
+    item: item_herbs
+    stack: 1
+
+InfoEvent nothingthere_forest_herbs_failure: {}

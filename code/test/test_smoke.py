@@ -33,6 +33,7 @@ class TestSmoke(unittest.TestCase):
 
         clock = game.config.player_factory.resource_factories[0].clock
         action_points = io._get_object('action points', core.player.Resource)
+        default_tester = game.game_objects(core.Tester)[0]
 
         clock.now = mock.Mock()
         clock.now.return_value = object()
@@ -85,3 +86,20 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('buy rod'), r".*don't have enough gold*")
         self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
         self.assertRegex(io.test('buy rod'), r".*buy 1x fishing rod.*25*")
+
+        self.assertRegex(io.test('skills'), r".*Herbalism: 1.*")
+
+        self.assertRegex(io.test('travel forest'), r'.*travel.*forest.*')
+
+        default_tester.test = mock.Mock()
+        default_tester.test.return_value = True
+
+        self.assertRegex(io.test('herbs'), r'.*find some herbs.*get 1x herbs')
+        self.assertRegex(io.test('search for herbs'), r'.*find some herbs.*get 1x herbs')
+        self.assertRegex(io.test('skills'), r".*Herbalism: 1.*")
+
+        default_tester.test.return_value = False
+
+        self.assertRegex(io.test('herbs'), r'.*search.*but find nothing')
+        self.assertRegex(io.test('herbs'), r'.*search.*but find nothing')
+        self.assertRegex(io.test('skills'), r".*Herbalism: 2.*")

@@ -3,3 +3,5 @@ Config config:
 
 Clock clock:
   base: 3600
+
+ProportionalTester default_tester: {}

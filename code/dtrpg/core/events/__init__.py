@@ -5,3 +5,4 @@ from dtrpg.core.events.event import Event, InfoEvent, ResourceChangesEvent, Item
 from dtrpg.core.events.trade import (
     BuyAction, BuyEvent, SellAction, SellEvent, TradeEventResult, BuyEventResult, SellEventResult, OffersInfoAction, OffersInfoEvent, OffersInfoEventResult
 )
+from dtrpg.core.events.skill import SkillTestEvent

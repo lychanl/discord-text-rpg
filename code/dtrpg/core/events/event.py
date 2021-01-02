@@ -25,6 +25,13 @@ class Event(GameObjectFactory):
         raise NotImplementedError
 
 
+class ComplexEvent(Event):
+    def _get_subevent_params(self, subevent_id: str, params: Mapping[str, object]) -> Mapping[str, object]:
+        return {
+            key[(len(subevent_id) + 1):]: value for key, value in params.items() if key.startswith(f'{subevent_id}.')
+        }
+
+
 class InfoEvent(Event):
     def __init__(self):
         super().__init__(InfoEventResult)

@@ -7,8 +7,10 @@ loc_nothingthere_forest,NAME,"forest"
 nothingthere_job,REGEX,"((find |take |get )(a )?)?job"
 nothingthere_job,NAME,Find a job
 nothingthere_job_event,CAUSE_NOW,You got a job helping some fishermen.
-nothingthere_job_event,CAUSE_PAST,You got a job helping some fishermen.
 nothingthere_fish,REGEX,"fish(ing)?"
 nothingthere_fish,NAME,Fishing
 nothingthere_fish_event,CAUSE_NOW,You fish.
-nothingthere_fish_event,CAUSE_PAST,You fish.
+nothingthere_forest_herbs_success,CAUSE_NOW,You find some herbs.
+nothingthere_forest_herbs_failure,EVENT_NOW,You search for some time but find nothing.
+nothingthere_forest_herbs,REGEX,"((search |look )for )?herb(s)?"
+nothingthere_forest_herbs,NAME,Search for herbs

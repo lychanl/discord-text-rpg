@@ -3,11 +3,14 @@ PlayerFactory player_factory:
   resource_factories: 
     - action_points_factory
     - gold_factory
+  skill_factories:
+    - skill: herbalism
   container_factory: player_items
   base_actions:
     - me_action
     - here_action
     - items_action
+    - skills_action
     - drop_action
 
 Resource gold: {}
@@ -24,6 +27,10 @@ PlayerResourceFactory action_points_factory:
   base_gen_rate: 12
   clock: clock
 
+Skill herbalism:
+  progression: "10 * level**2"
+  experience_from_test: "4 * difficulty if success else difficulty"
+
 ContainerFactory player_items:
   max_items: 10
 
@@ -35,6 +42,9 @@ InfoEvent here_event: {}
 
 Action items_action: {event: items_event}
 InfoEvent items_event: {}
+
+Action skills_action: {event: skills_event }
+InfoEvent skills_event: {}
 
 Action drop_action:
   event: drop_event

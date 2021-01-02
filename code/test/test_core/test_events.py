@@ -1,4 +1,5 @@
 import unittest
+import unittest.mock as mock
 
 import dtrpg.core.events as events
 import dtrpg.core.item as item
@@ -116,3 +117,38 @@ class TestEvents(unittest.TestCase):
         self.assertRaises(player.InsufficientResourceError, lambda: a.take(p))
         self.assertEqual(p.resources[res1].value, 2)
         self.assertEqual(p.resources[res2].value, 3)
+
+    def test_skill_event(self) -> None:
+        s = player.Skill()
+        p = player.Player()
+        ps = player.PlayerSkill()
+        ps.skill = s
+        ps.value = 1
+        p.skills = {s: ps}
+
+        e = events.SkillTestEvent()
+        e.test = mock.Mock()
+
+        sret = object()
+        fret = object()
+
+        e.success = mock.Mock()
+        e.failure = mock.Mock()
+
+        e.test.test.return_value = True
+        e.success.fire.return_value = sret
+        e.failure.fire.return_value = fret
+
+        params = {'success.param': 4}
+
+        self.assertIs(e.fire(p, **params), sret)
+        e.success.fire.assert_called_once_with(p, param=4)
+        e.failure.assert_not_called()
+
+        e.test.test.return_value = False
+        e.success.reset_mock()
+        e.failure.reset_mock()
+
+        self.assertIs(e.fire(p, **params), fret)
+        e.success.assert_not_called()
+        e.failure.fire.assert_called_once_with(p)

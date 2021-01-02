@@ -1,5 +1,6 @@
 object,string,value
 player_factory,WELCOME,Welcome!
+herbalism,NAME,Herbalism
 gold,VALUE,{value} gold
 action_points_factory,VALUE,{value}/{self.max} action points
 gold,NAME,gold
@@ -22,3 +23,7 @@ drop_action,REGEX,drop (?P<number>\d+ )?(?P<item>.+)
 drop_event,SUCCESS,"You drop {self.number}x {self.item.strings['NAME']}"
 drop_event,FAIL,You don't have enough items to do that.
 drop_event,EVENT_NOW,{self.strings['FAIL'] if self.failed else self.strings['SUCCESS']}
+skills_action,REGEX,skills
+skills_event,SKILL,"{skill.skill.strings['NAME']}: {skill.value}"
+skills_event,EVENT_NOW,"Your skills:
+{'\n'.join([self.strings['SKILL', {'skill': skill}] for skill in self.player.skills.values() if skill.value > 0])}"

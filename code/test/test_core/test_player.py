@@ -120,3 +120,72 @@ class TestResource(unittest.TestCase):
         self.assertEqual(r.value, 12)
         r.value = 5
         self.assertEqual(r.value, 7)
+
+
+class TestSkill(unittest.TestCase):
+    def test_player_skill(self) -> None:
+        s1 = player.Skill()
+        f1 = player.PlayerSkillFactory()
+        f1.initial = 2
+        f1.skill = s1
+
+        s2 = player.Skill()
+        f2 = player.PlayerSkillFactory()
+        f2.initial = 4
+        f2.skill = s2
+
+        pf = player.PlayerFactory()
+        pf.skill_factories = [f1, f2]
+        pf.container_factory = mock.Mock()
+        pf.container_factory.create.return_value = None
+
+        p = pf.create()
+
+        self.assertEqual(p.skills[s1].value, 2)
+        self.assertEqual(p.skills[s1].skill, s1)
+        self.assertEqual(p.skills[s2].value, 4)
+        self.assertEqual(p.skills[s2].skill, s2)
+
+    def test_skill_experience(self) -> None:
+        s1 = player.Skill()
+        s1.experience_from_test = "difficulty if success else level"
+        s1.progression = "level**2"
+
+        f1 = player.PlayerSkillFactory()
+        f1.skill = s1
+
+        pf = player.PlayerFactory()
+        pf.skill_factories = [f1]
+        pf.container_factory = mock.Mock()
+        pf.container_factory.create.return_value = None
+
+        p = pf.create()
+
+        self.assertEqual(p.skills[s1]._experience, 0)
+        self.assertEqual(p.skills[s1].value, 1)
+
+        p.skills[s1].add_experience(1)
+
+        self.assertEqual(p.skills[s1]._experience, 1)
+        self.assertEqual(p.skills[s1].value, 2)
+
+        st = player.SkillTest()
+        st.skill = s1
+        st.difficulty = 3
+        st.tester = mock.Mock()
+
+        st.tester.test.return_value = False
+
+        self.assertFalse(st.test(p))
+        st.tester.test.assert_called_once_with(2, 3)
+
+        self.assertEqual(p.skills[s1]._experience, 3)
+        self.assertEqual(p.skills[s1].value, 2)
+
+        st.tester.test.return_value = True
+
+        self.assertTrue(st.test(p))
+        st.tester.test.assert_called_with(2, 3)
+
+        self.assertEqual(p.skills[s1]._experience, 6)
+        self.assertEqual(p.skills[s1].value, 3)

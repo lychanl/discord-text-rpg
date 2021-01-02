@@ -1,5 +1,5 @@
 from dtrpg.core import Game, GameObject, InvalidPlayerError, DuplicatePlayerError
-from dtrpg.core.player import InsufficientResourceError, Resource
+from dtrpg.core.player import InsufficientResourceError, PlayerResource
 from dtrpg.core.item import ContainerCapacityException, OfferNotFoundException, InsufficientItemsException
 
 import re

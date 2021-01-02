@@ -96,11 +96,19 @@ SellEvent:
 SellEventResult:
   _class: dtrpg.core.events.SellEventResult
 
+SkillTestEvent:
+  _class: dtrpg.core.events.SkillTestEvent
+  _base: Event
+  required success: Event
+  required failure: Event
+  required test: SkillTest
+
 PlayerFactory:
   _class: dtrpg.core.player.PlayerFactory
   required default_location: Location
   required container_factory: ContainerFactory
   optional resource_factories: [ PlayerResourceFactory ]
+  optional skill_factories: [ PlayerSkillFactory ]
   optional base_actions: [ Action ]
 
 Player:
@@ -129,6 +137,22 @@ PlayerResourceFactory:
   optional max: int
   optional base_gen_rate: float
   optional clock: Clock
+
+PlayerSkillFactory:
+  _class: dtrpg.core.player.PlayerSkillFactory
+  required skill: Skill
+  optional initial: int
+
+Skill:
+  _class: dtrpg.core.player.Skill
+  required progression: str
+  required experience_from_test: str
+
+SkillTest:
+  _class: dtrpg.core.player.SkillTest
+  required skill: Skill
+  required difficulty: int
+  required tester: Tester
 
 Resource:
   _class: dtrpg.core.player.Resource
