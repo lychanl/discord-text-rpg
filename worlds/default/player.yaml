@@ -10,11 +10,15 @@ PlayerFactory player_factory:
     - items_action
     - drop_action
 
-ResourceFactory gold_factory:
-  id: gold
+Resource gold: {}
 
-ResourceFactory action_points_factory:
-  id: action_points
+Resource action_points: {}
+
+PlayerResourceFactory gold_factory:
+  resource: gold
+
+PlayerResourceFactory action_points_factory:
+  resource: action_points
   initial: 60
   max: 60
   base_gen_rate: 12

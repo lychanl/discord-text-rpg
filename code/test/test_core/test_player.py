@@ -42,8 +42,9 @@ class TestPlayerFactory(unittest.TestCase):
 
     def test_player_factory_resources(self) -> None:
         factory = player.PlayerFactory()
-        rf = player.ResourceFactory()
-        rf.id = 'id'
+        rf = player.PlayerResourceFactory()
+        res = player.Resource()
+        rf.resource = res
         rf.initial = 1
 
         factory.resource_factories = [rf]
@@ -51,16 +52,19 @@ class TestPlayerFactory(unittest.TestCase):
 
         p = factory.create()
 
-        self.assertIn('id', p.resources)
-        self.assertEqual(p.resources['id'].value, 1)
+        self.assertIn(res, p.resources)
+        self.assertEqual(p.resources[res].value, 1)
+        self.assertIs(p.resources[res].resource, res)
 
 
 class TestResourceFactory(unittest.TestCase):
     def test_resource_factory(self) -> None:
-        factory = player.ResourceFactory()
+        factory = player.PlayerResourceFactory()
+        res = player.Resource()
         factory.initial = 1
         factory.max = 10
         factory.base_gen_rate = 0.5
+        factory.resource = res
         clock = mock.Mock()
         clock.configure_mock(**{'now.return_value': None, 'now_with_diff.return_value': (None, 5)})
         factory.clock = clock
@@ -70,12 +74,13 @@ class TestResourceFactory(unittest.TestCase):
         self.assertEqual(r.value, 1)
         self.assertEqual(r.max, 10)
         self.assertEqual(r.base_gen_rate, 0.5)
+        self.assertIs(r.resource, res)
         self.assertIs(r.clock, clock)
 
 
 class TestResource(unittest.TestCase):
     def test_resource_max(self) -> None:
-        r = player.Resource()
+        r = player.PlayerResource()
         r.max = 10
         r.value = 20
         self.assertEqual(r.value, 10)
@@ -88,7 +93,7 @@ class TestResource(unittest.TestCase):
         clock = mock.Mock()
         clock.configure_mock(**{'now.return_value': time, 'now_with_diff.return_value': (nexttime, 5)})
 
-        r = player.Resource()
+        r = player.PlayerResource()
         r.value = 10
         r.base_gen_rate = 0.5
         r.clock = clock
@@ -104,7 +109,7 @@ class TestResource(unittest.TestCase):
         clock = mock.Mock()
         clock.configure_mock(**{'now.return_value': time, 'now_with_diff.return_value': (nexttime, 5)})
 
-        r = player.Resource()
+        r = player.PlayerResource()
         r.value = 10
         r.max = 12
         r.base_gen_rate = 0.5

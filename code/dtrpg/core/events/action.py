@@ -19,7 +19,7 @@ class Action(GameObject):
     def take(self, player: 'Player', **args: Mapping[str, object]) -> EventResult:
         for cost in self.costs:
             if not cost.can_take(player):
-                raise InsufficientResourceError(player.resources[cost.id], cost.cost)
+                raise InsufficientResourceError(player.resources[cost.resource], cost.cost)
         for cost in self.costs:
             cost.apply(player)
 

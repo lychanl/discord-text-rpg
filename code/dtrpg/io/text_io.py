@@ -99,8 +99,11 @@ class TextIO:
     def _invalid_command(self) -> str:
         return self._game.config.strings['INVALID_COMMAND']
 
-    def _insufficient_resource(self, resource: 'Resource', required: int) -> str:
-        return self._game.config.strings['INSUFFICIENT_RESOURCE', {'resource': resource, 'required': required}]
+    def _insufficient_resource(self, resource: 'PlayerResource', required: int) -> str:
+        return self._game.config.strings[
+            'INSUFFICIENT_RESOURCE',
+            {'player_resource': resource, 'resource': resource.resource, 'required': required}
+        ]
 
     def run(self, *args: Any, **kwargs: Any) -> Any:
         raise NotImplementedError

@@ -124,160 +124,160 @@ class TestTrade(unittest.TestCase):
     def test_offer_buy(self) -> None:
         p = player.Player()
         o = item.TradeOffer()
-        r = player.Resource()
+        res = player.Resource()
+        r = player.PlayerResource()
         i = item.Item()
 
         i.max_stack = 10
-        rid = object()
         r.value = 10
-        r.id = rid
-        p.resources = {rid: r}
+        r.resource = res
+        p.resources = {res: r}
         p.items = item.Container()
         p.items.max_items = 10
-        o.resource_id = rid
+        o.resource = res
         o.buy_value = 3
         o.item = i
 
         o.buy(p, 2)
 
-        self.assertEqual(p.resources[rid].value, 4)
+        self.assertEqual(p.resources[res].value, 4)
         self.assertEqual(p.items.count(i), 2)
 
     def test_offer_buy_not_enough_cap(self) -> None:
         p = player.Player()
         o = item.TradeOffer()
-        r = player.Resource()
+        res = player.Resource()
+        r = player.PlayerResource()
         i = item.Item()
 
         i.max_stack = 1
-        rid = object()
         r.value = 10
-        r.id = rid
-        p.resources = {rid: r}
+        r.resource = res
+        p.resources = {res: r}
         p.items = item.Container()
         p.items.max_items = 1
-        o.resource_id = rid
+        o.resource = res
         o.buy_value = 3
         o.item = i
 
         self.assertRaises(item.ContainerCapacityException, lambda: o.buy(p, 2))
-        self.assertEqual(p.resources[rid].value, 10)
+        self.assertEqual(p.resources[res].value, 10)
         self.assertEqual(p.items.count(i), 0)
 
     def test_offer_buy_not_enough_resource(self) -> None:
         p = player.Player()
         o = item.TradeOffer()
-        r = player.Resource()
+        res = player.Resource()
+        r = player.PlayerResource()
         i = item.Item()
 
         i.max_stack = 1
-        rid = object()
         r.value = 10
-        r.id = rid
-        p.resources = {rid: r}
+        r.resource = res
+        p.resources = {res: r}
         p.items = item.Container()
         p.items.max_items = 1
-        o.resource_id = rid
+        o.resource = res
         o.buy_value = 3
         o.item = i
 
         self.assertRaises(player.InsufficientResourceError, lambda: o.buy(p, 5))
-        self.assertEqual(p.resources[rid].value, 10)
+        self.assertEqual(p.resources[res].value, 10)
         self.assertEqual(p.items.count(i), 0)
 
     def test_offer_buy_no_value(self) -> None:
         p = player.Player()
         o = item.TradeOffer()
-        r = player.Resource()
+        res = player.Resource()
+        r = player.PlayerResource()
         i = item.Item()
 
         i.max_stack = 1
-        rid = object()
         r.value = 10
-        r.id = rid
-        p.resources = {rid: r}
+        r.resource = res
+        p.resources = {res: r}
         p.items = item.Container()
         p.items.max_items = 1
-        o.resource_id = rid
+        o.resource = res
         o.item = i
 
         self.assertRaises(item.OfferNotFoundException, lambda: o.buy(p, 2))
-        self.assertEqual(p.resources[rid].value, 10)
+        self.assertEqual(p.resources[res].value, 10)
         self.assertEqual(p.items.count(i), 0)
 
     def test_offer_sell(self) -> None:
         p = player.Player()
         o = item.TradeOffer()
-        r = player.Resource()
+        res = player.Resource()
+        r = player.PlayerResource()
         i = item.Item()
         s = item.ItemStack()
 
         s.item = i
         s.stack = 4
         i.max_stack = 10
-        rid = object()
         r.value = 10
-        r.id = rid
-        p.resources = {rid: r}
+        r.resource = res
+        p.resources = {res: r}
         p.items = item.Container()
         p.items.max_items = 10
         p.items.add(s)
-        o.resource_id = rid
+        o.resource = res
         o.sell_value = 3
         o.item = i
 
         o.sell(p, 2)
 
-        self.assertEqual(p.resources[rid].value, 16)
+        self.assertEqual(p.resources[res].value, 16)
         self.assertEqual(p.items.count(i), 2)
 
     def test_offer_sell_not_enough_items(self) -> None:
         p = player.Player()
         o = item.TradeOffer()
-        r = player.Resource()
+        res = player.Resource()
+        r = player.PlayerResource()
         i = item.Item()
         s = item.ItemStack()
 
         s.item = i
         s.stack = 4
         i.max_stack = 10
-        rid = object()
         r.value = 10
-        r.id = rid
-        p.resources = {rid: r}
+        r.resource = res
+        p.resources = {res: r}
         p.items = item.Container()
         p.items.max_items = 10
         p.items.add(s)
-        o.resource_id = rid
+        o.resource = res
         o.sell_value = 3
         o.item = i
 
         self.assertRaises(item.InsufficientItemsException, lambda: o.sell(p, 5))
 
-        self.assertEqual(p.resources[rid].value, 10)
+        self.assertEqual(p.resources[res].value, 10)
         self.assertEqual(p.items.count(i), 4)
 
     def test_offer_sell_no_value(self) -> None:
         p = player.Player()
         o = item.TradeOffer()
-        r = player.Resource()
+        res = player.Resource()
+        r = player.PlayerResource()
         i = item.Item()
         s = item.ItemStack()
 
         s.item = i
         s.stack = 4
         i.max_stack = 10
-        rid = object()
         r.value = 10
-        r.id = rid
-        p.resources = {rid: r}
+        r.resource = res
+        p.resources = {res: r}
         p.items = item.Container()
         p.items.max_items = 10
         p.items.add(s)
-        o.resource_id = rid
+        o.resource_id = res
         o.item = i
 
         self.assertRaises(item.OfferNotFoundException, lambda: o.sell(p, 2))
 
-        self.assertEqual(p.resources[rid].value, 10)
+        self.assertEqual(p.resources[res].value, 10)
         self.assertEqual(p.items.count(i), 4)

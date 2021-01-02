@@ -12,7 +12,7 @@ TradeOffer:
   _class: dtrpg.core.item.TradeOffer
   optional buy_value: int
   optional sell_value: int
-  required resource_id: str
+  required resource: Resource
   required item: Item
 
 Action:
@@ -100,7 +100,7 @@ PlayerFactory:
   _class: dtrpg.core.player.PlayerFactory
   required default_location: Location
   required container_factory: ContainerFactory
-  optional resource_factories: [ ResourceFactory ]
+  optional resource_factories: [ PlayerResourceFactory ]
   optional base_actions: [ Action ]
 
 Player:
@@ -122,9 +122,9 @@ ItemStackFactory:
   required item: Item
   optional stack: int
 
-ResourceFactory:
-  _class: dtrpg.core.player.ResourceFactory
-  required id: str
+PlayerResourceFactory:
+  _class: dtrpg.core.player.PlayerResourceFactory
+  required resource: Resource
   optional initial: int
   optional max: int
   optional base_gen_rate: float
@@ -133,14 +133,17 @@ ResourceFactory:
 Resource:
   _class: dtrpg.core.player.Resource
 
+PlayerResource:
+  _class: dtrpg.core.player.PlayerResource
+
 ResourceChange:
   _class: dtrpg.core.player.ResourceChange
-  required id: str
+  required resource: Resource
   required value: int
 
 ResourceCost:
   _class: dtrpg.core.player.ResourceCost
-  required id: str
+  required resource: Resource
   required cost: int
 
 Config:

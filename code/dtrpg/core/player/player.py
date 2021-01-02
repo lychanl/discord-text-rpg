@@ -32,7 +32,7 @@ class PlayerFactory(GameObjectFactory):
 
         player.location = self.default_location
         player.resources = {
-            f.id: f.create() for f in self.resource_factories
+            f.resource: f.create() for f in self.resource_factories
         }
         player.items = self.container_factory.create()
 

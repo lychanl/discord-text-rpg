@@ -46,7 +46,7 @@ class ResourceChangesEvent(Event):
         changes = {}
         for change in params['resource_changes']:
             diff = change.apply(player)
-            changes[player.resources[change.id]] = diff
+            changes[change.resource] = diff
         event.resource_changes = changes
 
         return event

@@ -15,6 +15,10 @@ class InsufficientResourceError(Exception):
 
 
 class Resource(GameObject):
+    pass
+
+
+class PlayerResource(GameObject):
     def __init__(self):
         super().__init__()
         self._value = 0
@@ -85,63 +89,24 @@ class Resource(GameObject):
                 self._accumulated = 0
 
 
-class ResourceFactory(GameObjectFactory):
+class PlayerResourceFactory(GameObjectFactory):
     def __init__(self):
-        super().__init__(Resource)
-        self._id = None
-        self._initial = 0
-        self._max = None
+        super().__init__(PlayerResource)
+        self.resource = None
+        self.initial = 0
+        self.max = None
 
-        self._base_gen_rate = None
-        self._clock = None
-
-    @property
-    def id(self) -> str:
-        return self._id
-
-    @id.setter
-    def id(self, id: str) -> None:
-        self._id = id
-
-    @property
-    def initial(self) -> int:
-        return self._initial
-
-    @initial.setter
-    def initial(self, initial: int) -> None:
-        self._initial = initial
-
-    @property
-    def max(self) -> int:
-        return self._max
-
-    @max.setter
-    def max(self, m: int) -> None:
-        self._max = m
-
-    @property
-    def base_gen_rate(self) -> int:
-        return self._base_gen_rate
-
-    @base_gen_rate.setter
-    def base_gen_rate(self, rate: float) -> None:
-        self._base_gen_rate = rate
-
-    @property
-    def clock(self) -> 'Clock':
-        return self._clock
-
-    @clock.setter
-    def clock(self, clock: 'Clock') -> None:
-        self._clock = clock
+        self.base_gen_rate = None
+        self.clock = None
 
     def create(self) -> Resource:
         resource = self._create()
-        resource.value = self._initial
-        resource.max = self._max
+        resource.value = self.initial
+        resource.max = self.max
+        resource.resource = self.resource
 
-        resource.base_gen_rate = self._base_gen_rate
-        resource.clock = self._clock
+        resource.base_gen_rate = self.base_gen_rate
+        resource.clock = self.clock
 
         return resource
 
@@ -149,28 +114,12 @@ class ResourceFactory(GameObjectFactory):
 class ResourceChange(GameObject):
     def __init__(self):
         super().__init__()
-        self._id = None
-        self._value = None
-
-    @property
-    def id(self) -> str:
-        return self._id
-
-    @id.setter
-    def id(self, id: str) -> None:
-        self._id = id
-
-    @property
-    def value(self) -> int:
-        return self._value
-
-    @value.setter
-    def value(self, value: int) -> None:
-        self._value = value
+        self.resource = None
+        self.value = None
 
     def apply(self, player: 'Player') -> int:
-        player.resources[self.id].value = player.resources[self.id].value + self._value
-        return self._value
+        player.resources[self.resource].value = player.resources[self.resource].value + self.value
+        return self.value
 
 
 class ResourceCost(ResourceChange):
@@ -183,9 +132,9 @@ class ResourceCost(ResourceChange):
         self.value = -cost
 
     def can_take(self, player: 'Player') -> bool:
-        return player.resources[self.id].value >= self.cost
+        return player.resources[self.resource].value >= self.cost
 
     def apply(self, player: 'Player') -> None:
         if not self.can_take(player):
-            raise InsufficientResourceError(player.resources[self.id], self.cost)
+            raise InsufficientResourceError(player.resources[self.resource], self.cost)
         super().apply(player)

@@ -54,7 +54,7 @@ class TradeEvent(OffersEvent):
 
         result.value = self._make_trade(player, offer, number)
 
-        result.resource = player.resources[offer.resource_id]
+        result.resource = offer.resource
         result.number = number
         result.item = item
 

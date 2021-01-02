@@ -1,14 +1,14 @@
 Market loc_nothingthere_village:
   offers:
     - item: item_fish
-      resource_id: gold
+      resource: gold
       buy_value: 15
       sell_value: 6
     - item: item_herbs
-      resource_id: gold
+      resource: gold
       sell_value: 8
     - item: item_fishing_rod
-      resource_id: gold
+      resource: gold
       buy_value: 25
   travel_actions:
     - { to: loc_nothingthere_coast }
@@ -28,18 +28,18 @@ Location loc_nothingthere_forest:
 
 Action nothingthere_job:
   costs:
-    - id: action_points
+    - resource: action_points
       cost: 1
   event: nothingthere_job_event
 
 ResourceChangesEvent nothingthere_job_event:
   resource_changes:
-    - id: gold
+    - resource: gold
       value: 5
 
 Action nothingthere_fish:
   costs:
-    - id: action_points
+    - resource: action_points
       cost: 1
   event: nothingthere_fish_event
 

@@ -6,7 +6,8 @@ Market,REGEX_NAME,{self.strings['NAME']}
 TravelAction,REGEX,Travel( to)? {self.to.strings['REGEX_NAME']}
 TravelAction,NAME,Travel to {self.to.strings['NAME']}
 TravelEventResult,EVENT_NOW,You travel to {self.to.strings['NAME']}.
-Resource,YOU_HAVE,"You have {self.strings['VALUE', {'value': self.value}]}"
+PlayerResource,YOU_HAVE,"You have {self.strings['VALUE', {'value': self.value}]}"
+PlayerResource,VALUE,"{self.resource.strings['VALUE', {'value': self.value}]}"
 ResourceChangeEventResult,EVENT_NOW,"{self.strings['CAUSE_NOW']} {' '.join(['You get ' + r.strings['VALUE', {'value': v}] + '.' for r, v in self.resource_changes.items()])}"
 ItemReceivedEventResult,EVENT_NOW,"{self.strings['CAUSE_NOW']} You get {self.number}x {self.item.strings['NAME']}.{'You dropped ' + str(self.overflow.stack.number) + ' because you have no more space.' if self.overflow else ''}"
 Container,USAGE,{len(self.items)}/{self.max_items}

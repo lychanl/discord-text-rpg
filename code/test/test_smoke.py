@@ -1,6 +1,7 @@
 import unittest
 from unittest import mock
 
+from dtrpg import core
 from dtrpg.io.text_io import TextIO
 from main import prepare_game
 
@@ -31,6 +32,7 @@ class TestSmoke(unittest.TestCase):
         io = TestIO(game)
 
         clock = game.config.player_factory.resource_factories[0].clock
+        action_points = io._get_object('action points', core.player.Resource)
 
         clock.now = mock.Mock()
         clock.now.return_value = object()
@@ -59,7 +61,7 @@ class TestSmoke(unittest.TestCase):
 
         clock.now_with_diff.return_value = object(), 0
 
-        game.player(TestIO.TEST_PLAYER).resources['action_points'].value = 0
+        game.player(TestIO.TEST_PLAYER).resources[action_points].value = 0
 
         self.assertRegex(io.test('me'), r'.*have 0/60 action points.*')
         self.assertRegex(io.test('find a job'), r'.*don.*have.*action points.*1 needed.*')
@@ -72,7 +74,7 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('see offers'), r".*fish.*sell 6.*buy 15.*herbs.*sell 8.*fishing rod.*buy 25.*")
         self.assertRegex(io.test('travel coast'), r'.*travel.*coast.*')
 
-        game.player(TestIO.TEST_PLAYER).resources['action_points'].value = 10
+        game.player(TestIO.TEST_PLAYER).resources[action_points].value = 10
 
         self.assertRegex(io.test('fish'), r'.*fish.* get 1x fish.*')
         self.assertRegex(io.test('fish'), r'.*fish.* get 1x fish.*')

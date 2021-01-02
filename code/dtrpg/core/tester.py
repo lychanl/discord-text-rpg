@@ -17,6 +17,10 @@ class RandomTester(Tester):
 
 class ProportionalTester(RandomTester):
     def _prob(self, value: int, difficulty: int) -> bool:
+        if value == 0:
+            return 0
+        if difficulty == 0:
+            return 1
         return 0.5 * (value / difficulty if value < difficulty else 2 - difficulty / value)
 
 
@@ -28,7 +32,7 @@ class DifferentialTester(RandomTester):
         self.perc_limit = 5
 
     def _prob(self, value: int, difficulty: int) -> bool:
-        base = 1 - (difficulty - value) / self.const
+        base = 0.5 - (difficulty - value) / self.const
         return max(min(base, 1 - self.perc_limit / 100), self.perc_limit / 100)
 
 

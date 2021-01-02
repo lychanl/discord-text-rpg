@@ -14,14 +14,14 @@ class TradeOffer(GameObject):
 
         self.buy_value = None
         self.sell_value = None
-        self.resource_id = None
+        self.resource = None
         self.item = None
 
     def check_buy(self, player: Player, number: int) -> None:
         if not self.buy_value:
             raise OfferNotFoundException
-        if player.resources[self.resource_id].value < number * self.buy_value:
-            raise InsufficientResourceError(player.resources[self.resource_id], number * self.buy_value)
+        if player.resources[self.resource].value < number * self.buy_value:
+            raise InsufficientResourceError(player.resources[self.resource], number * self.buy_value)
         if not player.items.can_add(self.item, number):
             raise ContainerCapacityException
 
@@ -34,7 +34,7 @@ class TradeOffer(GameObject):
     def buy(self, player: Player, number: int) -> None:
         self.check_buy(player, number)
 
-        player.resources[self.resource_id].value -= number * self.buy_value
+        player.resources[self.resource].value -= number * self.buy_value
         stack = ItemStack()
         stack.item = self.item
         stack.stack = number
@@ -43,5 +43,5 @@ class TradeOffer(GameObject):
     def sell(self, player: Player, number: int) -> None:
         self.check_sell(player, number)
 
-        player.resources[self.resource_id].value += number * self.sell_value
+        player.resources[self.resource].value += number * self.sell_value
         player.items.remove(self.item, number)

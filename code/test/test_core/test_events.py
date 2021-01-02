@@ -8,27 +8,33 @@ import dtrpg.core.player as player
 class TestEvents(unittest.TestCase):
     def test_resource_change_event(self) -> None:
         a = events.ResourceChangesEvent()
+
+        res1 = player.Resource()
+        res2 = player.Resource()
+
         rc1 = player.ResourceChange()
-        rc1.id = 'r1'
+        rc1.resource = res1
         rc1.value = -1
         rc2 = player.ResourceChange()
-        rc2.id = 'r2'
+        rc2.resource = res2
         rc2.value = 4
         a.resource_changes = [rc1, rc2]
 
         p = player.Player()
-        r1 = player.Resource()
+        r1 = player.PlayerResource()
+        r1.resource = res1
         r1.value = 2
-        r2 = player.Resource()
+        r2 = player.PlayerResource()
+        r2.resource = res2
         r2.value = 3
-        p.resources = {'r1': r1, 'r2': r2}
+        p.resources = {res1: r1, res2: r2}
 
         e = a.fire(p)
 
-        self.assertEqual(p.resources['r1'].value, 1)
-        self.assertEqual(p.resources['r2'].value, 7)
-        self.assertEqual(e.resource_changes[r1], -1)
-        self.assertEqual(e.resource_changes[r2], 4)
+        self.assertEqual(p.resources[res1].value, 1)
+        self.assertEqual(p.resources[res2].value, 7)
+        self.assertEqual(e.resource_changes[res1], -1)
+        self.assertEqual(e.resource_changes[res2], 4)
 
     def test_item_receive_event(self) -> None:
         a = events.ItemReceiveEvent()
@@ -57,48 +63,56 @@ class TestEvents(unittest.TestCase):
 
     def test_action_cost(self) -> None:
         a = events.Action()
+
+        res1 = player.Resource()
+        res2 = player.Resource()
+
         rc1 = player.ResourceCost()
-        rc1.id = 'r1'
+        rc1.resource = res1
         rc1.cost = 1
         rc2 = player.ResourceCost()
-        rc2.id = 'r2'
+        rc2.resource = res2
         rc2.cost = 4
         a.costs = [rc1, rc2]
         a.event = events.InfoEvent()
 
         p = player.Player()
-        r1 = player.Resource()
+        r1 = player.PlayerResource()
         r1.value = 2
-        r2 = player.Resource()
+        r2 = player.PlayerResource()
         r2.value = 4
-        p.resources = {'r1': r1, 'r2': r2}
+        p.resources = {res1: r1, res2: r2}
 
         self.assertTrue(a.check_requirements(p))
 
         a.take(p)
 
-        self.assertEqual(p.resources['r1'].value, 1)
-        self.assertEqual(p.resources['r2'].value, 0)
+        self.assertEqual(p.resources[res1].value, 1)
+        self.assertEqual(p.resources[res2].value, 0)
 
     def test_action_cost_insufficient(self) -> None:
         a = events.Action()
+
+        res1 = player.Resource()
+        res2 = player.Resource()
+
         rc1 = player.ResourceCost()
-        rc1.id = 'r1'
+        rc1.resource = res1
         rc1.cost = 1
         rc2 = player.ResourceCost()
-        rc2.id = 'r2'
+        rc2.resource = res2
         rc2.cost = 4
         a.costs = [rc1, rc2]
         a.event = events.InfoEvent()
 
         p = player.Player()
-        r1 = player.Resource()
+        r1 = player.PlayerResource()
         r1.value = 2
-        r2 = player.Resource()
+        r2 = player.PlayerResource()
         r2.value = 3
-        p.resources = {'r1': r1, 'r2': r2}
+        p.resources = {res1: r1, res2: r2}
 
         self.assertFalse(a.check_requirements(p))
         self.assertRaises(player.InsufficientResourceError, lambda: a.take(p))
-        self.assertEqual(p.resources['r1'].value, 2)
-        self.assertEqual(p.resources['r2'].value, 3)
+        self.assertEqual(p.resources[res1].value, 2)
+        self.assertEqual(p.resources[res2].value, 3)
