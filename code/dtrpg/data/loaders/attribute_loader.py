@@ -13,7 +13,7 @@ class AmbigousTypeError(Exception):
 
 class AttributeLoader(Loader):
     def _load_single(self, objects_dict: dict, values: dict, default_loader: 'TypeLoader') -> object:
-        if default_loader and default_loader.class_ in (str, type) or not isinstance(values, str):
+        if default_loader and default_loader.can_load_str or not isinstance(values, str):
             obj = default_loader.load(None, objects_dict, values)
             if default_loader and not isinstance(obj, default_loader.class_):
                 raise TypeError

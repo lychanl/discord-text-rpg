@@ -27,6 +27,7 @@ Location loc_nothingthere_forest:
     - { to: loc_nothingthere_village }
   local_actions:
     - nothingthere_forest_herbs
+    - nothingthere_rat_hunt
 
 Action nothingthere_job:
   costs:
@@ -70,3 +71,15 @@ ItemReceiveEvent nothingthere_forest_herbs_success:
     stack: 1
 
 InfoEvent nothingthere_forest_herbs_failure: {}
+
+Action nothingthere_rat_hunt:
+  costs:
+    - resource: action_points
+      cost: 1
+  event: rat_hunting_event
+
+FightEvent rat_hunting_event:
+  enemy_factories:
+    - forest_rat_factory
+  fight_engine: fight_engine
+  victory: forest_rat_fur_event

@@ -3,8 +3,12 @@ PlayerFactory player_factory:
   resource_factories: 
     - action_points_factory
     - gold_factory
+    - health_factory
   skill_factories:
     - skill: herbalism
+    - skill: melee_fighting
+    - skill: evasion
+    - skill: speed
   container_factory: player_items
   base_actions:
     - me_action
@@ -13,22 +17,46 @@ PlayerFactory player_factory:
     - skills_action
     - drop_action
 
+  tactic: melee_berserk
+  default_attack: default_player_attack
+
 Resource gold: {}
 
 Resource action_points: {}
 
-PlayerResourceFactory gold_factory:
+Resource health: {}
+
+CreatureResourceFactory gold_factory:
   resource: gold
 
-PlayerResourceFactory action_points_factory:
+CreatureResourceFactory action_points_factory:
   resource: action_points
   initial: 60
   max: 60
   base_gen_rate: 12
   clock: clock
 
+CreatureResourceFactory health_factory:
+  resource: health
+  initial: 10
+  max: 10
+  base_gen_rate: 10
+  clock: clock
+
 Skill herbalism:
   progression: "10 * level**2"
+  experience_from_test: "4 * difficulty if success else difficulty"
+
+Skill melee_fighting:
+  progression: "10 * level**2"
+  experience_from_test: "4 * difficulty if success else difficulty"
+
+Skill evasion:
+  progression: "20 * level**2"
+  experience_from_test: "4 * difficulty if success else difficulty"
+
+Skill speed:
+  progression: "100 * level**2"
   experience_from_test: "4 * difficulty if success else difficulty"
 
 ContainerFactory player_items:
@@ -53,3 +81,16 @@ Action drop_action:
     item: Item
 
 RemoveItemEvent drop_event: {}
+
+Attack default_player_attack:
+  hit_skill: melee_fighting
+  evasion_skill: evasion
+  tester: default_tester
+  on_hit: default_player_attack_damage
+
+Damage default_player_attack_damage:
+  damage_tests_number: 1
+  damage_test_mod: 1
+  damage_per_hit: 1
+  damaged_resource: health
+  tester: default_tester

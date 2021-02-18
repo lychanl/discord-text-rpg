@@ -32,7 +32,7 @@ class TestSmoke(unittest.TestCase):
         io = TestIO(game)
 
         clock = game.config.player_factory.resource_factories[0].clock
-        action_points = io._get_object('action points', core.player.Resource)
+        action_points = io._get_object('action points', core.creature.Resource)
         default_tester = game.game_objects(core.Tester)[0]
 
         clock.now = mock.Mock()

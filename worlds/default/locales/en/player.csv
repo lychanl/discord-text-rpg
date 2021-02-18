@@ -1,10 +1,15 @@
 object,string,value
 player_factory,WELCOME,Welcome!
 herbalism,NAME,Herbalism
+melee_fighting,NAME,Melee fighting
+evasion,NAME,Evasion
+speed,NAME,Speed
 gold,VALUE,{value} gold
 action_points_factory,VALUE,{value}/{self.max} action points
 gold,NAME,gold
 action_points,NAME,action points
+health,NAME,health points
+health_factory,VALUE,{value}/{self.max} health
 here_action,REGEX,here
 here_event,EVENT_NOW,"{self.player.location.strings['YOU_ARE_HERE']}
 

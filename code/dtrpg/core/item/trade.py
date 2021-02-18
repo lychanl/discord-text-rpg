@@ -1,7 +1,7 @@
 from dtrpg.core.game_object import GameObject
 from dtrpg.core.item.item import InsufficientItemsException, ItemStack
 from dtrpg.core.item.container import ContainerCapacityException
-from dtrpg.core.player import Player, InsufficientResourceError
+from dtrpg.core.creature import Player, InsufficientResourceError
 
 
 class OfferNotFoundException(Exception):

@@ -34,12 +34,12 @@ ResourceChangeEventResult:
   _class: dtrpg.core.events.ResourceChangeEventResult
 
 ItemReceiveEvent:
-  _class: dtrpg.core.events.ItemReceiveEvent
+  _class: dtrpg.core.item.ItemReceiveEvent
   _base: Event
   required item_factory: ItemStackFactory
 
 ItemReceivedEventResult:
-  _class: dtrpg.core.events.ItemReceivedEventResult
+  _class: dtrpg.core.item.ItemReceivedEventResult
 
 TravelAction:
   _class: dtrpg.core.map.TravelAction
@@ -58,7 +58,7 @@ InfoEvent:
   _base: Event
 
 RemoveItemEvent:
-  _class: dtrpg.core.events.RemoveItemEvent
+  _class: dtrpg.core.item.RemoveItemEvent
   _base: Event
   optional item: Item
   optional number: int
@@ -104,15 +104,26 @@ SkillTestEvent:
   required test: SkillTest
 
 PlayerFactory:
-  _class: dtrpg.core.player.PlayerFactory
+  _class: dtrpg.core.creature.PlayerFactory
   required default_location: Location
   required container_factory: ContainerFactory
-  optional resource_factories: [ PlayerResourceFactory ]
-  optional skill_factories: [ PlayerSkillFactory ]
+  optional resource_factories: [ CreatureResourceFactory ]
+  optional skill_factories: [ CreatureSkillFactory ]
   optional base_actions: [ Action ]
+  optional base_armor: int
+  required tactic: Tactic
+  required default_attack: Attack
+
+NPCFighterFactory:
+  _class: dtrpg.core.creature.NPCFighterFactory
+  optional resource_factories: [ CreatureResourceFactory ]
+  optional skill_factories: [ CreatureSkillFactory ]
+  required tactic: Tactic
+  required armor: int
+  required attack: Attack
 
 Player:
-  _class: dtrpg.core.player.Player
+  _class: dtrpg.core.creature.Player
 
 Container:
   _class: dtrpg.core.item.Container
@@ -130,43 +141,43 @@ ItemStackFactory:
   required item: Item
   optional stack: int
 
-PlayerResourceFactory:
-  _class: dtrpg.core.player.PlayerResourceFactory
+CreatureResourceFactory:
+  _class: dtrpg.core.creature.CreatureResourceFactory
   required resource: Resource
   optional initial: int
   optional max: int
   optional base_gen_rate: float
   optional clock: Clock
 
-PlayerSkillFactory:
-  _class: dtrpg.core.player.PlayerSkillFactory
+CreatureSkillFactory:
+  _class: dtrpg.core.creature.CreatureSkillFactory
   required skill: Skill
   optional initial: int
 
 Skill:
-  _class: dtrpg.core.player.Skill
+  _class: dtrpg.core.creature.Skill
   required progression: str
   required experience_from_test: str
 
 SkillTest:
-  _class: dtrpg.core.player.SkillTest
+  _class: dtrpg.core.creature.SkillTest
   required skill: Skill
   required difficulty: int
   required tester: Tester
 
 Resource:
-  _class: dtrpg.core.player.Resource
+  _class: dtrpg.core.creature.Resource
 
-PlayerResource:
-  _class: dtrpg.core.player.PlayerResource
+CreatureResource:
+  _class: dtrpg.core.creature.CreatureResource
 
 ResourceChange:
-  _class: dtrpg.core.player.ResourceChange
+  _class: dtrpg.core.creature.ResourceChange
   required resource: Resource
   required value: int
 
 ResourceCost:
-  _class: dtrpg.core.player.ResourceCost
+  _class: dtrpg.core.creature.ResourceCost
   required resource: Resource
   required cost: int
 
@@ -196,3 +207,80 @@ DifferentialTester:
 ThresholdTester:
   _class: dtrpg.core.ThresholdTester
   _base: Tester
+
+FightEngine:
+  _class: dtrpg.core.fighting.FightEngine
+  required health: Resource
+  optional health_low_threshold: float
+  required speed_skill: Skill
+  required move_tester: Tester
+  optional time_limit: int
+
+Tactic:
+  _class: dtrpg.core.fighting.Tactic
+  optional move_predicates: [ MovePredicate ]
+  optional action_predicates: [ ActionPredicate ]
+
+MovePredicate:
+  _class: dtrpg.core.fighting.TacticPredicate
+  optional conditions: [ TacticCondition ]
+  required result: MoveDestination
+
+ActionPredicate:
+  _class: dtrpg.core.fighting.TacticPredicate
+  optional conditions: [ TacticCondition ]
+  required result: FightAction
+
+FightAction:
+  _class: dtrpg.core.fighting.FightActions
+  _enum: True
+
+TacticCondition:
+  _class: dtrpg.core.fighting.TacticCondition
+  required quantifier: TacticQuantifier
+  required condition: StatusFlag
+
+TacticQuantifier:
+  _class: dtrpg.core.fighting.TacticQuantifier
+  _enum: True
+
+StatusFlag:
+  _class: dtrpg.core.fighting.StatusFlag
+  _enum: True
+
+MoveDestination:
+  _class: dtrpg.core.fighting.MoveDestination
+  _enum: True
+
+Attack:
+  _class: dtrpg.core.fighting.Attack
+  optional ranged: bool
+  optional attacks_number: int
+  required hit_skill: Skill
+  required evasion_skill: Skill
+  optional hit_skill_modifier: int
+  optional evasion_skill_modifier: int
+  required tester: Tester
+  optional on_hit: Event
+  optional on_miss: Event
+
+Damage:
+  _class: dtrpg.core.fighting.Damage
+  _base: Event
+  optional damage_tests_number: int
+  required damage_test_mod: int
+  required damage_per_hit: int
+  required damaged_resource: Resource
+  required tester: Tester
+
+FightEvent:
+  _base: Event
+  _class: dtrpg.core.fighting.FightEvent
+  optional victory: Event
+  optional defeat: Event
+  optional draw: Event
+  required enemy_factories: [ NPCFighterFactory ]
+  required fight_engine: FightEngine
+
+FightEventResult:
+  _class: dtrpg.core.fighting.FightEventResult

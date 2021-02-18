@@ -1,4 +1,8 @@
 class Loader:
+    @property
+    def can_load_str(self) -> bool:
+        return False
+
     def preload(self) -> object:
         raise NotImplementedError
 
@@ -12,6 +16,10 @@ class BuiltInLoader(Loader):
         self._class = class_
 
     @property
+    def can_load_str(self) -> bool:
+        return True
+
+    @property
     def class_(self) -> type:
         return self._class
 
@@ -23,6 +31,10 @@ class TypenameLoader(Loader):
     def __init__(self, types_dict: dict):
         super(TypenameLoader, self).__init__()
         self._types_dict = types_dict
+
+    @property
+    def can_load_str(self) -> bool:
+        return True
 
     @property
     def class_(self) -> type:

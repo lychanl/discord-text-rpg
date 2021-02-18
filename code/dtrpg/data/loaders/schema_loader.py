@@ -44,7 +44,8 @@ class SchemaLoader:
         loaders = {
             'str': BuiltInLoader(str),
             'int': BuiltInLoader(int),
-            'float': BuiltInLoader(float)
+            'float': BuiltInLoader(float),
+            'bool': BuiltInLoader(bool)
         }
         loaders['type'] = TypenameLoader(loaders)
 
@@ -81,6 +82,8 @@ class SchemaLoader:
             obj.abstract = bool(value)
         elif name == '_base':
             obj.base = self._type_loaders[value]
+        elif name == '_enum':
+            obj.enum = bool(value)
         else:
             raise SchemaError('Invalid special element')
 

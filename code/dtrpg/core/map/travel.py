@@ -3,7 +3,7 @@ from dtrpg.core.events import Action, EventResult, Event
 from typing import Mapping, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from dtrpg.core.player import Player
+    from dtrpg.core.creature import Player
     from dtrpg.core.map.location import Location
 
 

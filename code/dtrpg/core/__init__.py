@@ -1,8 +1,9 @@
 # flake8: noqa: F401
 import dtrpg.core.events as events
+import dtrpg.core.fighting as fighting
 import dtrpg.core.item as item
 import dtrpg.core.map as map
-import dtrpg.core.player as player
+import dtrpg.core.creature as creature
 
 from dtrpg.core.clock import Clock
 from dtrpg.core.config import Config

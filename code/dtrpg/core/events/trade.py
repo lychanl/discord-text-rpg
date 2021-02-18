@@ -2,7 +2,7 @@ from dtrpg.core.events.action import Action
 from dtrpg.core.events.event import Event
 from dtrpg.core.events.event_result import EventResult
 from dtrpg.core.item import Item, TradeOffer, OfferNotFoundException
-from dtrpg.core.player import Player
+from dtrpg.core.creature import Player
 
 
 from typing import Mapping

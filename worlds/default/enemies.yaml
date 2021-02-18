@@ -1,0 +1,35 @@
+NPCFighterFactory forest_rat_factory:
+  resource_factories: 
+    - resource: health
+      max: 3
+      initial: 3
+
+  skill_factories: 
+    - skill: melee_fighting
+      initial: 1
+    - skill: evasion
+      initial: 2
+    - skill: speed
+      initial: 2
+
+  tactic: melee_berserk
+  armor: 1
+  attack: forest_rat_attack
+
+ItemReceiveEvent forest_rat_fur_event:
+  item_factory:
+    item: item_small_fur
+    stack: 1
+
+Attack forest_rat_attack:
+  hit_skill: melee_fighting
+  evasion_skill: evasion
+  tester: default_tester
+  on_hit: forest_rat_damage
+
+Damage forest_rat_damage:
+  damage_tests_number: 2
+  damage_test_mod: 1
+  damage_per_hit: 1
+  damaged_resource: health
+  tester: default_tester

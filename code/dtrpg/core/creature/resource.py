@@ -4,7 +4,7 @@ from typing import Any, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.core.clock import Clock
-    from dtrpg.core.player.player import Player
+    from dtrpg.core.creature.player import Player
 
 
 class InsufficientResourceError(Exception):
@@ -18,7 +18,7 @@ class Resource(GameObject):
     pass
 
 
-class PlayerResource(GameObject):
+class CreatureResource(GameObject):
     def __init__(self):
         super().__init__()
         self._value = 0
@@ -89,9 +89,9 @@ class PlayerResource(GameObject):
                 self._accumulated = 0
 
 
-class PlayerResourceFactory(GameObjectFactory):
+class CreatureResourceFactory(GameObjectFactory):
     def __init__(self):
-        super().__init__(PlayerResource)
+        super().__init__(CreatureResource)
         self.resource = None
         self.initial = 0
         self.max = None
@@ -138,3 +138,7 @@ class ResourceCost(ResourceChange):
         if not self.can_take(player):
             raise InsufficientResourceError(player.resources[self.resource], self.cost)
         super().apply(player)
+
+    def assert_can_take(self, player: 'Player') -> None:
+        if not self.can_take(player):
+            raise InsufficientResourceError(player.resources[self.resource], self.cost)

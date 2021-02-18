@@ -4,7 +4,7 @@ from dtrpg.core.events.event_result import EventResult
 from typing import Mapping, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from dtrpg.core.player import Player
+    from dtrpg.core.creature import Player
 
 
 class SkillTestEvent(ComplexEvent):

@@ -1,7 +1,7 @@
 import unittest
 
 import dtrpg.core.item as item
-import dtrpg.core.player as player
+import dtrpg.core.creature as creature
 
 
 class TestItem(unittest.TestCase):
@@ -122,10 +122,10 @@ class TestItem(unittest.TestCase):
 
 class TestTrade(unittest.TestCase):
     def test_offer_buy(self) -> None:
-        p = player.Player()
+        p = creature.Player()
         o = item.TradeOffer()
-        res = player.Resource()
-        r = player.PlayerResource()
+        res = creature.Resource()
+        r = creature.CreatureResource()
         i = item.Item()
 
         i.max_stack = 10
@@ -144,10 +144,10 @@ class TestTrade(unittest.TestCase):
         self.assertEqual(p.items.count(i), 2)
 
     def test_offer_buy_not_enough_cap(self) -> None:
-        p = player.Player()
+        p = creature.Player()
         o = item.TradeOffer()
-        res = player.Resource()
-        r = player.PlayerResource()
+        res = creature.Resource()
+        r = creature.CreatureResource()
         i = item.Item()
 
         i.max_stack = 1
@@ -165,10 +165,10 @@ class TestTrade(unittest.TestCase):
         self.assertEqual(p.items.count(i), 0)
 
     def test_offer_buy_not_enough_resource(self) -> None:
-        p = player.Player()
+        p = creature.Player()
         o = item.TradeOffer()
-        res = player.Resource()
-        r = player.PlayerResource()
+        res = creature.Resource()
+        r = creature.CreatureResource()
         i = item.Item()
 
         i.max_stack = 1
@@ -181,15 +181,15 @@ class TestTrade(unittest.TestCase):
         o.buy_value = 3
         o.item = i
 
-        self.assertRaises(player.InsufficientResourceError, lambda: o.buy(p, 5))
+        self.assertRaises(creature.InsufficientResourceError, lambda: o.buy(p, 5))
         self.assertEqual(p.resources[res].value, 10)
         self.assertEqual(p.items.count(i), 0)
 
     def test_offer_buy_no_value(self) -> None:
-        p = player.Player()
+        p = creature.Player()
         o = item.TradeOffer()
-        res = player.Resource()
-        r = player.PlayerResource()
+        res = creature.Resource()
+        r = creature.CreatureResource()
         i = item.Item()
 
         i.max_stack = 1
@@ -206,10 +206,10 @@ class TestTrade(unittest.TestCase):
         self.assertEqual(p.items.count(i), 0)
 
     def test_offer_sell(self) -> None:
-        p = player.Player()
+        p = creature.Player()
         o = item.TradeOffer()
-        res = player.Resource()
-        r = player.PlayerResource()
+        res = creature.Resource()
+        r = creature.CreatureResource()
         i = item.Item()
         s = item.ItemStack()
 
@@ -232,10 +232,10 @@ class TestTrade(unittest.TestCase):
         self.assertEqual(p.items.count(i), 2)
 
     def test_offer_sell_not_enough_items(self) -> None:
-        p = player.Player()
+        p = creature.Player()
         o = item.TradeOffer()
-        res = player.Resource()
-        r = player.PlayerResource()
+        res = creature.Resource()
+        r = creature.CreatureResource()
         i = item.Item()
         s = item.ItemStack()
 
@@ -258,10 +258,10 @@ class TestTrade(unittest.TestCase):
         self.assertEqual(p.items.count(i), 4)
 
     def test_offer_sell_no_value(self) -> None:
-        p = player.Player()
+        p = creature.Player()
         o = item.TradeOffer()
-        res = player.Resource()
-        r = player.PlayerResource()
+        res = creature.Resource()
+        r = creature.CreatureResource()
         i = item.Item()
         s = item.ItemStack()
 

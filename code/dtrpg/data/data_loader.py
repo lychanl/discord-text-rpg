@@ -19,6 +19,10 @@ class InvalidIdError(Exception):
     pass
 
 
+class LoadException(Exception):
+    pass
+
+
 class DataLoader:
     def __init__(self):
         self._schema_loader = SchemaLoader()
@@ -59,9 +63,12 @@ class DataLoader:
         objects = {name: self._loaders[type_].preload() for name, (type_, _) in obj_dicts.items()}
 
         for name, (type_, dict_) in obj_dicts.items():
-            loader = self._loaders[type_]
-            obj = objects[name]
-            loader.load(obj, objects, dict_)
+            try:
+                loader = self._loaders[type_]
+                obj = objects[name]
+                loader.load(obj, objects, dict_)
+            except Exception as e:
+                raise LoadException(f'Error while loading {name}: {e}') from e
 
         return objects
 

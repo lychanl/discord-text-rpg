@@ -16,18 +16,3 @@ class ResourceChangeEventResult(EventResult):
         super().__init__()
         self.resource_changes = {}
 
-
-class ItemReceivedEventResult(EventResult):
-    def __init__(self):
-        super().__init__()
-        self.item = None
-        self.number = 0
-        self.overflow = None
-
-
-class RemoveItemEventResult(EventResult):
-    def __init__(self):
-        super().__init__()
-        self.item = None
-        self.number = 0
-        self.failed = False

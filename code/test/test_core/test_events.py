@@ -3,29 +3,29 @@ import unittest.mock as mock
 
 import dtrpg.core.events as events
 import dtrpg.core.item as item
-import dtrpg.core.player as player
+import dtrpg.core.creature as creature
 
 
 class TestEvents(unittest.TestCase):
     def test_resource_change_event(self) -> None:
         a = events.ResourceChangesEvent()
 
-        res1 = player.Resource()
-        res2 = player.Resource()
+        res1 = creature.Resource()
+        res2 = creature.Resource()
 
-        rc1 = player.ResourceChange()
+        rc1 = creature.ResourceChange()
         rc1.resource = res1
         rc1.value = -1
-        rc2 = player.ResourceChange()
+        rc2 = creature.ResourceChange()
         rc2.resource = res2
         rc2.value = 4
         a.resource_changes = [rc1, rc2]
 
-        p = player.Player()
-        r1 = player.PlayerResource()
+        p = creature.Player()
+        r1 = creature.CreatureResource()
         r1.resource = res1
         r1.value = 2
-        r2 = player.PlayerResource()
+        r2 = creature.CreatureResource()
         r2.resource = res2
         r2.value = 3
         p.resources = {res1: r1, res2: r2}
@@ -38,14 +38,14 @@ class TestEvents(unittest.TestCase):
         self.assertEqual(e.resource_changes[res2], 4)
 
     def test_item_receive_event(self) -> None:
-        a = events.ItemReceiveEvent()
+        a = item.ItemReceiveEvent()
         i = item.Item()
         i.max_stack = 1
 
         a.item_factory = item.ItemStackFactory()
         a.item_factory.item = i
         a.item_factory.stack = 2
-        p = player.Player()
+        p = creature.Player()
         p.items = item.Container()
         p.items.max_items = 3
 
@@ -65,22 +65,22 @@ class TestEvents(unittest.TestCase):
     def test_action_cost(self) -> None:
         a = events.Action()
 
-        res1 = player.Resource()
-        res2 = player.Resource()
+        res1 = creature.Resource()
+        res2 = creature.Resource()
 
-        rc1 = player.ResourceCost()
+        rc1 = creature.ResourceCost()
         rc1.resource = res1
         rc1.cost = 1
-        rc2 = player.ResourceCost()
+        rc2 = creature.ResourceCost()
         rc2.resource = res2
         rc2.cost = 4
         a.costs = [rc1, rc2]
         a.event = events.InfoEvent()
 
-        p = player.Player()
-        r1 = player.PlayerResource()
+        p = creature.Player()
+        r1 = creature.CreatureResource()
         r1.value = 2
-        r2 = player.PlayerResource()
+        r2 = creature.CreatureResource()
         r2.value = 4
         p.resources = {res1: r1, res2: r2}
 
@@ -94,34 +94,34 @@ class TestEvents(unittest.TestCase):
     def test_action_cost_insufficient(self) -> None:
         a = events.Action()
 
-        res1 = player.Resource()
-        res2 = player.Resource()
+        res1 = creature.Resource()
+        res2 = creature.Resource()
 
-        rc1 = player.ResourceCost()
+        rc1 = creature.ResourceCost()
         rc1.resource = res1
         rc1.cost = 1
-        rc2 = player.ResourceCost()
+        rc2 = creature.ResourceCost()
         rc2.resource = res2
         rc2.cost = 4
         a.costs = [rc1, rc2]
         a.event = events.InfoEvent()
 
-        p = player.Player()
-        r1 = player.PlayerResource()
+        p = creature.Player()
+        r1 = creature.CreatureResource()
         r1.value = 2
-        r2 = player.PlayerResource()
+        r2 = creature.CreatureResource()
         r2.value = 3
         p.resources = {res1: r1, res2: r2}
 
         self.assertFalse(a.check_requirements(p))
-        self.assertRaises(player.InsufficientResourceError, lambda: a.take(p))
+        self.assertRaises(creature.InsufficientResourceError, lambda: a.take(p))
         self.assertEqual(p.resources[res1].value, 2)
         self.assertEqual(p.resources[res2].value, 3)
 
     def test_skill_event(self) -> None:
-        s = player.Skill()
-        p = player.Player()
-        ps = player.PlayerSkill()
+        s = creature.Skill()
+        p = creature.Player()
+        ps = creature.CreatureSkill()
         ps.skill = s
         ps.value = 1
         p.skills = {s: ps}

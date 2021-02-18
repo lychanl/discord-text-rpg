@@ -6,8 +6,8 @@ Market,REGEX_NAME,{self.strings['NAME']}
 TravelAction,REGEX,Travel( to)? {self.to.strings['REGEX_NAME']}
 TravelAction,NAME,Travel to {self.to.strings['NAME']}
 TravelEventResult,EVENT_NOW,You travel to {self.to.strings['NAME']}.
-PlayerResource,YOU_HAVE,"You have {self.strings['VALUE', {'value': self.value}]}"
-PlayerResource,VALUE,"{self.resource.strings['VALUE', {'value': self.value}]}"
+CreatureResource,YOU_HAVE,"You have {self.strings['VALUE', {'value': self.value}]}"
+CreatureResource,VALUE,"{self.resource.strings['VALUE', {'value': self.value}]}"
 ResourceChangeEventResult,EVENT_NOW,"{self.strings['CAUSE_NOW']} {' '.join(['You get ' + r.strings['VALUE', {'value': v}] + '.' for r, v in self.resource_changes.items()])}"
 ItemReceivedEventResult,EVENT_NOW,"{self.strings['CAUSE_NOW']} You get {self.number}x {self.item.strings['NAME']}.{'You dropped ' + str(self.overflow.stack.number) + ' because you have no more space.' if self.overflow else ''}"
 Container,USAGE,{len(self.items)}/{self.max_items}
@@ -22,3 +22,10 @@ TradeOffer,DESCRIPTION,"{self.item.strings['NAME']}: {'sell ' + str(self.sell_va
 OffersInfoEventResult,EVENT_NOW,{'\n'.join(offer.strings['DESCRIPTION'] for offer in self.offers)}
 OffersInfoAction,NAME,See offers
 OffersInfoAction,REGEX,((see|check|list) )?(offer|offers)(( for)? (?P<item>.+))?
+Player,NAME,Player
+FightEventResult,GROUP,"{', '.join(f.strings['NAME'] for f in group)}"
+FightEventResult,GROUP_S,{'s' if len(group) == 1 else ''}
+FightEventResult,RESULT_G,"{self.strings['GROUP', {'group': group}]} win{self.strings['GROUP_S', {'group': group}]}!"
+FightEventResult,RESULT_DRAW,It's a draw!
+FightEventResult,RESULT,"{self.strings['RESULT_DRAW'] if self.result.name == 'DRAW' else self.strings['RESULT_G', {'group': self.winners}]}"
+FightEventResult,EVENT_NOW,"{self.strings['GROUP', {'group': self.group1}]} fight{self.strings['GROUP_S', {'group': self.group1}]} against {self.strings['GROUP', {'group': self.group2}]}. {self.strings['RESULT']}{'\n' + self.next['EVENT_NOW'] if self.next else ''}"

@@ -1,5 +1,5 @@
 from dtrpg.core import Game, GameObject, InvalidPlayerError, DuplicatePlayerError
-from dtrpg.core.player import InsufficientResourceError, PlayerResource
+from dtrpg.core.creature import InsufficientResourceError, CreatureResource
 from dtrpg.core.item import ContainerCapacityException, OfferNotFoundException, InsufficientItemsException
 
 import re
@@ -99,7 +99,7 @@ class TextIO:
     def _invalid_command(self) -> str:
         return self._game.config.strings['INVALID_COMMAND']
 
-    def _insufficient_resource(self, resource: 'PlayerResource', required: int) -> str:
+    def _insufficient_resource(self, resource: 'CreatureResource', required: int) -> str:
         return self._game.config.strings[
             'INSUFFICIENT_RESOURCE',
             {'player_resource': resource, 'resource': resource.resource, 'required': required}

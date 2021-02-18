@@ -1,0 +1,10 @@
+FightEngine fight_engine:
+  speed_skill: speed
+  health: health
+  move_tester: default_tester
+
+Tactic melee_berserk:
+  move_predicates:
+    - result: MELEE
+  action_predicates:
+    - result: ATTACK

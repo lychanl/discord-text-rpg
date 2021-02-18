@@ -1,5 +1,5 @@
 from dtrpg.core.config import Config
-from dtrpg.core.player import Player
+from dtrpg.core.creature import Player
 
 from typing import Hashable, Iterable, TYPE_CHECKING
 

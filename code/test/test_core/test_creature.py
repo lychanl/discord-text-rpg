@@ -3,7 +3,7 @@ from unittest import mock
 
 import dtrpg.core.item as item
 import dtrpg.core.map as map_
-import dtrpg.core.player as player
+import dtrpg.core.creature as creature
 
 
 class TestPlayer(unittest.TestCase):
@@ -15,7 +15,7 @@ class TestPlayer(unittest.TestCase):
         travel_action.to = loc2
         loc1.travel_actions = [travel_action]
 
-        p = player.Player()
+        p = creature.Player()
         p.location = loc1
 
         e = travel_action.take(p)
@@ -28,7 +28,7 @@ class TestPlayer(unittest.TestCase):
 
 class TestPlayerFactory(unittest.TestCase):
     def test_player_factory(self) -> None:
-        factory = player.PlayerFactory()
+        factory = creature.PlayerFactory()
         loc = map_.Location()
         cf = item.ContainerFactory()
 
@@ -41,9 +41,9 @@ class TestPlayerFactory(unittest.TestCase):
         self.assertIsInstance(p.items, item.Container)
 
     def test_player_factory_resources(self) -> None:
-        factory = player.PlayerFactory()
-        rf = player.PlayerResourceFactory()
-        res = player.Resource()
+        factory = creature.PlayerFactory()
+        rf = creature.CreatureResourceFactory()
+        res = creature.Resource()
         rf.resource = res
         rf.initial = 1
 
@@ -59,8 +59,8 @@ class TestPlayerFactory(unittest.TestCase):
 
 class TestResourceFactory(unittest.TestCase):
     def test_resource_factory(self) -> None:
-        factory = player.PlayerResourceFactory()
-        res = player.Resource()
+        factory = creature.CreatureResourceFactory()
+        res = creature.Resource()
         factory.initial = 1
         factory.max = 10
         factory.base_gen_rate = 0.5
@@ -80,7 +80,7 @@ class TestResourceFactory(unittest.TestCase):
 
 class TestResource(unittest.TestCase):
     def test_resource_max(self) -> None:
-        r = player.PlayerResource()
+        r = creature.CreatureResource()
         r.max = 10
         r.value = 20
         self.assertEqual(r.value, 10)
@@ -93,7 +93,7 @@ class TestResource(unittest.TestCase):
         clock = mock.Mock()
         clock.configure_mock(**{'now.return_value': time, 'now_with_diff.return_value': (nexttime, 5)})
 
-        r = player.PlayerResource()
+        r = creature.CreatureResource()
         r.value = 10
         r.base_gen_rate = 0.5
         r.clock = clock
@@ -109,7 +109,7 @@ class TestResource(unittest.TestCase):
         clock = mock.Mock()
         clock.configure_mock(**{'now.return_value': time, 'now_with_diff.return_value': (nexttime, 5)})
 
-        r = player.PlayerResource()
+        r = creature.CreatureResource()
         r.value = 10
         r.max = 12
         r.base_gen_rate = 0.5
@@ -124,17 +124,17 @@ class TestResource(unittest.TestCase):
 
 class TestSkill(unittest.TestCase):
     def test_player_skill(self) -> None:
-        s1 = player.Skill()
-        f1 = player.PlayerSkillFactory()
+        s1 = creature.Skill()
+        f1 = creature.CreatureSkillFactory()
         f1.initial = 2
         f1.skill = s1
 
-        s2 = player.Skill()
-        f2 = player.PlayerSkillFactory()
+        s2 = creature.Skill()
+        f2 = creature.CreatureSkillFactory()
         f2.initial = 4
         f2.skill = s2
 
-        pf = player.PlayerFactory()
+        pf = creature.PlayerFactory()
         pf.skill_factories = [f1, f2]
         pf.container_factory = mock.Mock()
         pf.container_factory.create.return_value = None
@@ -147,14 +147,14 @@ class TestSkill(unittest.TestCase):
         self.assertEqual(p.skills[s2].skill, s2)
 
     def test_skill_experience(self) -> None:
-        s1 = player.Skill()
+        s1 = creature.Skill()
         s1.experience_from_test = "difficulty if success else level"
         s1.progression = "level**2"
 
-        f1 = player.PlayerSkillFactory()
+        f1 = creature.CreatureSkillFactory()
         f1.skill = s1
 
-        pf = player.PlayerFactory()
+        pf = creature.PlayerFactory()
         pf.skill_factories = [f1]
         pf.container_factory = mock.Mock()
         pf.container_factory.create.return_value = None
@@ -169,7 +169,7 @@ class TestSkill(unittest.TestCase):
         self.assertEqual(p.skills[s1]._experience, 1)
         self.assertEqual(p.skills[s1].value, 2)
 
-        st = player.SkillTest()
+        st = creature.SkillTest()
         st.skill = s1
         st.difficulty = 3
         st.tester = mock.Mock()

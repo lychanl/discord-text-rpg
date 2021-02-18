@@ -1,9 +1,10 @@
 from dtrpg.core.game_object import GameObject
 from dtrpg.core.events.event_result import EventResult
-from dtrpg.core.player import Player, InsufficientResourceError
 
+from typing import Iterable, Mapping, TYPE_CHECKING
 
-from typing import Iterable, Mapping
+if TYPE_CHECKING:
+    from dtrpg.core.creature.creature import Player
 
 
 class Action(GameObject):
@@ -18,8 +19,7 @@ class Action(GameObject):
 
     def take(self, player: 'Player', **args: Mapping[str, object]) -> EventResult:
         for cost in self.costs:
-            if not cost.can_take(player):
-                raise InsufficientResourceError(player.resources[cost.resource], cost.cost)
+            cost.assert_can_take(player)
         for cost in self.costs:
             cost.apply(player)
 

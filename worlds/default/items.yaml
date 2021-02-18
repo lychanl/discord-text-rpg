@@ -6,3 +6,6 @@ Item item_herbs:
 
 Item item_fishing_rod:
   max_stack: 1
+
+Item item_small_fur:
+  max_stack: 20
