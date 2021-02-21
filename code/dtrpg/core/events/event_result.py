@@ -16,3 +16,8 @@ class ResourceChangeEventResult(EventResult):
         super().__init__()
         self.resource_changes = {}
 
+
+class SequenceEventResult(EventResult):
+    def __init__(self):
+        super().__init__()
+        self.results = []

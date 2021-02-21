@@ -5,10 +5,12 @@ melee_fighting,NAME,Melee fighting
 evasion,NAME,Evasion
 speed,NAME,Speed
 gold,VALUE,{value} gold
+action_points,VALUE,{value} action points
 action_points_factory,VALUE,{value}/{self.max} action points
 gold,NAME,gold
 action_points,NAME,action points
 health,NAME,health points
+health,VALUE,{value} health points
 health_factory,VALUE,{value}/{self.max} health
 here_action,REGEX,here
 here_event,EVENT_NOW,"{self.player.location.strings['YOU_ARE_HERE']}
@@ -32,3 +34,5 @@ skills_action,REGEX,skills
 skills_event,SKILL,"{skill.skill.strings['NAME']}: {skill.value}"
 skills_event,EVENT_NOW,"Your skills:
 {'\n'.join([self.strings['SKILL', {'skill': skill}] for skill in self.player.skills.values() if skill.value > 0])}"
+player_killed_info_event,EVENT_NOW,"You regain consciousness after some time."
+player_killed_resources_event,CAUSE_NOW,"You are tired and injured, but alive. "

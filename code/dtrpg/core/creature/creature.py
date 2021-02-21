@@ -18,6 +18,11 @@ class Fighter(Creature):
     def __init__(self):
         super().__init__()
         self.tactic = None
+        self.on_killed = None
+
+    @property
+    def killed(self) -> bool:
+        return any(r.vital and cr.value == 0 for r, cr in self.resources.items())
 
     @property
     def armor(self) -> int:
@@ -34,6 +39,7 @@ class FighterFactory(GameObjectFactory):
         self.resource_factories = ()
         self.skill_factories = ()
         self.tactic = None
+        self.on_killed = None
 
     def _create(self) -> Fighter:
         creature = super()._create()
@@ -46,5 +52,6 @@ class FighterFactory(GameObjectFactory):
         }
 
         creature.tactic = self.tactic
+        creature.on_killed = self.on_killed
 
         return creature

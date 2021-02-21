@@ -1,6 +1,9 @@
 from dtrpg.core.game_object import GameObject, GameObjectFactory
 
-from typing import Any, TYPE_CHECKING
+from enum import Enum
+from operator import add
+
+from typing import Any, Callable, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.core.clock import Clock
@@ -15,7 +18,9 @@ class InsufficientResourceError(Exception):
 
 
 class Resource(GameObject):
-    pass
+    def __init__(self):
+        super().__init__()
+        self.vital = False
 
 
 class CreatureResource(GameObject):
@@ -111,15 +116,36 @@ class CreatureResourceFactory(GameObjectFactory):
         return resource
 
 
+def _set(value: int, change: int) -> int:
+    return change
+
+
+class ResourceChangeOp(GameObject, Enum):
+    def __init__(self, op: Callable):
+        super().__init__()
+        self.op = op
+
+    def __call__(self, value: int, change: int) -> int:
+        return self.op(value, change)
+
+    ADD = add,
+    SET = _set,
+
+
 class ResourceChange(GameObject):
     def __init__(self):
         super().__init__()
         self.resource = None
         self.value = None
+        self.op = ResourceChangeOp.ADD
 
     def apply(self, player: 'Player') -> int:
-        player.resources[self.resource].value = player.resources[self.resource].value + self.value
-        return self.value
+        old = player.resources[self.resource].value
+        player.resources[self.resource].value = self.op(player.resources[self.resource].value, self.value)
+        return player.resources[self.resource].value - old
+
+    def can_apply(self, player: 'Player') -> bool:
+        return self.op(player.resources[self.resource].value, self.value) >= 0
 
 
 class ResourceCost(ResourceChange):
@@ -132,7 +158,7 @@ class ResourceCost(ResourceChange):
         self.value = -cost
 
     def can_take(self, player: 'Player') -> bool:
-        return player.resources[self.resource].value >= self.cost
+        return self.can_apply(player)
 
     def apply(self, player: 'Player') -> None:
         if not self.can_take(player):

@@ -57,6 +57,14 @@ InfoEvent:
   _class: dtrpg.core.events.InfoEvent
   _base: Event
 
+SequenceEvent:
+  _class: dtrpg.core.events.SequenceEvent
+  _base: Event
+  required events: [ Event ]
+
+SequenceEventResult:
+  _class: dtrpg.core.events.SequenceEventResult
+
 RemoveItemEvent:
   _class: dtrpg.core.item.RemoveItemEvent
   _base: Event
@@ -113,6 +121,7 @@ PlayerFactory:
   optional base_armor: int
   required tactic: Tactic
   required default_attack: Attack
+  optional on_killed: Event
 
 NPCFighterFactory:
   _class: dtrpg.core.creature.NPCFighterFactory
@@ -167,6 +176,7 @@ SkillTest:
 
 Resource:
   _class: dtrpg.core.creature.Resource
+  optional vital: bool
 
 CreatureResource:
   _class: dtrpg.core.creature.CreatureResource
@@ -175,6 +185,11 @@ ResourceChange:
   _class: dtrpg.core.creature.ResourceChange
   required resource: Resource
   required value: int
+  optional op: ResourceChangeOp
+
+ResourceChangeOp:
+  _class: dtrpg.core.creature.ResourceChangeOp
+  _enum: True
 
 ResourceCost:
   _class: dtrpg.core.creature.ResourceCost
@@ -284,3 +299,12 @@ FightEvent:
 
 FightEventResult:
   _class: dtrpg.core.fighting.FightEventResult
+
+MoveEventResult:
+  _class: dtrpg.core.fighting.MoveEventResult
+
+AttackEventResult:
+  _class: dtrpg.core.fighting.AttackEventResult
+
+DefeatedEventResult:
+  _class: dtrpg.core.fighting.DefeatedEventResult

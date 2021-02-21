@@ -1,5 +1,5 @@
 from dtrpg.core.game_object import GameObjectFactory
-from dtrpg.core.events.event_result import EventResult, ResourceChangeEventResult, InfoEventResult
+from dtrpg.core.events.event_result import EventResult, ResourceChangeEventResult, InfoEventResult, SequenceEventResult
 
 
 from typing import Mapping, TYPE_CHECKING
@@ -53,5 +53,21 @@ class ResourceChangesEvent(Event):
             diff = change.apply(player)
             changes[change.resource] = diff
         event.resource_changes = changes
+
+        return event
+
+
+class SequenceEvent(ComplexEvent):
+    def __init__(self):
+        super().__init__(SequenceEventResult)
+        self.events = []
+
+    def _fire(self, player: 'Player', **params: Mapping[str, object]) -> SequenceEventResult:
+        event = self.create()
+
+        event.results = [
+            event.fire(player, **self._get_subevent_params(str(i), params))
+            for i, event in enumerate(params['events'])
+        ]
 
         return event

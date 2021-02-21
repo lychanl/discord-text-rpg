@@ -14,8 +14,10 @@ class FightEventResult(EventResult):
         self.group1 = []
         self.group2 = []
         self.result = None
+        self.events = []
 
         self.next = None
+        self.on_killed = None
 
     @property
     def winners(self) -> List['Fighter']:
@@ -35,6 +37,7 @@ class FightEventResult(EventResult):
         else:
             return None
 
+
 class FightEvent(ComplexEvent):
     def __init__(self):
         super().__init__(FightEventResult)
@@ -52,7 +55,7 @@ class FightEvent(ComplexEvent):
         result.group1 = [player]
         result.group2 = enemies
 
-        result.result = params['fight_engine'].fight([player], enemies)
+        result.result, result.events, killed, fled = params['fight_engine'].fight([player], enemies)
 
         if result.result == FightResult.GROUP1:
             if params['victory']:
@@ -63,5 +66,8 @@ class FightEvent(ComplexEvent):
         else:
             if params['draw']:
                 result.next = params['draw'].fire(player, **self._get_subevent_params('draw', params))
+
+        if player in killed and player.on_killed:
+            result.on_killed = player.on_killed.fire(player)
 
         return result

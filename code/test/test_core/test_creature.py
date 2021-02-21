@@ -121,6 +121,63 @@ class TestResource(unittest.TestCase):
         r.value = 5
         self.assertEqual(r.value, 7)
 
+    def test_killed(self) -> None:
+        r = creature.Resource()
+        r.vital = True
+        cr = creature.CreatureResource()
+        cr.value = 1
+
+        c = creature.Fighter()
+        c.resources = {r: cr}
+
+        self.assertFalse(c.killed)
+        cr.value = 0
+        self.assertTrue(c.killed)
+
+    def test_killed_no_vital(self) -> None:
+        r = creature.Resource()
+        r.vital = False
+        cr = creature.CreatureResource()
+        cr.value = 1
+
+        c = creature.Fighter()
+        c.resources = {r: cr}
+
+        self.assertFalse(c.killed)
+        cr.value = 0
+        self.assertFalse(c.killed)
+
+    def test_resource_change_add(self) -> None:
+        cr = creature.CreatureResource()
+        cr.value = 1
+        r = creature.Resource()
+        c = creature.ResourceChange()
+        c.value = 2
+        c.resource = r
+
+        crt = creature.Creature()
+        crt.resources = {r: cr}
+
+        c.apply(crt)
+
+        self.assertEqual(cr.value, 3)
+
+    def test_resource_change_set(self) -> None:
+        cr = creature.CreatureResource()
+        cr.value = 1
+        r = creature.Resource()
+        c = creature.ResourceChange()
+        c.value = 2
+        c.resource = r
+        c.op = creature.ResourceChangeOp.SET
+
+        crt = creature.Creature()
+        crt.resources = {r: cr}
+
+        c.apply(crt)
+
+        self.assertEqual(cr.value, 2)
+
 
 class TestSkill(unittest.TestCase):
     def test_player_skill(self) -> None:

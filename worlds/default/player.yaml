@@ -19,12 +19,14 @@ PlayerFactory player_factory:
 
   tactic: melee_berserk
   default_attack: default_player_attack
+  on_killed: player_killed_event
 
 Resource gold: {}
 
 Resource action_points: {}
 
-Resource health: {}
+Resource health:
+  vital: True
 
 CreatureResourceFactory gold_factory:
   resource: gold
@@ -94,3 +96,19 @@ Damage default_player_attack_damage:
   damage_per_hit: 1
   damaged_resource: health
   tester: default_tester
+
+SequenceEvent player_killed_event:
+  events:
+    - player_killed_info_event
+    - player_killed_resources_event
+
+InfoEvent player_killed_info_event: {}
+
+ResourceChangesEvent player_killed_resources_event:
+  resource_changes:
+    - resource: health
+      value: 1
+      op: SET
+    - resource: action_points
+      value: 0
+      op: SET

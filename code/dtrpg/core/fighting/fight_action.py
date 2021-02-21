@@ -93,7 +93,7 @@ class AttackAction(TargetedAction):
         return False
 
 
-class AttackResult(EventResult):
+class AttackEventResult(EventResult):
     def __init__(self):
         super().__init__()
         self.attacker = None
@@ -104,7 +104,7 @@ class AttackResult(EventResult):
 
 class Attack(Event):
     def __init__(self):
-        super().__init__(AttackResult)
+        super().__init__(AttackEventResult)
         self.attacks_number = 1
 
         self.ranged = False
@@ -140,7 +140,7 @@ class Attack(Event):
     def tester(self, tester: 'Tester') -> None:
         self.hit_test.tester = tester
 
-    def _fire(self, player: 'Fighter', target: 'Fighter', **params: Mapping[str, object]) -> AttackResult:
+    def _fire(self, player: 'Fighter', target: 'Fighter', **params: Mapping[str, object]) -> AttackEventResult:
         res = self.create()
         res.target = target
         res.attacker = player
@@ -180,7 +180,7 @@ class Damage(Event):
 
     def _fire(
             self, player: 'Fighter', target: 'Fighter',
-            **params: Mapping[str, object]) -> AttackResult:
+            **params: Mapping[str, object]) -> AttackEventResult:
         total_damage = 0
         for _ in range(self.damage_tests_number):
             if self.tester.test(self.damage_test_mod, target.armor):

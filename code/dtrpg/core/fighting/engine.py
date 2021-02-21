@@ -1,4 +1,6 @@
+from dtrpg.core.game_object import GameObject
 from dtrpg.core.creature.skill import Skill, OpposedSkillTest
+from dtrpg.core.events import EventResult
 
 from enum import Enum
 
@@ -9,27 +11,50 @@ if TYPE_CHECKING:
     from dtrpg.core.creature.creature import Fighter
 
 
-class StatusFlag(Enum):
+class StatusFlag(GameObject, Enum):
     MELEE = 0
     RANGED = 1
     LOW_HEALTH = 2
     HIGH_HEALTH = 3
     FULL_HEALTH = 4
 
+    def __init__(self, value: int):
+        super().__init__()
 
-class MoveDestination(Enum):
+
+class MoveDestination(GameObject, Enum):
     MELEE = 0
     RANGED = 1
     FLEE = 2
+
+    def __init__(self, value: int):
+        super().__init__()
 
     def can_take(self, *args: Iterable, **kwargs: dict) -> bool:
         return True
 
 
-class FightResult(Enum):
+class FightResult(GameObject, Enum):
     GROUP1 = 1
     GROUP2 = 2
     DRAW = 3
+
+    def __init__(self, value: int):
+        super().__init__()
+
+
+class MoveEventResult(EventResult):
+    def __init__(self, fighter: 'Fighter', from_loc: MoveDestination, to_loc: MoveDestination):
+        super().__init__()
+        self.fighter = fighter
+        self.from_loc = from_loc
+        self.to_loc = to_loc
+
+
+class DefeatedEventResult(EventResult):
+    def __init__(self, fighter: 'Fighter'):
+        super().__init__()
+        self.fighter = fighter
 
 
 class FightStatus:
@@ -78,11 +103,17 @@ class FightEngine:
         self.move_test.skill = skill
         self.move_test.versus_skill = skill
 
-    def fight(self, group1: Iterable['Fighter'], group2: Iterable['Fighter']) -> FightResult:
+    def fight(
+        self, group1: Iterable['Fighter'], group2: Iterable['Fighter']
+    ) -> Tuple[FightResult, Iterable[EventResult]]:
         ranged1 = set(group1)
         melee1 = set()
         melee2 = set()
         ranged2 = set(group2)
+
+        killed = set()
+        fled = set()
+        events = []
 
         for t in range(self.time_limit):
             status = self._prepare_status(ranged1, melee1, melee2, ranged2)
@@ -92,10 +123,11 @@ class FightEngine:
             melee2_moves = {f: f.tactic.get_move(f, status) for f in melee2}
             ranged2_moves = {f: f.tactic.get_move(f, status) for f in ranged2}
 
-            flee1, ranged1, melee1, melee2, ranged2, flee2 = self._make_moves(
+            flee1, ranged1, melee1, melee2, ranged2, flee2, move_events = self._make_moves(
                 ranged1_moves, melee1_moves, melee2_moves, ranged2_moves)
 
-            # TODO move events
+            fled |= flee1 | flee2
+            events.extend(move_events)
 
             if len(ranged1) + len(melee1) == 0 or len(ranged2) + len(melee2) == 0:
                 break
@@ -104,25 +136,29 @@ class FightEngine:
 
             actions = {f: f.tactic.get_action(f, status) for f in ranged1 | melee1 | melee2 | ranged2}
             for f, (a, kwargs) in actions.items():
-                a.apply(f, **kwargs)
+                events.append(a.apply(f, **kwargs))
 
             ranged1, defeated_r1 = self._check_defeats(ranged1)
             melee1, defeated_m1 = self._check_defeats(melee1)
             melee2, defeated_m2 = self._check_defeats(melee2)
             ranged2, defeated_r2 = self._check_defeats(ranged2)
 
-            # TODO defeat events
+            killed |= defeated_m1 | defeated_r1 | defeated_m2 | defeated_r2
+
+            for f in defeated_m1 | defeated_r1 | defeated_m2 | defeated_r2:
+                events.append(DefeatedEventResult(f))
 
             if len(ranged1) + len(melee1) == 0 or len(ranged2) + len(melee2) == 0:
                 break
 
         if len(ranged1) + len(melee1) > 0 and len(ranged2) + len(melee2) == 0:
-            return FightResult.GROUP1
+            result = FightResult.GROUP1
+        elif len(ranged1) + len(melee1) == 0 and len(ranged2) + len(melee2) > 0:
+            result = FightResult.GROUP2
+        else:
+            result = FightResult.DRAW
 
-        if len(ranged1) + len(melee1) == 0 and len(ranged2) + len(melee2) > 0:
-            return FightResult.GROUP2
-
-        return FightResult.DRAW
+        return result, events, killed, fled
 
     def _prepare_status(
             self,
@@ -194,7 +230,10 @@ class FightEngine:
         ]:
             self._moves_melee(moves, melee, ranged, other_moves, other_melee)
 
-        return fleeing1, new_ranged1, new_melee1, new_melee2, new_ranged2, fleeing2
+        events = self._get_move_results(
+            set(ranged1), set(melee1), set(melee2), set(ranged2),
+            fleeing1, new_ranged1, new_melee1, new_melee2, new_ranged2, fleeing2)
+        return fleeing1, new_ranged1, new_melee1, new_melee2, new_ranged2, fleeing2, events
 
     def _moves_fleeing(self, moves: dict, fleeing: set, melee: set, ranged: set, other_moves: dict) -> None:
         moved = []
@@ -259,6 +298,24 @@ class FightEngine:
         else:
             ranged.update(moves)
 
+    def _get_move_results(
+        self, ranged1: set, melee1: set, melee2: set, ranged2: set,
+            fleeing1: set, new_ranged1: set, new_melee1: set, new_melee2: set, new_ranged2: set, fleeing2: set
+    ) -> Iterable[MoveEventResult]:
+        ret = []
+        for f in ranged1 | ranged2:
+            if f in new_melee1 or f in new_melee2:
+                ret.append(MoveEventResult(f, MoveDestination.RANGED, MoveDestination.MELEE))
+            if f in fleeing1 or f in fleeing2:
+                ret.append(MoveEventResult(f, MoveDestination.RANGED, MoveDestination.FLEE))
+        for f in melee1 | melee2:
+            if f in new_ranged1 or f in new_ranged2:
+                ret.append(MoveEventResult(f, MoveDestination.MELEE, MoveDestination.RANGED))
+            if f in fleeing1 or f in fleeing2:
+                ret.append(MoveEventResult(f, MoveDestination.MELEE, MoveDestination.FLEE))
+
+        return ret
+
     def _check_defeats(self, group: Iterable['Fighter']) -> Tuple[Iterable['Fighter'], Iterable['Fighter']]:
-        return {f for f in group if f.resources[self.health].value > 0},\
-            {f for f in group if f.resources[self.health].value == 0}
+        return {f for f in group if not f.killed},\
+            {f for f in group if f.killed}

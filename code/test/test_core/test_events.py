@@ -152,3 +152,23 @@ class TestEvents(unittest.TestCase):
         self.assertIs(e.fire(p, **params), fret)
         e.success.assert_not_called()
         e.failure.fire.assert_called_once_with(p)
+
+    def test_sequence_event(self) -> None:
+        evs = [mock.Mock(), mock.Mock()]
+
+        r1 = object()
+        r2 = object()
+        evs[0].fire = mock.Mock()
+        evs[1].fire = mock.Mock()
+        evs[0].fire.return_value = r1
+        evs[1].fire.return_value = r2
+
+        e = events.SequenceEvent()
+        e.events = evs
+        p = creature.Player()
+
+        ret = e.fire(p)
+
+        self.assertEqual(ret.results, [r1, r2])
+        evs[0].fire.assert_called_once()
+        evs[1].fire.assert_called_once()

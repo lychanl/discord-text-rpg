@@ -66,9 +66,7 @@ class TacticPredicate(GameObject):
         if not self.result.can_take(fighter, fight_status):
             return False
 
-        return self.result.can_take(fighter, fight_status) and (
-            not self.conditions or all(c.check(fighter, fight_status) for c in self.conditions)
-        )
+        return not self.conditions or all(c.check(fighter, fight_status) for c in self.conditions)
 
     @property
     def params(self) -> dict:

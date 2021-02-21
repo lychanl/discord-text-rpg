@@ -8,8 +8,10 @@ TravelAction,NAME,Travel to {self.to.strings['NAME']}
 TravelEventResult,EVENT_NOW,You travel to {self.to.strings['NAME']}.
 CreatureResource,YOU_HAVE,"You have {self.strings['VALUE', {'value': self.value}]}"
 CreatureResource,VALUE,"{self.resource.strings['VALUE', {'value': self.value}]}"
-ResourceChangeEventResult,EVENT_NOW,"{self.strings['CAUSE_NOW']} {' '.join(['You get ' + r.strings['VALUE', {'value': v}] + '.' for r, v in self.resource_changes.items()])}"
-ItemReceivedEventResult,EVENT_NOW,"{self.strings['CAUSE_NOW']} You get {self.number}x {self.item.strings['NAME']}.{'You dropped ' + str(self.overflow.stack.number) + ' because you have no more space.' if self.overflow else ''}"
+ResourceChangeEventResult,EVENT_NOW,"{self.strings['CAUSE_NOW']}{' '.join([('You get ' if v > 0 else 'You loose ') + r.strings['VALUE', {'value': abs(v)}] + '.' for r, v in self.resource_changes.items() if not v == 0])}"
+ResourceChangeEventResult,CAUSE_NOW,
+ItemReceivedEventResult,EVENT_NOW,"{self.strings['CAUSE_NOW']}You get {self.number}x {self.item.strings['NAME']}.{'You dropped ' + str(self.overflow.stack.number) + ' because you have no more space.' if self.overflow else ''}"
+ItemReceivedEventResult,CAUSE_NOW,
 Container,USAGE,{len(self.items)}/{self.max_items}
 Container,ITEMS,{'\n'.join(str(i.stack) + 'x ' + i.item.strings['NAME'] + ' (max ' + str(i.item.max_stack) + ')' for i in self.items) if self.items else 'No items.'}
 SellEventResult,EVENT_NOW,You sell {self.number}x {self.item.strings['NAME']} for {self.value}
@@ -28,4 +30,14 @@ FightEventResult,GROUP_S,{'s' if len(group) == 1 else ''}
 FightEventResult,RESULT_G,"{self.strings['GROUP', {'group': group}]} win{self.strings['GROUP_S', {'group': group}]}!"
 FightEventResult,RESULT_DRAW,It's a draw!
 FightEventResult,RESULT,"{self.strings['RESULT_DRAW'] if self.result.name == 'DRAW' else self.strings['RESULT_G', {'group': self.winners}]}"
-FightEventResult,EVENT_NOW,"{self.strings['GROUP', {'group': self.group1}]} fight{self.strings['GROUP_S', {'group': self.group1}]} against {self.strings['GROUP', {'group': self.group2}]}. {self.strings['RESULT']}{'\n' + self.next['EVENT_NOW'] if self.next else ''}"
+FightEventResult,EVENT_NOW,"{self.strings['GROUP', {'group': self.group1}]} fight{self.strings['GROUP_S', {'group': self.group1}]} against {self.strings['GROUP', {'group': self.group2}]}.
+{'\n'.join(e.strings['EVENT_NOW'] for e in self.events)}
+{self.strings['RESULT']}{'\n' + self.next.strings['EVENT_NOW'] if self.next else ''}{'\n' + self.on_killed.strings['EVENT_NOW'] if self.on_killed else ''}"
+MoveEventResult,EVENT_NOW,"{self.fighter.strings['NAME']} moves to {self.to_loc.strings['NAME']}"
+AttackEventResult,EVENT_NOW,"{self.attacker.strings['NAME']} attacks {self.target.strings['NAME']} {self.strings['HIT'] if any(self.hits) else self.strings['MISS']}"
+AttackEventResult,HIT,"and hits, dealing {sum(r.damage_dealt for r, h in zip(self.results, self.hits) if h)} damage"
+AttackEventResult,MISS,but misses
+DefeatedEventResult,EVENT_NOW,{self.fighter.strings['NAME']} was defeated!
+MoveDestination.MELEE,NAME,melee
+MoveDestination.RANGED,NAME,ranged
+SequenceEventResult,EVENT_NOW,"{'\n'.join(r.strings['EVENT_NOW'] for r in self.results)}"

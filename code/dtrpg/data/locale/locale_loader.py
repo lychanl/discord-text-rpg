@@ -1,3 +1,5 @@
+from enum import Enum
+
 from typing import Collection, Mapping, TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -14,7 +16,13 @@ class LocaleLoader:
 
     def apply(self, world: Mapping[str, 'LocalizedObject'], loaders: Mapping[str, 'TypeLoader']) -> None:
         for (obj, string), value in self._locale_strings.items():
-            if obj in world:
-                world[obj].add_string(string, value)
+            if '.' in obj:
+                enum, obj = obj.split('.')
+                class_ = loaders[enum].class_
+                assert issubclass(class_, Enum), "Nested objects names supported only for enums"
+                class_[obj].add_string(string, value)
             else:
-                loaders[obj].class_.add_class_string(string, value)
+                if obj in world:
+                    world[obj].add_string(string, value)
+                else:
+                    loaders[obj].class_.add_class_string(string, value)

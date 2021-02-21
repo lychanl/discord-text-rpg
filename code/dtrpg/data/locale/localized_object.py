@@ -52,7 +52,9 @@ class LocalizedObjectFactory(LocalizedObject):
 
 
 class ObjectStrings:
-    AVAILABLE_BUILTINS = {'len': len, 'int': int, 'float': float, 'str': str}
+    AVAILABLE_BUILTINS = {
+        'int': int, 'float': float, 'str': str, 'abs': abs,
+        'len': len, 'sum': sum, 'any': any, 'all': all, 'zip': zip}
 
     formatter = LocaleFormatter()
 
@@ -60,6 +62,25 @@ class ObjectStrings:
         self._obj_strings = obj_strings
         self._cls_strings = cls_strings
         self._obj = obj
+
+    def get(self, string: str, ctx: Tuple[str, dict]=None, default: str = None) -> str:
+        if ctx is None:
+            ctx = {}
+
+        if default is None:
+            default = string
+
+        ctx.update({
+            '__builtins__': self.AVAILABLE_BUILTINS,
+            'self': self._obj,
+        })
+
+        out = self._obj_strings.get(string, None)\
+            or self._cls_strings.get(string, None)\
+            or default
+
+        formatted = self.formatter.format(out, **ctx)
+        return formatted
 
     def __getitem__(self, args: Union[str, Tuple[str, dict]]) -> str:
         if isinstance(args, str):
@@ -69,17 +90,7 @@ class ObjectStrings:
             string, ctx = args
             ctx = dict(ctx)
 
-        ctx.update({
-            '__builtins__': self.AVAILABLE_BUILTINS,
-            'self': self._obj,
-        })
-
-        out = self._obj_strings.get(string, None)\
-            or self._cls_strings.get(string, None)\
-            or string
-
-        formatted = self.formatter.format(out, **ctx)
-        return formatted
+        return self.get(string, ctx)
 
     def __contains__(self, item: object) -> bool:
         return item in self._obj_strings or item in self._cls_strings
