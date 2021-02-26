@@ -570,7 +570,9 @@ class TestFightingActions(unittest.TestCase):
         f1.resources[health].max = 5
         f1.resources[health].value = 5
 
-        f1.armor = 3
+        armor = c.Statistic()
+
+        f1.statistics = {armor: 3}
 
         d = f.Damage()
         d.damage_tests_number = 3
@@ -578,6 +580,7 @@ class TestFightingActions(unittest.TestCase):
         d.damage_per_hit = 2
 
         d.damaged_resource = health
+        d.armor = armor
 
         d.tester = mock.Mock()
         d.tester.test.side_effect = [True, False, True]

@@ -12,8 +12,11 @@ NPCFighterFactory forest_rat_factory:
     - skill: speed
       initial: 2
 
+  statistic_factories:
+    - statistic: armor
+      base: 1
+
   tactic: melee_berserk
-  armor: 1
   attack: forest_rat_attack
 
 ItemReceiveEvent forest_rat_fur_event:
@@ -32,4 +35,5 @@ Damage forest_rat_damage:
   damage_test_mod: 1
   damage_per_hit: 1
   damaged_resource: health
+  armor: armor
   tester: default_tester

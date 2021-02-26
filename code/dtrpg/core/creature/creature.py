@@ -1,4 +1,5 @@
 from dtrpg.core.game_object import GameObject, GameObjectFactory
+from dtrpg.core.creature.statistic import CreatureStatistics
 
 from typing import TYPE_CHECKING
 
@@ -12,6 +13,8 @@ class Creature(GameObject):
 
         self.resources = {}
         self.skills = {}
+        self._statistics = {}
+        self.statistics = CreatureStatistics(self)
 
 
 class Fighter(Creature):
@@ -25,10 +28,6 @@ class Fighter(Creature):
         return any(r.vital and cr.value == 0 for r, cr in self.resources.items())
 
     @property
-    def armor(self) -> int:
-        raise NotImplementedError
-
-    @property
     def attack(self) -> 'Attack':
         raise NotImplementedError
 
@@ -38,6 +37,7 @@ class FighterFactory(GameObjectFactory):
         super().__init__(class_)
         self.resource_factories = ()
         self.skill_factories = ()
+        self.statistic_factories = ()
         self.tactic = None
         self.on_killed = None
 
@@ -49,6 +49,9 @@ class FighterFactory(GameObjectFactory):
         }
         creature.skills = {
             f.skill: f.create() for f in self.skill_factories
+        }
+        creature.statistics.statistics = {
+            f.statistic: f.create() for f in self.statistic_factories
         }
 
         creature.tactic = self.tactic

@@ -175,6 +175,7 @@ class Damage(Event):
         self.damage_per_hit = None
 
         self.damaged_resource = None
+        self.armor = None
 
         self.tester = None
 
@@ -183,7 +184,7 @@ class Damage(Event):
             **params: Mapping[str, object]) -> AttackEventResult:
         total_damage = 0
         for _ in range(self.damage_tests_number):
-            if self.tester.test(self.damage_test_mod, target.armor):
+            if self.tester.test(self.damage_test_mod, target.statistics[self.armor]):
                 total_damage += self.damage_per_hit
 
         target.resources[self.damaged_resource].value -= (total_damage)

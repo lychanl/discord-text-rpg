@@ -42,8 +42,8 @@ class LocalizedObjectFactory(LocalizedObject):
         super().__init__()
         self._cls = clss
 
-    def _create(self) -> LocalizedObject:
-        obj = self._cls()
+    def _create(self, *args: list, **kwargs: dict) -> LocalizedObject:
+        obj = self._cls(*args, **kwargs)
         obj._obj_strings.update(self._obj_strings)
         return obj
 
@@ -63,7 +63,7 @@ class ObjectStrings:
         self._cls_strings = cls_strings
         self._obj = obj
 
-    def get(self, string: str, ctx: Tuple[str, dict]=None, default: str = None) -> str:
+    def get(self, string: str, ctx: Tuple[str, dict] = None, default: str = None) -> str:
         if ctx is None:
             ctx = {}
 

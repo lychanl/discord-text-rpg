@@ -12,6 +12,7 @@ action_points,NAME,action points
 health,NAME,health points
 health,VALUE,{value} health points
 health_factory,VALUE,{value}/{self.max} health
+armor,NAME,Armor
 here_action,REGEX,here
 here_event,EVENT_NOW,"{self.player.location.strings['YOU_ARE_HERE']}
 
@@ -23,6 +24,9 @@ me_event,EVENT_NOW,"{'\n'.join([r.strings['YOU_HAVE'] for r in self.player.resou
 You have {self.player.items.strings['USAGE']} items.
 
 {self.player.location.strings['YOU_ARE_HERE']}"
+stats_action,REGEX,stats|statistics
+stats_event,EVENT_NOW,"{'\n'.join(self.strings['STAT', {'stat': stat, 'value': value}] for stat, value in self.player.statistics.items())}"
+stats_event,STAT,{stat.strings['NAME']}: {value}
 items_action,REGEX,items
 items_event,EVENT_NOW,"{self.player.items.strings['ITEMS']}
 ({self.player.items.strings['USAGE']})"

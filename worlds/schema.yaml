@@ -111,24 +111,26 @@ SkillTestEvent:
   required failure: Event
   required test: SkillTest
 
-PlayerFactory:
-  _class: dtrpg.core.creature.PlayerFactory
-  required default_location: Location
-  required container_factory: ContainerFactory
+FighterFactory:
+  _class: dtrpg.core.creature.FighterFactory
+  _abstract: True
   optional resource_factories: [ CreatureResourceFactory ]
   optional skill_factories: [ CreatureSkillFactory ]
-  optional base_actions: [ Action ]
-  optional base_armor: int
+  optional statistic_factories: [ StatisticFactory ]
   required tactic: Tactic
+
+PlayerFactory:
+  _class: dtrpg.core.creature.PlayerFactory
+  _base: FighterFactory
+  required default_location: Location
+  required container_factory: ContainerFactory
+  optional base_actions: [ Action ]
   required default_attack: Attack
   optional on_killed: Event
 
 NPCFighterFactory:
   _class: dtrpg.core.creature.NPCFighterFactory
-  optional resource_factories: [ CreatureResourceFactory ]
-  optional skill_factories: [ CreatureSkillFactory ]
-  required tactic: Tactic
-  required armor: int
+  _base: FighterFactory
   required attack: Attack
 
 Player:
@@ -173,6 +175,17 @@ SkillTest:
   required skill: Skill
   required difficulty: int
   required tester: Tester
+
+Statistic:
+  _class: dtrpg.core.creature.Statistic
+
+CreatureStatistic:
+  _class: dtrpg.core.creature.CreatureStatistic
+
+StatisticFactory:
+  _class: dtrpg.core.creature.StatisticFactory
+  required statistic: Statistic
+  optional base: int
 
 Resource:
   _class: dtrpg.core.creature.Resource
@@ -286,6 +299,7 @@ Damage:
   required damage_test_mod: int
   required damage_per_hit: int
   required damaged_resource: Resource
+  required armor: Statistic
   required tester: Tester
 
 FightEvent:

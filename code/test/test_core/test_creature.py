@@ -246,3 +246,28 @@ class TestSkill(unittest.TestCase):
 
         self.assertEqual(p.skills[s1]._experience, 6)
         self.assertEqual(p.skills[s1].value, 3)
+
+
+class TestStatistic(unittest.TestCase):
+    def test_statistic_base(self) -> None:
+        c = creature.Creature()
+        s = creature.Statistic()
+        cs = creature.CreatureStatistic(s, 2)
+        c.statistics.statistics = {s: cs}
+
+        self.assertEqual(c.statistics[s], 2)
+
+
+class TestStatisticFactory(unittest.TestCase):
+    def test_statistic_factory_base(self) -> None:
+        ff = creature.PlayerFactory()
+        ff.container_factory = mock.Mock()
+        sf = creature.StatisticFactory()
+        s = creature.Statistic()
+        sf.statistic = s
+        sf.base = 3
+        ff.statistic_factories = [sf]
+
+        f = ff.create()
+
+        self.assertEqual(f.statistics[s], 3)

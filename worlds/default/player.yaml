@@ -9,9 +9,13 @@ PlayerFactory player_factory:
     - skill: melee_fighting
     - skill: evasion
     - skill: speed
+  statistic_factories:
+    - statistic: armor
+      base: 0
   container_factory: player_items
   base_actions:
     - me_action
+    - stats_action
     - here_action
     - items_action
     - skills_action
@@ -61,6 +65,8 @@ Skill speed:
   progression: "100 * level**2"
   experience_from_test: "4 * difficulty if success else difficulty"
 
+Statistic armor: {}
+
 ContainerFactory player_items:
   max_items: 10
 
@@ -75,6 +81,9 @@ InfoEvent items_event: {}
 
 Action skills_action: {event: skills_event }
 InfoEvent skills_event: {}
+
+Action stats_action: {event: stats_event }
+InfoEvent stats_event: {}
 
 Action drop_action:
   event: drop_event
@@ -95,6 +104,7 @@ Damage default_player_attack_damage:
   damage_test_mod: 1
   damage_per_hit: 1
   damaged_resource: health
+  armor: armor
   tester: default_tester
 
 SequenceEvent player_killed_event:
