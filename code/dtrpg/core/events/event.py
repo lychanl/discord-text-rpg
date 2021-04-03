@@ -37,6 +37,7 @@ class InfoEvent(Event):
     def _fire(self, player: 'Player', **params: Mapping[str, object]) -> InfoEventResult:
         event = self.create()
         event.player = player
+        event.params = params
         return event
 
 

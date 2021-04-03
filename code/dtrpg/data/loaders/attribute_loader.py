@@ -33,7 +33,10 @@ class SimpleAttributeLoader(AttributeLoader):
         return self._type_loader
 
     def load(self, obj: object, objects_dict: dict, values: dict) -> object:
-        return self._load_single(objects_dict, values, self._type_loader)
+        obj = self._load_single(objects_dict, values, self._type_loader)
+        if not isinstance(obj, self._type_loader.class_):
+            raise TypeError(f'Invalid object type, {self._type_loader.class_.__name__} expected')
+        return obj
 
 
 class CollectionLoader(AttributeLoader):

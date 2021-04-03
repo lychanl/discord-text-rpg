@@ -43,8 +43,10 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('here'), r'.*not started.*start.*')
         self.assertRegex(io.test('start'), r'.*Welcome.*')
         self.assertRegex(io.test('invalid'), r'.*Invalid.*')
+        self.assertRegex(io.test('info item herb'), r'.*a herb.*')
+        self.assertRegex(io.test('item linen jacket'), r'.*a linen jacket.*Armor \+1.*')
         self.assertRegex(io.test('me'), r'.*have 60/60 action points.*have 0 gold.*have 0/10 items.*in.*village.*')
-        self.assertRegex(io.test('items'), r'.*No items.*0/10.*')
+        self.assertRegex(io.test('items'), r'.*Equipped.*Body: empty.*Inventory.*No items.*0/10.*')
         self.assertRegex(io.test('here'), r'.*You are in.*village.*Travel to coast.*')
         self.assertRegex(io.test('Travel to coast'), r'.*travel.*coast.*')
         self.assertRegex(io.test('here'), r'.*You are at.*coast.*Travel to village.*')
@@ -75,7 +77,9 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('see offers'), r".*fish.*sell 6.*buy 15.*herbs.*sell 8.*fishing rod.*buy 25.*")
         self.assertRegex(io.test('travel coast'), r'.*travel.*coast.*')
 
-        game.player(TestIO.TEST_PLAYER).resources[action_points].value = 10
+        game.player(TestIO.TEST_PLAYER).resources[action_points].value = 20
+
+        # BUYING AND SELLING
 
         self.assertRegex(io.test('fish'), r'.*fish.* get 1x fish.*')
         self.assertRegex(io.test('fish'), r'.*fish.* get 1x fish.*')
@@ -83,9 +87,31 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('travel village'), r'.*travel.*village.*')
         self.assertRegex(io.test('sell 2 fishes'), r'.*sell 2x fish for 12*')
         self.assertRegex(io.test('sell 2 fishes'), r".*don't have enough items*")
-        self.assertRegex(io.test('buy rod'), r".*don't have enough gold*")
+        self.assertRegex(io.test('buy linen jacket'), r".*don't have enough gold*")
         self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
-        self.assertRegex(io.test('buy rod'), r".*buy 1x fishing rod.*25*")
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('buy linen jacket'), r".*buy 1x linen jacket.*30*")
+
+        # EQUIPMENT
+
+        self.assertRegex(io.test('stats'), r'.*Armor: 0.*')
+
+        self.assertRegex(io.test('equip fish'), r'.*cannot be equipped.*')
+        self.assertRegex(io.test('unequip from body'), r'.*anything equipped.*')
+
+        self.assertRegex(io.test('equip linen jacket'), r'.*equip linen jacket.*body.*')
+        self.assertRegex(io.test('items'), r'.*Body: linen jacket.*')
+        self.assertRegex(io.test('stats'), r'.*Armor: 1.*')
+        self.assertRegex(io.test('unequip linen jacket'), r'.*remove linen jacket.*body.*')
+        self.assertRegex(io.test('stats'), r'.*Armor: 0.*')
+        self.assertRegex(io.test('items'), r'.*Body: empty.*')
+
+        self.assertRegex(io.test('equip linen jacket'), r'.*equip linen jacket.*body.*')
+        self.assertRegex(io.test('items'), r'.*Body: linen jacket.*')
+        self.assertRegex(io.test('unequip linen jacket'), r'.*remove linen jacket.*body.*')
+        self.assertRegex(io.test('unequip linen jacket'), r'.*don\'t have linen jacket equipped.*')
+
+        # SKILLS
 
         self.assertRegex(io.test('skills'), r".*Herbalism: 1.*")
 
@@ -103,3 +129,27 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('herbs'), r'.*search.*but find nothing')
         self.assertRegex(io.test('herbs'), r'.*search.*but find nothing')
         self.assertRegex(io.test('skills'), r".*Herbalism: 2.*")
+
+        # FIGHT
+
+        game.player(TestIO.TEST_PLAYER).resources[action_points].value = 10
+
+        default_tester.test.return_value = True
+        self.assertRegex(
+            io.test('hunt rats'), r'.*Player fights against Forest Rat.*'
+            + r'Player moves to melee.*Forest Rat moves to melee.*'
+            + r'Forest Rat attacks Player and hits, dealing 2 damage.*'
+            + r'Player attacks Forest Rat and hits, dealing 1 damage.*'  # repeared 3 times
+            + r'Forest Rat was defeated!.*Player wins!.*'
+            + r'You get 1x small fur.*')
+
+        self.assertRegex(io.test('me'), r'.*have 4/10 health.*')
+
+        self.assertRegex(
+            io.test('hunt rats'), r'.*Player fights against Forest Rat.*'
+            + r'Forest Rat moves to melee.*Player moves to melee.*'
+            + r'Forest Rat attacks Player and hits, dealing 2 damage.*'
+            + r'Player attacks Forest Rat and hits, dealing 1 damage.*'
+            + r'Player was defeated!.*Forest Rat wins!.*'
+            + r'You regain consciousness after some time.*'
+            + r'You are tired and injured, but alive. You get 1 health points. You loose 8 action points.*')

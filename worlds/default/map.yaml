@@ -10,6 +10,9 @@ Market loc_nothingthere_village:
     - item: item_fishing_rod
       resource: gold
       buy_value: 25
+    - item: item_linen_jacket
+      resource: gold
+      buy_value: 30
   travel_actions:
     - { to: loc_nothingthere_coast }
     - { to: loc_nothingthere_forest }

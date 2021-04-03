@@ -9,3 +9,12 @@ Item item_fishing_rod:
 
 Item item_small_fur:
   max_stack: 20
+
+Item item_linen_jacket:
+  max_stack: 1
+  statistic_bonuses:
+    armor: 1
+  slot: itemslot_body
+
+ItemSlot itemslot_body: {}
+ItemSlot itemslot_hand: {}

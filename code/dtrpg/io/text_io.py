@@ -1,6 +1,4 @@
-from dtrpg.core import Game, GameObject, InvalidPlayerError, DuplicatePlayerError
-from dtrpg.core.creature import InsufficientResourceError, CreatureResource
-from dtrpg.core.item import ContainerCapacityException, OfferNotFoundException, InsufficientItemsException
+from dtrpg.core import Game, GameObject
 
 import re
 
@@ -31,18 +29,12 @@ class TextIO:
             event = self.action(player_id, command)
             if event:
                 return event.strings['EVENT_NOW']
-        except ArgumentError as e:
-            return self._invalid_agument(e.value)
-        except InvalidPlayerError:
-            return self._game.config.strings['INVALID_PLAYER']
-        except InsufficientResourceError as e:
-            return self._insufficient_resource(e.resource, e.required)
-        except InsufficientItemsException:
-            return self._game.config.strings['INSUFFICIENT_ITEMS']
-        except OfferNotFoundException:
-            return self._game.config.strings['OFFER_NOT_FOUND']
-        except ContainerCapacityException:
-            return self._game.config.strings['CONTAINER_CAPACITY']
+        except Exception as e:
+            string = f'EXCEPTION_{type(e).__name__}'
+            if string in self._game.config.strings:
+                return self._game.config.strings[string, {'e': e}]
+            else:
+                raise
 
         return self._invalid_command()
 
@@ -69,41 +61,29 @@ class TextIO:
 
     def action(self, player_id: Hashable, command: str) -> 'Event':
         player = self._game.player(player_id)
+
+        argument_error = None
+
         for action in player.available_actions:
             match = re.fullmatch(action.strings['REGEX'], command, flags=re.IGNORECASE)
             if match:
-                args = self._parse_args(action, match)
-                return action.take(player, **args)
+                try:
+                    args = self._parse_args(action, match)
+                    return action.take(player, **args)
+                except ArgumentError as e:
+                    argument_error = e
+
+        if argument_error:
+            raise argument_error
 
         return None
 
-    def _here(self, player_id: Hashable) -> str:
-        return self._game.player(player_id).location.strings['HERE']
-
-    def _me(self, player_id: Hashable) -> str:
-        return self._game.player(player_id).strings['ME']
-
-    def _items(self, player_id: Hashable) -> str:
-        return self._game.player(player_id).strings['ITEMS']
-
     def _start(self, player_id: Hashable) -> str:
-        try:
-            player = self._game.create_player(player_id)
-            return player.strings['WELCOME']
-        except DuplicatePlayerError:
-            return self._game.config.strings['DUPLICATE_PLAYER']
-
-    def _invalid_agument(self, value: str) -> str:
-        return self._game.config.strings['INVALID_ARGUMENT', {'value': value}]
+        player = self._game.create_player(player_id)
+        return player.strings['WELCOME']
 
     def _invalid_command(self) -> str:
         return self._game.config.strings['INVALID_COMMAND']
-
-    def _insufficient_resource(self, resource: 'CreatureResource', required: int) -> str:
-        return self._game.config.strings[
-            'INSUFFICIENT_RESOURCE',
-            {'player_resource': resource, 'resource': resource.resource, 'required': required}
-        ]
 
     def run(self, *args: Any, **kwargs: Any) -> Any:
         raise NotImplementedError

@@ -66,3 +66,64 @@ class RemoveItemEvent(Event):
             event.failed = True
 
         return event
+
+
+class EquipEventResult(EventResult):
+    def __init__(self):
+        super().__init__()
+        self.item = None
+
+
+class EquipItemEvent(Event):
+    def __init__(self):
+        super().__init__(EquipEventResult)
+        self.item = None
+
+    def _fire(self, player: 'Player', **params: Mapping[str, object]) -> EquipEventResult:
+        event = self.create()
+
+        item = params['item']
+
+        player.equip(item)
+
+        event.item = item
+        return event
+
+
+class UnequipEventResult(EventResult):
+    def __init__(self):
+        super().__init__()
+        self.item = None
+
+
+class UnequipItemEvent(Event):
+    def __init__(self):
+        super().__init__(UnequipEventResult)
+        self.item = None
+
+    def _fire(self, player: 'Player', **params: Mapping[str, object]) -> UnequipEventResult:
+        event = self.create()
+
+        item = params['item']
+
+        player.unequip(item)
+
+        event.item = item
+        return event
+
+
+class UnequipSlotEvent(Event):
+    def __init__(self):
+        super().__init__(UnequipEventResult)
+        self.slot = None
+
+    def _fire(self, player: 'Player', **params: Mapping[str, object]) -> UnequipEventResult:
+        event = self.create()
+
+        slot = params['slot']
+        item = player.item_slots[slot]
+
+        player.unequip_slot(slot)
+
+        event.item = item
+        return event

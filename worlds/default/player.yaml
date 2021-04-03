@@ -17,9 +17,17 @@ PlayerFactory player_factory:
     - me_action
     - stats_action
     - here_action
+    - item_action
     - items_action
     - skills_action
     - drop_action
+    - equip_action
+    - unequip_item_action
+    - unequip_slot_action
+
+  item_slots:
+    - itemslot_hand
+    - itemslot_body
 
   tactic: melee_berserk
   default_attack: default_player_attack
@@ -79,6 +87,13 @@ InfoEvent here_event: {}
 Action items_action: {event: items_event}
 InfoEvent items_event: {}
 
+Action item_action:
+  event: item_info_event
+  args:
+    item: Item
+
+InfoEvent item_info_event: {}
+
 Action skills_action: {event: skills_event }
 InfoEvent skills_event: {}
 
@@ -90,6 +105,27 @@ Action drop_action:
   args:
     number: int
     item: Item
+
+EquipItemEvent equip_event: {}
+
+Action equip_action:
+  event: equip_event
+  args:
+    item: Item
+
+UnequipItemEvent unequip_item_event: {}
+
+Action unequip_item_action:
+  event: unequip_item_event
+  args:
+    item: Item
+
+UnequipSlotEvent unequip_slot_event: {}
+
+Action unequip_slot_action:
+  event: unequip_slot_event
+  args:
+    slot: ItemSlot
 
 RemoveItemEvent drop_event: {}
 

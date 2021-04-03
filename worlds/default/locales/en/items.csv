@@ -7,3 +7,6 @@ item_fishing_rod,NAME,fishing rod
 item_fishing_rod,REGEX_NAME,(fishing )?rod
 item_small_fur,NAME,small fur
 item_small_fur,REGEX_NAME,small fur
+item_linen_jacket,NAME,linen jacket
+itemslot_body,NAME,body
+itemslot_hand,NAME,hand

@@ -71,6 +71,27 @@ RemoveItemEvent:
   optional item: Item
   optional number: int
 
+EquipItemEvent:
+  _class: dtrpg.core.item.EquipItemEvent
+  _base: Event
+  optional item: Item
+
+EquipEventResult:
+  _class: dtrpg.core.item.EquipEventResult
+
+UnequipItemEvent:
+  _class: dtrpg.core.item.UnequipItemEvent
+  _base: Event
+  optional item: Item
+
+UnequipEventResult:
+  _class: dtrpg.core.item.UnequipEventResult
+
+UnequipSlotEvent:
+  _class: dtrpg.core.item.UnequipSlotEvent
+  _base: Event
+  optional slot: ItemSlot
+
 OffersInfoAction:
   _class: dtrpg.core.events.OffersInfoAction
   _base: Action
@@ -117,6 +138,7 @@ FighterFactory:
   optional resource_factories: [ CreatureResourceFactory ]
   optional skill_factories: [ CreatureSkillFactory ]
   optional statistic_factories: [ StatisticFactory ]
+  optional item_slots: [ ItemSlot ]
   required tactic: Tactic
 
 PlayerFactory:
@@ -146,11 +168,16 @@ ContainerFactory:
 Item:
   _class: dtrpg.core.item.Item
   optional max_stack: int
+  optional statistic_bonuses: { Statistic: int }
+  optional slot: ItemSlot
 
 ItemStackFactory:
   _class: dtrpg.core.item.ItemStackFactory
   required item: Item
   optional stack: int
+
+ItemSlot:
+  _class: dtrpg.core.item.ItemSlot
 
 CreatureResourceFactory:
   _class: dtrpg.core.creature.CreatureResourceFactory

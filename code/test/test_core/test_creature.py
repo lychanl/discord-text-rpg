@@ -257,6 +257,23 @@ class TestStatistic(unittest.TestCase):
 
         self.assertEqual(c.statistics[s], 2)
 
+    def test_statistic_with_item_bonus(self) -> None:
+        c = creature.Creature()
+        s = creature.Statistic()
+        cs = creature.CreatureStatistic(s, 2)
+        c.statistics.statistics = {s: cs}
+
+        slot1 = item.ItemSlot()
+        slot2 = item.ItemSlot()
+
+        i = item.Item()
+        i.slot = slot1
+        i.statistic_bonuses[s] = 3
+
+        c.item_slots = {slot1: i, slot2: None}
+
+        self.assertEqual(c.statistics[s], 5)
+
 
 class TestStatisticFactory(unittest.TestCase):
     def test_statistic_factory_base(self) -> None:
@@ -271,3 +288,137 @@ class TestStatisticFactory(unittest.TestCase):
         f = ff.create()
 
         self.assertEqual(f.statistics[s], 3)
+
+
+class TestItemSlot(unittest.TestCase):
+    def test_item_slot_equip(self) -> None:
+        c = creature.Creature()
+
+        slot1 = item.ItemSlot()
+        slot2 = item.ItemSlot()
+
+        i = item.Item()
+        i.slot = slot1
+
+        c.item_slots = {slot1: None, slot2: None}
+        c.items = item.Container()
+        c.items.add(item.ItemStack(i, 1))
+
+        c.equip(i)
+
+        self.assertIs(c.item_slots[slot1], i)
+        self.assertEqual(c.items.count(i), 0)
+
+    def test_item_slot_equip_not_equippable(self) -> None:
+        c = creature.Creature()
+
+        slot1 = item.ItemSlot()
+        slot2 = item.ItemSlot()
+
+        i = item.Item()
+
+        c.item_slots = {slot1: None, slot2: None}
+        c.items = item.Container()
+        c.items.add(item.ItemStack(i, 1))
+
+        self.assertRaises(item.NotEquippableException, lambda: c.equip(i))
+
+    def test_item_slot_equip_slot_taken(self) -> None:
+        c = creature.Creature()
+
+        slot1 = item.ItemSlot()
+        slot2 = item.ItemSlot()
+
+        i = item.Item()
+        i2 = item.Item()
+        i.slot = slot1
+        i2.slot = slot1
+
+        c.item_slots = {slot1: i2, slot2: None}
+        c.items = item.Container()
+        c.items.add(item.ItemStack(i, 1))
+
+        c.equip(i)
+
+        self.assertIs(c.item_slots[slot1], i)
+        self.assertEqual(c.items.count(i), 0)
+        self.assertEqual(c.items.count(i2), 1)
+
+    def test_item_slot_unequip(self) -> None:
+        c = creature.Creature()
+
+        slot1 = item.ItemSlot()
+        slot2 = item.ItemSlot()
+
+        i = item.Item()
+        i.slot = slot1
+
+        c.item_slots = {slot1: i, slot2: None}
+        c.items = item.Container()
+
+        c.unequip(i)
+
+        self.assertIs(c.item_slots[slot1], None)
+        self.assertEqual(c.items.count(i), 1)
+
+    def test_item_slot_unequip_not_equipped(self) -> None:
+        c = creature.Creature()
+
+        slot1 = item.ItemSlot()
+        slot2 = item.ItemSlot()
+
+        i = item.Item()
+        i.slot = slot1
+
+        c.item_slots = {slot1: None, slot2: None}
+        c.items = item.Container()
+
+        self.assertRaises(item.ItemNotEquippedException, lambda: c.unequip(i))
+
+    def test_item_slot_unequip_container_full(self) -> None:
+        c = creature.Creature()
+
+        slot1 = item.ItemSlot()
+        slot2 = item.ItemSlot()
+
+        i = item.Item()
+        i2 = item.Item()
+        i.slot = slot1
+
+        c.item_slots = {slot1: i, slot2: None}
+        c.items = item.Container()
+        c.items.max_items = 1
+        c.items.add(item.ItemStack(i2, 1))
+
+        self.assertRaises(item.ContainerOverflowException, lambda: c.unequip(i))
+
+    def test_item_unequip_slot(self) -> None:
+        c = creature.Creature()
+
+        slot1 = item.ItemSlot()
+        slot2 = item.ItemSlot()
+
+        i = item.Item()
+        i.slot = slot1
+
+        c.item_slots = {slot1: i, slot2: None}
+        c.items = item.Container()
+
+        c.unequip_slot(slot1)
+
+        self.assertIs(c.item_slots[slot1], None)
+        self.assertEqual(c.items.count(i), 1)
+
+    def test_item_unequip_slot_not_equipped(self) -> None:
+        c = creature.Creature()
+
+        slot1 = item.ItemSlot()
+        slot2 = item.ItemSlot()
+
+        i = item.Item()
+        i.slot = slot1
+
+        c.item_slots = {slot1: i, slot2: None}
+        c.items = item.Container()
+
+        self.assertRaises(item.SlotNotEquippedException, lambda: c.unequip_slot(slot2))

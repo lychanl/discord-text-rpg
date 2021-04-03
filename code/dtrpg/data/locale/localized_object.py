@@ -75,9 +75,7 @@ class ObjectStrings:
             'self': self._obj,
         })
 
-        out = self._obj_strings.get(string, None)\
-            or self._cls_strings.get(string, None)\
-            or default
+        out = self._obj_strings.get(string, self._cls_strings.get(string, default))
 
         formatted = self.formatter.format(out, **ctx)
         return formatted

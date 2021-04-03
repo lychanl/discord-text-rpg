@@ -41,3 +41,7 @@ DefeatedEventResult,EVENT_NOW,{self.fighter.strings['NAME']} was defeated!
 MoveDestination.MELEE,NAME,melee
 MoveDestination.RANGED,NAME,ranged
 SequenceEventResult,EVENT_NOW,"{'\n'.join(r.strings['EVENT_NOW'] for r in self.results)}"
+Item,INFO,"It's a {self.strings['NAME']}{'\n' + self.strings['STATS'] if self.statistic_bonuses else ''}"
+Item,STATS,"{'\n'.join(stat.strings['NAME'] + ' ' + '%+d' % bonus for stat, bonus in self.statistic_bonuses.items())}"
+EquipEventResult,EVENT_NOW,You equip {self.item.strings['NAME']} to your {self.item.slot.strings['NAME']}
+UnequipEventResult,EVENT_NOW,You remove {self.item.strings['NAME']} from your {self.item.slot.strings['NAME']}
