@@ -3,6 +3,10 @@ class Loader:
     def can_load_str(self) -> bool:
         return False
 
+    @property
+    def try_load_obj_first(self) -> bool:
+        return False
+
     def preload(self) -> object:
         raise NotImplementedError
 
@@ -11,13 +15,18 @@ class Loader:
 
 
 class BuiltInLoader(Loader):
-    def __init__(self, class_: type):
+    def __init__(self, class_: type, try_load_obj_first: bool = False):
         super(BuiltInLoader, self).__init__()
         self._class = class_
+        self._try_load_obj_first = try_load_obj_first
 
     @property
     def can_load_str(self) -> bool:
         return True
+
+    @property
+    def try_load_obj_first(self) -> bool:
+        return self._try_load_obj_first
 
     @property
     def class_(self) -> type:

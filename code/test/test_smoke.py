@@ -137,7 +137,7 @@ class TestSmoke(unittest.TestCase):
         default_tester.test.return_value = True
         self.assertRegex(
             io.test('hunt rats'), r'.*Player fights against Forest Rat.*'
-            + r'Player moves to melee.*Forest Rat moves to melee.*'
+            + r'moves to melee.*'
             + r'Forest Rat attacks Player and hits, dealing 2 damage.*'
             + r'Player attacks Forest Rat and hits, dealing 1 damage.*'  # repeared 3 times
             + r'Forest Rat was defeated!.*Player wins!.*'
@@ -147,9 +147,17 @@ class TestSmoke(unittest.TestCase):
 
         self.assertRegex(
             io.test('hunt rats'), r'.*Player fights against Forest Rat.*'
-            + r'Forest Rat moves to melee.*Player moves to melee.*'
+            + r'moves to melee.*'
             + r'Forest Rat attacks Player and hits, dealing 2 damage.*'
             + r'Player attacks Forest Rat and hits, dealing 1 damage.*'
             + r'Player was defeated!.*Forest Rat wins!.*'
             + r'You regain consciousness after some time.*'
             + r'You are tired and injured, but alive. You get 1 health points. You loose 8 action points.*')
+
+        # TACTICS
+
+        self.assertRegex(io.test('tactic'), r'.*Current tactic: melee.*move to melee.*attack if possible.*')
+        self.assertRegex(io.test('tactic ranged'), r'.*move to ranged.*attack if possible.*')
+        self.assertRegex(io.test('list tactics'), r'.*melee.*cautious melee.*ranged.*cautious ranged.*')
+        self.assertRegex(io.test('set ranged tactic'), r'.*Tactic set.*')
+        self.assertRegex(io.test('tactic'), r'.*Current tactic: ranged.*move to ranged.*attack if possible.*')

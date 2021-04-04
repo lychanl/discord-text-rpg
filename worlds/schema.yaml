@@ -1,3 +1,8 @@
+GameObjectFactory:
+  _class: dtrpg.core.GameObjectFactory
+  _abstract: True
+  optional default_variables: {str: object}
+
 Location:
   _class: dtrpg.core.map.Location
   travel_actions: [ TravelAction ]
@@ -24,6 +29,15 @@ Action:
 Event:
   _class: dtrpg.core.events.Event
   _abstract: True
+
+VariableSetEvent:
+  _class: dtrpg.core.events.VariableSetEvent
+  _base: Event
+  required variable: str
+  optional value: object
+
+VariableSetEventResult:
+  _class: dtrpg.core.events.VariableSetEventResult
 
 ResourceChangesEvent:
   _class: dtrpg.core.events.ResourceChangesEvent
@@ -134,6 +148,7 @@ SkillTestEvent:
 
 FighterFactory:
   _class: dtrpg.core.creature.FighterFactory
+  _base: GameObjectFactory
   _abstract: True
   optional resource_factories: [ CreatureResourceFactory ]
   optional skill_factories: [ CreatureSkillFactory ]
@@ -149,6 +164,7 @@ PlayerFactory:
   optional base_actions: [ Action ]
   required default_attack: Attack
   optional on_killed: Event
+  optional available_tactics: [ Tactic ]
 
 NPCFighterFactory:
   _class: dtrpg.core.creature.NPCFighterFactory
@@ -163,6 +179,7 @@ Container:
 
 ContainerFactory:
   _class: dtrpg.core.item.ContainerFactory
+  _base: GameObjectFactory
   required max_items: int
 
 Item:
@@ -173,6 +190,7 @@ Item:
 
 ItemStackFactory:
   _class: dtrpg.core.item.ItemStackFactory
+  _base: GameObjectFactory
   required item: Item
   optional stack: int
 
@@ -181,6 +199,7 @@ ItemSlot:
 
 CreatureResourceFactory:
   _class: dtrpg.core.creature.CreatureResourceFactory
+  _base: GameObjectFactory
   required resource: Resource
   optional initial: int
   optional max: int
@@ -189,6 +208,7 @@ CreatureResourceFactory:
 
 CreatureSkillFactory:
   _class: dtrpg.core.creature.CreatureSkillFactory
+  _base: GameObjectFactory
   required skill: Skill
   optional initial: int
 
@@ -211,6 +231,7 @@ CreatureStatistic:
 
 StatisticFactory:
   _class: dtrpg.core.creature.StatisticFactory
+  _base: GameObjectFactory
   required statistic: Statistic
   optional base: int
 
@@ -277,12 +298,12 @@ Tactic:
   optional action_predicates: [ ActionPredicate ]
 
 MovePredicate:
-  _class: dtrpg.core.fighting.TacticPredicate
+  _class: dtrpg.core.fighting.MovePredicate
   optional conditions: [ TacticCondition ]
   required result: MoveDestination
 
 ActionPredicate:
-  _class: dtrpg.core.fighting.TacticPredicate
+  _class: dtrpg.core.fighting.ActionPredicate
   optional conditions: [ TacticCondition ]
   required result: FightAction
 

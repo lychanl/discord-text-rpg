@@ -1,5 +1,7 @@
 from dtrpg.core.game_object import GameObjectFactory
-from dtrpg.core.events.event_result import EventResult, ResourceChangeEventResult, InfoEventResult, SequenceEventResult
+from dtrpg.core.events.event_result import (
+    EventResult, ResourceChangeEventResult, InfoEventResult, SequenceEventResult, VariableSetEventResult
+)
 
 
 from typing import Mapping, TYPE_CHECKING
@@ -70,5 +72,25 @@ class SequenceEvent(ComplexEvent):
             event.fire(player, **self._get_subevent_params(str(i), params))
             for i, event in enumerate(params['events'])
         ]
+
+        return event
+
+
+class VariableSetEvent(Event):
+    def __init__(self):
+        super().__init__(VariableSetEventResult)
+        self.variable = None
+        self.value = None
+
+    def _fire(self, player: 'Player', **params: Mapping[str, object]) -> VariableSetEventResult:
+        event = self.create()
+
+        variable = params['variable']
+        value = params['value']
+
+        event.variable = variable
+        event.value = value
+
+        player.set_variable(variable, value)
 
         return event

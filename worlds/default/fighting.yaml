@@ -8,3 +8,29 @@ Tactic melee_berserk:
     - result: MELEE
   action_predicates:
     - result: ATTACK
+
+Tactic melee_cautious:
+  move_predicates:
+    - conditions: 
+      - quantifier: SELF
+        condition: LOW_HEALTH
+      result: FLEE
+    - result: MELEE
+  action_predicates:
+    - result: ATTACK
+
+Tactic ranged:
+  move_predicates:
+    - result: RANGED
+  action_predicates:
+    - result: ATTACK
+
+Tactic ranged_cautious:
+  move_predicates:
+    - conditions: 
+      - quantifier: SELF
+        condition: LOW_HEALTH
+      result: FLEE
+    - result: RANGED
+  action_predicates:
+    - result: ATTACK

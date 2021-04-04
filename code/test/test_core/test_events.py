@@ -172,3 +172,17 @@ class TestEvents(unittest.TestCase):
         self.assertEqual(ret.results, [r1, r2])
         evs[0].fire.assert_called_once()
         evs[1].fire.assert_called_once()
+
+    def test_variable_set_event(self) -> None:
+        e = events.VariableSetEvent()
+        e.variable = 'VAR'
+        e.value = 'value'
+
+        p = creature.Player()
+        p.variable_properties['var'] = 'VAR'
+
+        res = e.fire(p)
+
+        self.assertEqual(res.variable, 'VAR')
+        self.assertEqual(res.value, 'value')
+        self.assertEqual(p.var, 'value')

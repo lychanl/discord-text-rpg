@@ -15,6 +15,8 @@ class Player(Fighter):
         self.default_attack = None
         self.base_armor = 0
         self.tactic = None
+        self.available_tactics = ()
+        self.variable_holder = None
 
     @property
     def armor(self) -> int:
@@ -35,14 +37,15 @@ class PlayerFactory(FighterFactory):
         self.default_location = None
         self.base_actions = []
         self.default_attack = None
+        self.available_tactics = ()
+        self.default_variable_values = {}
 
     def create(self) -> Player:
         player = self._create()
 
         player.location = self.default_location
-
         player.base_actions = self.base_actions
-
         player.default_attack = self.default_attack
+        player.available_tactics = self.available_tactics
 
         return player

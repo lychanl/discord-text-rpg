@@ -474,7 +474,7 @@ class TestTactic(unittest.TestCase):
         c2.quantifier = f.TacticQuantifier.SELF
         c2.condition = f.StatusFlag.RANGED
 
-        p = f.TacticPredicate()
+        p = f.MovePredicate()
         p.conditions = [c1, c2]
         p.result = mock.Mock()
         p.result.can_take.return_value = True

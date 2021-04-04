@@ -71,12 +71,15 @@ class TypeLoader(Loader):
             raise AbstractTypeException
         return self._class()
 
-    def _load(self, objects_dict: dict, values: dict, attr_values: dict) -> Tuple[dict, dict]:
+    def _load(self, objects_dict: dict, values: dict, attr_values: dict, variables: dict) -> Tuple[dict, dict, dict]:
         unused = {}
 
         for name, value in values.items():
             if name in self._attributes:
-                attr_values[name] = self._attributes[name][0].load(None, objects_dict, value)
+                if isinstance(value, str) and value.startswith('variable(') and value.endswith(')'):
+                    variables[name] = value[len('variable('):-1]
+                else:
+                    attr_values[name] = self._attributes[name][0].load(None, objects_dict, value)
             else:
                 unused[name] = value
 
@@ -84,15 +87,17 @@ class TypeLoader(Loader):
             try:
                 if name in attr_values:
                     qualifiers.check([attr_values[name]])
+                elif name in variables:
+                    qualifiers.check([object()])
                 else:
                     qualifiers.check([])
             except QualifierCheckFailed as e:
                 raise QualifierCheckFailed(f'Qualifier check failed for {name}: {e}') from e
 
         if self._base:
-            return self._base._load(objects_dict, unused, attr_values)
+            return self._base._load(objects_dict, unused, attr_values, variables)
         else:
-            return unused, attr_values
+            return unused, attr_values, variables
 
     def _load_enum(self, value: str) -> object:
         return self._class[value]
@@ -101,13 +106,15 @@ class TypeLoader(Loader):
         if obj is None:
             obj = self.preload()
 
-        unused, attr_values = self._load(objects_dict, values, {})
+        unused, attr_values, variables = self._load(objects_dict, values, {}, {})
 
         if unused:
             raise KeyError(f'Undefined attributes: {list(unused.keys())}')
 
         for name, value in attr_values.items():
             setattr(obj, name, value)
+        for name, value in variables.items():
+            obj.add_variable_property(name, value)
 
         return obj
 

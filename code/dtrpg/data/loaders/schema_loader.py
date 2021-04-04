@@ -45,7 +45,8 @@ class SchemaLoader:
             'str': BuiltInLoader(str),
             'int': BuiltInLoader(int),
             'float': BuiltInLoader(float),
-            'bool': BuiltInLoader(bool)
+            'bool': BuiltInLoader(bool),
+            'object': BuiltInLoader(object, try_load_obj_first=True)
         }
         loaders['type'] = TypenameLoader(loaders)
 

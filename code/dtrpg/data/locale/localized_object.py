@@ -54,7 +54,7 @@ class LocalizedObjectFactory(LocalizedObject):
 class ObjectStrings:
     AVAILABLE_BUILTINS = {
         'int': int, 'float': float, 'str': str, 'abs': abs,
-        'len': len, 'sum': sum, 'any': any, 'all': all, 'zip': zip}
+        'len': len, 'sum': sum, 'any': any, 'all': all, 'enumerate': enumerate, 'zip': zip}
 
     formatter = LocaleFormatter()
 

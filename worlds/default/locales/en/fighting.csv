@@ -1,0 +1,7 @@
+object,string,value
+melee_berserk,NAME,melee
+melee_cautious,NAME,cautious melee
+melee_cautious,REGEX_NAME,cautious melee|melee cautious
+ranged,NAME,ranged
+ranged_cautious,NAME,cautious ranged
+ranged_cautious,REGEX_NAME,cautious ranged|ranged cautious

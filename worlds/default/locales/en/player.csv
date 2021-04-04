@@ -50,3 +50,12 @@ item_info_event,EVENT_NOW,"{self.params['item'].strings['INFO']}"
 equip_action,REGEX,equip (?P<item>.+)
 unequip_item_action,REGEX,unequip (?P<item>.+)
 unequip_slot_action,REGEX,unequip from (?P<slot>.+)
+tactic_info_event,CURRENT,"Current tactic: {self.player.tactic.strings['NAME']}
+{self.player.tactic.strings['INFO']}"
+tactic_info_event,EVENT_NOW,{self.params['tactic'].strings['INFO'] if 'tactic' in self.params else self.strings['CURRENT']}
+tactic_info_action,REGEX,tactic( info)?( (?P<tactic>.+))?
+tactics_list_event,EVENT_NOW,"Available tactics:
+{'\n'.join([tactic.strings['NAME'] for tactic in self.player.available_tactics])}"
+tactics_list_action,REGEX,(list )?(available )?tactics
+set_tactic_action,REGEX,set (?P<value>.+) tactic
+set_tactic_event,EVENT_NOW,Tactic set.

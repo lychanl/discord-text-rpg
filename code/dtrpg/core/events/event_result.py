@@ -21,3 +21,10 @@ class SequenceEventResult(EventResult):
     def __init__(self):
         super().__init__()
         self.results = []
+
+
+class VariableSetEventResult(EventResult):
+    def __init__(self):
+        super().__init__()
+        self.variable = None
+        self.value = None

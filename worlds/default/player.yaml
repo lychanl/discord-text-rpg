@@ -24,12 +24,24 @@ PlayerFactory player_factory:
     - equip_action
     - unequip_item_action
     - unequip_slot_action
+    - tactic_info_action
+    - tactics_list_action
+    - set_tactic_action
 
   item_slots:
     - itemslot_hand
     - itemslot_body
 
-  tactic: melee_berserk
+  available_tactics:
+    - melee_berserk
+    - melee_cautious
+    - ranged
+    - ranged_cautious
+
+  default_variables: {
+    TACTIC: melee_berserk
+  }
+  tactic: variable(TACTIC)
   default_attack: default_player_attack
   on_killed: player_killed_event
 
@@ -93,6 +105,35 @@ Action item_action:
     item: Item
 
 InfoEvent item_info_event: {}
+
+Action item_action:
+  event: item_info_event
+  args:
+    item: Item
+
+InfoEvent item_info_event: {}
+
+Action tactic_info_action:
+  event: tactic_info_event
+  args:
+    tactic: Tactic
+
+InfoEvent tactic_info_event: {}
+
+Action tactics_list_action:
+  event: tactics_list_event
+  args:
+    tactic: Tactic
+
+InfoEvent tactics_list_event: {}
+
+Action set_tactic_action:
+  event: set_tactic_event
+  args:
+    value: Tactic
+
+VariableSetEvent set_tactic_event:
+  variable: TACTIC
 
 Action skills_action: {event: skills_event }
 InfoEvent skills_event: {}

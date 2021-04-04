@@ -1,3 +1,4 @@
+from dtrpg.core.game_object import GameObject
 from dtrpg.core.creature.skill import OpposedSkillTest, Skill
 from dtrpg.core.tester import Tester
 from dtrpg.core.events import Event, EventResult
@@ -13,7 +14,7 @@ if TYPE_CHECKING:
     from dtrpg.core.creature.creature import Fighter
 
 
-class FightAction:
+class FightAction(GameObject):
     def apply(self, taker: 'Fighter', **kwargs: Mapping) -> EventResult:
         raise NotImplementedError
 

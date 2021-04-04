@@ -40,8 +40,29 @@ AttackEventResult,MISS,but misses
 DefeatedEventResult,EVENT_NOW,{self.fighter.strings['NAME']} was defeated!
 MoveDestination.MELEE,NAME,melee
 MoveDestination.RANGED,NAME,ranged
+MoveDestination.MELEE,MOVE_TO,move to melee
+MoveDestination.RANGED,MOVE_TO,move to ranged
+MoveDestination.FLEE,MOVE_TO,flee
 SequenceEventResult,EVENT_NOW,"{'\n'.join(r.strings['EVENT_NOW'] for r in self.results)}"
 Item,INFO,"It's a {self.strings['NAME']}{'\n' + self.strings['STATS'] if self.statistic_bonuses else ''}"
 Item,STATS,"{'\n'.join(stat.strings['NAME'] + ' ' + '%+d' % bonus for stat, bonus in self.statistic_bonuses.items())}"
 EquipEventResult,EVENT_NOW,You equip {self.item.strings['NAME']} to your {self.item.slot.strings['NAME']}
 UnequipEventResult,EVENT_NOW,You remove {self.item.strings['NAME']} from your {self.item.slot.strings['NAME']}
+Tactic,INFO,"{self.strings['PREDICATES', {'predicates': self.move_predicates}]}
+{self.strings['PREDICATES', {'predicates': self.action_predicates}]}"
+Tactic,PREDICATES,"{'\n'.join(('' if i == 0 else 'else ') + pred.strings['INFO'] for i, pred in enumerate(predicates))}"
+MovePredicate,INFO,{('if ' + ' and '.join(cond.strings['INFO'] for cond in self.conditions) + ' then ') if self.conditions else ''}{self.result.strings['MOVE_TO']}
+ActionPredicate,INFO,{('if ' + ' and '.join(cond.strings['INFO'] for cond in self.conditions) + ' then ') if self.conditions else ''}{self.result.strings['NAME']} if possible
+TacticCondition,INFO,{self.quantifier.strings['NAME']} {self.condition.strings['NAME']}
+TacticQuantifier.ANY_ENEMY,NAME,any enemy is
+TacticQuantifier.ALL_ENEMIES,NAME,all enemies are
+TacticQuantifier.ANY_ALLY,NAME,any ally is
+TacticQuantifier.ALL_ALLIES,NAME,all allies are
+TacticQuantifier.SELF,NAME,you are
+StatusFlag.MELEE,NAME,in melee distance
+StatusFlag.RANGED,NAME,in ranged distance
+StatusFlag.LOW_HEALTH,NAME,at low health
+StatusFlag.HIGH_HEALTH,NAME,at high health
+StatusFlag.FULL_HEALTH,NAME,at full health
+FightAction.EMPTY,NAME,do nothing
+FightAction.ATTACK,NAME,attack

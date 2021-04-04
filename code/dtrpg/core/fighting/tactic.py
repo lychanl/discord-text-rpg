@@ -10,8 +10,9 @@ if TYPE_CHECKING:
     from dtrpg.core.fighting.fight_action import FightAction, EmptyAction
 
 
-class Tactic:
+class Tactic(GameObject):
     def __init__(self):
+        super().__init__()
         self.move_predicates = []
         self.action_predicates = []
 
@@ -47,6 +48,7 @@ class TacticQuantifier(GameObject, Enum):
 
 class TacticCondition(GameObject):
     def __init__(self):
+        super().__init__()
         self.quantifier = None
         self.condition = None
 
@@ -58,7 +60,8 @@ class TacticCondition(GameObject):
 
 class TacticPredicate(GameObject):
     def __init__(self):
-        self.conditions = None
+        super().__init__()
+        self.conditions = ()
         self.result = None
         self.target_priority = None
 
@@ -75,3 +78,11 @@ class TacticPredicate(GameObject):
             params['target_priority'] = self.target_priority
 
         return params
+
+
+class MovePredicate(TacticPredicate):
+    pass
+
+
+class ActionPredicate(TacticPredicate):
+    pass
