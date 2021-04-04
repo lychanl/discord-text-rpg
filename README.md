@@ -30,5 +30,5 @@ Goals (gameplay):
  - [x] Location-based actions
  - [x] Player-based actions
  - [x] Items, resources, trading (with 'NPCs' only, for now)
- - [ ] Skills
- - [ ] Monsters, random encounters, fighting
+ - [x] Skills
+ - [x] Monsters, fighting
