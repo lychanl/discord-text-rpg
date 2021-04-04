@@ -7,6 +7,7 @@ PlayerFactory player_factory:
   skill_factories:
     - skill: herbalism
     - skill: melee_fighting
+    - skill: ranged_fighting
     - skill: evasion
     - skill: speed
   statistic_factories:
@@ -70,6 +71,10 @@ CreatureResourceFactory health_factory:
   clock: clock
 
 Skill herbalism:
+  progression: "10 * level**2"
+  experience_from_test: "4 * difficulty if success else difficulty"
+
+Skill ranged_fighting:
   progression: "10 * level**2"
   experience_from_test: "4 * difficulty if success else difficulty"
 

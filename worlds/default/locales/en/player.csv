@@ -2,6 +2,7 @@ object,string,value
 player_factory,WELCOME,Welcome!
 herbalism,NAME,Herbalism
 melee_fighting,NAME,Melee fighting
+ranged_fighting,NAME,Ranged fighting
 evasion,NAME,Evasion
 speed,NAME,Speed
 gold,VALUE,{value} gold

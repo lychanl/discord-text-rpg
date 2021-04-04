@@ -22,7 +22,7 @@ Item item_stones:
   attack: stone_throw
 
 Attack stone_throw:
-  hit_skill: melee_fighting
+  hit_skill: ranged_fighting
   evasion_skill: evasion
   tester: default_tester
   on_hit: stone_throw_damage

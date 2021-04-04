@@ -33,16 +33,16 @@ FightEventResult,RESULT,"{self.strings['RESULT_DRAW'] if self.result.name == 'DR
 FightEventResult,EVENT_NOW,"{self.strings['GROUP', {'group': self.group1}]} fight{self.strings['GROUP_S', {'group': self.group1}]} against {self.strings['GROUP', {'group': self.group2}]}.
 {'\n'.join(e.strings['EVENT_NOW'] for e in self.events)}
 {self.strings['RESULT']}{'\n' + self.next.strings['EVENT_NOW'] if self.next else ''}{'\n' + self.on_killed.strings['EVENT_NOW'] if self.on_killed else ''}"
-MoveEventResult,EVENT_NOW,"{self.fighter.strings['NAME']} moves to {self.to_loc.strings['NAME']}"
+MoveEventResult,EVENT_NOW,"{self.fighter.strings['NAME']} {self.to_loc.strings['MOVES_TO']}"
 AttackEventResult,EVENT_NOW,"{self.attacker.strings['NAME']} attacks {self.target.strings['NAME']} {self.strings['HIT'] if any(self.hits) else self.strings['MISS']}"
 AttackEventResult,HIT,"and hits, dealing {sum(r.damage_dealt for r, h in zip(self.results, self.hits) if h)} damage"
 AttackEventResult,MISS,but misses
 EmptyActionResult,EVENT_NOW,{self.taker.strings['NAME']} can't do anything.
 DefeatedEventResult,EVENT_NOW,{self.fighter.strings['NAME']} was defeated!
-MoveDestination,MOVE_TO,moves to {self.strings['NAME']}
+MoveDestination,MOVES_TO,moves to {self.strings['NAME']}
 MoveDestination.MELEE,NAME,melee
 MoveDestination.RANGED,NAME,ranged
-MoveDestination.FLEE,MOVE_TO,flees
+MoveDestination.FLEE,MOVES_TO,flees
 MoveDestination.FLEE,NAME,flee
 MoveDestination.MELEE,MOVE_TO,move to melee
 MoveDestination.RANGED,MOVE_TO,move to ranged
