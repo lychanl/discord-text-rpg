@@ -12,22 +12,6 @@ class NPCFighter(Fighter):
         self._armor = 0
         self._attack = None
 
-    @property
-    def armor(self) -> int:
-        return self._armor
-
-    @armor.setter
-    def armor(self, armor: int) -> None:
-        self._armor = armor
-
-    @property
-    def attack(self) -> 'Attack':
-        return self._attack
-
-    @attack.setter
-    def attack(self, attack: 'Attack') -> None:
-        self._attack = attack
-
 
 class NPCFighterFactory(FighterFactory):
     def __init__(self):
@@ -38,7 +22,6 @@ class NPCFighterFactory(FighterFactory):
     def create(self) -> NPCFighter:
         npc = self._create()
 
-        npc.attack = self.attack
-        npc.armor = self.armor
+        npc.default_attack = self.attack
 
         return npc

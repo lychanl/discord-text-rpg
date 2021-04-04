@@ -187,6 +187,7 @@ Item:
   optional max_stack: int
   optional statistic_bonuses: { Statistic: int }
   optional slot: ItemSlot
+  optional attack: Attack
 
 ItemStackFactory:
   _class: dtrpg.core.item.ItemStackFactory
@@ -339,6 +340,9 @@ Attack:
   required tester: Tester
   optional on_hit: Event
   optional on_miss: Event
+
+EmptyActionResult:
+  _class: dtrpg.core.fighting.EmptyActionResult
 
 Damage:
   _class: dtrpg.core.fighting.Damage

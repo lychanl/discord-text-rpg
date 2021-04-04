@@ -37,14 +37,20 @@ MoveEventResult,EVENT_NOW,"{self.fighter.strings['NAME']} moves to {self.to_loc.
 AttackEventResult,EVENT_NOW,"{self.attacker.strings['NAME']} attacks {self.target.strings['NAME']} {self.strings['HIT'] if any(self.hits) else self.strings['MISS']}"
 AttackEventResult,HIT,"and hits, dealing {sum(r.damage_dealt for r, h in zip(self.results, self.hits) if h)} damage"
 AttackEventResult,MISS,but misses
+EmptyActionResult,EVENT_NOW,{self.taker.strings['NAME']} can't do anything.
 DefeatedEventResult,EVENT_NOW,{self.fighter.strings['NAME']} was defeated!
+MoveDestination,MOVE_TO,moves to {self.strings['NAME']}
 MoveDestination.MELEE,NAME,melee
 MoveDestination.RANGED,NAME,ranged
+MoveDestination.FLEE,MOVE_TO,flees
+MoveDestination.FLEE,NAME,flee
 MoveDestination.MELEE,MOVE_TO,move to melee
 MoveDestination.RANGED,MOVE_TO,move to ranged
 MoveDestination.FLEE,MOVE_TO,flee
 SequenceEventResult,EVENT_NOW,"{'\n'.join(r.strings['EVENT_NOW'] for r in self.results)}"
-Item,INFO,"It's a {self.strings['NAME']}{'\n' + self.strings['STATS'] if self.statistic_bonuses else ''}"
+Item,INFO,"{self.strings['ITS']} {self.strings['NAME']}{'\n' + self.strings['STATS'] if self.statistic_bonuses else ''}{'\n' + self.strings['ATTACK'] if self.attack else ''}"
+Item,ITS,It's a
+Item,ATTACK,Attack: {self.attack.strings['INFO']}
 Item,STATS,"{'\n'.join(stat.strings['NAME'] + ' ' + '%+d' % bonus for stat, bonus in self.statistic_bonuses.items())}"
 EquipEventResult,EVENT_NOW,You equip {self.item.strings['NAME']} to your {self.item.slot.strings['NAME']}
 UnequipEventResult,EVENT_NOW,You remove {self.item.strings['NAME']} from your {self.item.slot.strings['NAME']}
@@ -66,3 +72,6 @@ StatusFlag.HIGH_HEALTH,NAME,at high health
 StatusFlag.FULL_HEALTH,NAME,at full health
 FightAction.EMPTY,NAME,do nothing
 FightAction.ATTACK,NAME,attack
+Attack,INFO,"{self.strings['NAME']}: {self.strings['ATTACKS']}, {self.on_hit.strings['EFFECT']}"
+Attack,ATTACKS,{str(self.attacks_number) + ' ' if self.attacks_number > 1 else ''}{'ranged' if self.ranged else 'melee'} attack{'s' if self.attacks_number > 1 else ''}
+Damage,EFFECT,"{str(self.damage_tests_number) + 'x' if self.damage_tests_number > 1 else ''}{self.damage_per_hit} damage, AP {self.damage_tests_number}"

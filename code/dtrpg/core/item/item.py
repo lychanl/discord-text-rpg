@@ -28,6 +28,7 @@ class Item(GameObject):
         self.max_stack = 1
         self.slot = None
         self.statistic_bonuses = {}
+        self.attack = None
 
 
 class ItemStack(GameObject):

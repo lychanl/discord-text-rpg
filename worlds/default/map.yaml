@@ -24,6 +24,7 @@ Location loc_nothingthere_coast:
     - { to: loc_nothingthere_village }
   local_actions:
     - nothingthere_fish
+    - nothingthere_gather_stones
 
 Location loc_nothingthere_forest:
   travel_actions:
@@ -86,3 +87,15 @@ FightEvent rat_hunting_event:
     - forest_rat_factory
   fight_engine: fight_engine
   victory: forest_rat_fur_event
+
+Action nothingthere_gather_stones:
+  costs:
+    - resource: action_points
+      cost: 1
+  event: nothingthere_gather_stones_event
+
+ItemReceiveEvent nothingthere_gather_stones_event:
+  item_factory:
+    item: item_stones
+    stack: 1
+  

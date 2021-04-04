@@ -10,6 +10,9 @@ nothingthere_job_event,CAUSE_NOW,"You got a job helping some fishermen. "
 nothingthere_fish,REGEX,"fish(ing)?"
 nothingthere_fish,NAME,Fishing
 nothingthere_fish_event,CAUSE_NOW,"You fish. "
+nothingthere_gather_stones,REGEX,"gather|stone(s)?|gather stone(s)?|stone(s)? gathering"
+nothingthere_gather_stones,NAME,Stones gathering
+nothingthere_gather_stones_event,CAUSE_NOW,You found some round stones. 
 nothingthere_forest_herbs_success,CAUSE_NOW,"You find some herbs. "
 nothingthere_forest_herbs_failure,EVENT_NOW,You search for some time but find nothing.
 nothingthere_forest_herbs,REGEX,"((search |look )for )?herb(s)?"

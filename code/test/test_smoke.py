@@ -161,3 +161,16 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('list tactics'), r'.*melee.*cautious melee.*ranged.*cautious ranged.*')
         self.assertRegex(io.test('set ranged tactic'), r'.*Tactic set.*')
         self.assertRegex(io.test('tactic'), r'.*Current tactic: ranged.*move to ranged.*attack if possible.*')
+
+        # ATTACKS
+
+        game.player(TestIO.TEST_PLAYER).resources[action_points].value = 10
+
+        self.assertRegex(io.test('travel village'), r'.*travel.*village.*')
+        self.assertRegex(io.test('travel coast'), r'.*travel.*coast.*')
+        self.assertRegex(io.test('gather stones'), r'.*get 1x stones.*')
+
+        self.assertRegex(io.test('item stones'), r'.*Attack: stone throw.*')
+        self.assertRegex(io.test('stats'), r'.*Current attack: fist.*')
+        self.assertRegex(io.test('equip stones'), r'.*equip stones.*hand.*')
+        self.assertRegex(io.test('stats'), r'.*Current attack: stone throw.*')

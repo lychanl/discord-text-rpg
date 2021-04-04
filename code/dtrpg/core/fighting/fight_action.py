@@ -82,7 +82,7 @@ class AttackAction(TargetedAction):
         return True
 
     def allow_ranged_range(self, taker: 'Fighter') -> bool:
-        return not taker.attack.ranged
+        return taker.attack.ranged
 
     def allow_target_self(self, taker: 'Fighter') -> bool:
         return False
@@ -197,12 +197,16 @@ class Damage(Event):
 
 
 class EmptyActionResult(EventResult):
-    pass
+    def __init__(self):
+        super().__init__()
+        self.taker = None
 
 
 class EmptyAction(FightAction):
     def apply(self, taker: 'Fighter') -> EmptyActionResult:
-        return EmptyActionResult()
+        result = EmptyActionResult()
+        result.taker = taker
+        return result
 
     def can_take(self, taker: 'Fighter') -> bool:
         return True

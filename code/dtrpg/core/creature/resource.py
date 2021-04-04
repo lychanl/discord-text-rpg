@@ -41,7 +41,7 @@ class CreatureResource(GameObject):
 
     @value.setter
     def value(self, value: int) -> None:
-        self._value = min(value, self._max) if self._max else value
+        self._value = max(min(value, self._max) if self._max else value, 0)
         self._update()
 
     @property

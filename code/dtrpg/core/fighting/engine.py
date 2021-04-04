@@ -101,7 +101,7 @@ class FightEngine:
     @speed_skill.setter
     def speed_skill(self, skill: 'Skill') -> None:
         self.move_test.skill = skill
-        self.move_test.versus_skill = skill
+        self.move_test.skill_versus = skill
 
     def fight(
         self, group1: Iterable['Fighter'], group2: Iterable['Fighter']

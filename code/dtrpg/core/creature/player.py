@@ -19,14 +19,6 @@ class Player(Fighter):
         self.variable_holder = None
 
     @property
-    def armor(self) -> int:
-        return self.base_armor
-
-    @property
-    def attack(self) -> 'Attack':
-        return self.default_attack
-
-    @property
     def available_actions(self) -> Iterable['Action']:
         return self.base_actions + self.location.travel_actions + self.location.local_actions
 

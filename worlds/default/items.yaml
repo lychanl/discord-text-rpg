@@ -16,5 +16,25 @@ Item item_linen_jacket:
     armor: 1
   slot: itemslot_body
 
+Item item_stones:
+  max_stack: 1
+  slot: itemslot_hand
+  attack: stone_throw
+
+Attack stone_throw:
+  hit_skill: melee_fighting
+  evasion_skill: evasion
+  tester: default_tester
+  on_hit: stone_throw_damage
+  ranged: True
+
+Damage stone_throw_damage:
+  damage_tests_number: 1
+  damage_test_mod: 1
+  damage_per_hit: 1
+  damaged_resource: health
+  armor: armor
+  tester: default_tester
+
 ItemSlot itemslot_body: {}
 ItemSlot itemslot_hand: {}

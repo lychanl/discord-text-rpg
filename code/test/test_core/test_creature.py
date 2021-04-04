@@ -178,6 +178,14 @@ class TestResource(unittest.TestCase):
 
         self.assertEqual(cr.value, 2)
 
+    def test_resource_set_below_0(self) -> None:
+        r = creature.Resource()
+        r.vital = True
+        cr = creature.CreatureResource()
+        cr.value = -10
+
+        self.assertEqual(cr.value, 0)
+
 
 class TestSkill(unittest.TestCase):
     def test_player_skill(self) -> None:
@@ -422,3 +430,22 @@ class TestItemSlot(unittest.TestCase):
         c.items = item.Container()
 
         self.assertRaises(item.SlotNotEquippedException, lambda: c.unequip_slot(slot2))
+
+class TestFighter(unittest.TestCase):
+    def test_attack(self):
+        c = creature.Fighter()
+        a1 = object()
+        a2 = object()
+
+        slot = item.ItemSlot()
+        i = item.Item()
+        i.slot = slot
+        i.attack = a2
+
+        c.item_slots = {slot: None}
+
+        c.default_attack = a1
+        self.assertIs(c.attack, a1)
+
+        c.item_slots[slot] = i
+        self.assertIs(c.attack, a2)

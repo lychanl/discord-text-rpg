@@ -1,5 +1,6 @@
 from dtrpg.core.game_object import GameObject
 from dtrpg.core.fighting.engine import FightStatus, StatusFlag, MoveDestination
+from dtrpg.core.fighting.fight_action import FightAction, EmptyAction
 
 from enum import Enum
 
@@ -7,7 +8,6 @@ from typing import Callable, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.core.creature.creature import Fighter
-    from dtrpg.core.fighting.fight_action import FightAction, EmptyAction
 
 
 class Tactic(GameObject):

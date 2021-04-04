@@ -60,6 +60,7 @@ class Fighter(Creature):
         super().__init__()
         self.tactic = None
         self.on_killed = None
+        self.default_attack = None
 
     @property
     def killed(self) -> bool:
@@ -67,7 +68,10 @@ class Fighter(Creature):
 
     @property
     def attack(self) -> 'Attack':
-        raise NotImplementedError
+        for item in self.equipped_items:
+            if item and item.attack:
+                return item.attack
+        return self.default_attack
 
 
 class FighterFactory(GameObjectFactory):
@@ -80,6 +84,7 @@ class FighterFactory(GameObjectFactory):
         self.on_killed = None
         self.item_slots = ()
         self.container_factory = None
+        self.default_attack = None
 
     def _create(self) -> Fighter:
         creature = super()._create()
