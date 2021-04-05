@@ -1,8 +1,10 @@
 from dtrpg.core.game_object import GameObjectFactory
 from dtrpg.core.events.event_result import (
-    EventResult, ResourceChangeEventResult, InfoEventResult, SequenceEventResult, VariableSetEventResult
+    EventResult, ResourceChangeEventResult, InfoEventResult, SequenceEventResult,
+    VariableSetEventResult, ChanceEventResult
 )
 
+import random
 
 from typing import Mapping, TYPE_CHECKING
 
@@ -92,5 +94,24 @@ class VariableSetEvent(Event):
         event.value = value
 
         player.set_variable(variable, value)
+
+        return event
+
+
+class ChanceEvent(ComplexEvent):
+    def __init__(self):
+        super().__init__(ChanceEventResult)
+        self.randomizer = random.random
+        self.chance = 0.5
+        self.if_ = None
+        self.else_ = None
+
+    def _fire(self, player: 'Player', **params: Mapping[str, object]) -> EventResult:
+        event = self.create()
+
+        if self.randomizer() <= self.chance and self.if_:
+            event.result = self.if_.fire(player, **self._get_subevent_params('if', params))
+        elif self.else_:
+            event.result = self.else_.fire(player, **self._get_subevent_params('if', params))
 
         return event

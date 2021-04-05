@@ -20,6 +20,7 @@ class Creature(GameObject):
         self.statistics = CreatureStatistics(self)
         self.items = None
         self.item_slots = {}
+        self.loot_events = ()
 
     def equip(self, item: 'Item') -> None:
         if not item.slot:

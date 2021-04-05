@@ -600,8 +600,12 @@ class TestFightEvent(unittest.TestCase):
     def test_fight_event_victory(self) -> None:
         fighter = c.Fighter()
         enemy_factory = mock.Mock()
-        enemy = object()
+        enemy = mock.Mock()
         enemy_factory.create.return_value = enemy
+        enemy.killed = True
+        lr = object()
+        enemy.loot_events = [mock.Mock()]
+        enemy.loot_events[0].fire.return_value = lr
 
         e = f.FightEvent()
         e.victory = mock.Mock()
@@ -618,9 +622,11 @@ class TestFightEvent(unittest.TestCase):
         self.assertListEqual(r.group2, [enemy])
         self.assertEqual(r.result, f.FightResult.GROUP1)
         self.assertEqual(r.next, vr)
+        self.assertEqual(r.loot_events, [lr])
 
         e.victory.fire.assert_called_once()
         e.fight_engine.fight.assert_called_once_with([fighter], [enemy])
+        enemy.loot_events[0].fire.assert_called_once_with(fighter)
 
     def test_fight_event_defeat(self) -> None:
         fighter = c.Fighter()

@@ -25,14 +25,14 @@ OffersInfoEventResult,EVENT_NOW,{'\n'.join(offer.strings['DESCRIPTION'] for offe
 OffersInfoAction,NAME,See offers
 OffersInfoAction,REGEX,((see|check|list) )?(offer|offers)(( for)? (?P<item>.+))?
 Player,NAME,Player
-FightEventResult,GROUP,"{', '.join(f.strings['NAME'] for f in group)}"
+FightEventResult,GROUP,"{', '.join(str(num) + ' ' + name if num > 1 else name for name, num in helpers.plurals_group(group, 'NAME', 'NAME_PL').items())}"
 FightEventResult,GROUP_S,{'s' if len(group) == 1 else ''}
 FightEventResult,RESULT_G,"{self.strings['GROUP', {'group': group}]} win{self.strings['GROUP_S', {'group': group}]}!"
 FightEventResult,RESULT_DRAW,It's a draw!
 FightEventResult,RESULT,"{self.strings['RESULT_DRAW'] if self.result.name == 'DRAW' else self.strings['RESULT_G', {'group': self.winners}]}"
 FightEventResult,EVENT_NOW,"{self.strings['GROUP', {'group': self.group1}]} fight{self.strings['GROUP_S', {'group': self.group1}]} against {self.strings['GROUP', {'group': self.group2}]}.
 {'\n'.join(e.strings['EVENT_NOW'] for e in self.events)}
-{self.strings['RESULT']}{'\n' + self.next.strings['EVENT_NOW'] if self.next else ''}{'\n' + self.on_killed.strings['EVENT_NOW'] if self.on_killed else ''}"
+{self.strings['RESULT']}{'\n' if self.loot_events else ''}{'\n'.join(e.strings['EVENT_NOW'] for e in self.loot_events)}{'\n' + self.next.strings['EVENT_NOW'] if self.next else ''}{'\n' + self.on_killed.strings['EVENT_NOW'] if self.on_killed else ''}"
 MoveEventResult,EVENT_NOW,"{self.fighter.strings['NAME']} {self.to_loc.strings['MOVES_TO']}"
 AttackEventResult,EVENT_NOW,"{self.attacker.strings['NAME']} attacks {self.target.strings['NAME']} {self.strings['HIT'] if any(self.hits) else self.strings['MISS']}"
 AttackEventResult,HIT,"and hits, dealing {sum(r.damage_dealt for r, h in zip(self.results, self.hits) if h)} damage"
@@ -48,6 +48,7 @@ MoveDestination.MELEE,MOVE_TO,move to melee
 MoveDestination.RANGED,MOVE_TO,move to ranged
 MoveDestination.FLEE,MOVE_TO,flee
 SequenceEventResult,EVENT_NOW,"{'\n'.join(r.strings['EVENT_NOW'] for r in self.results)}"
+ChanceEventResult,EVENT_NOW,{self.result.strings['EVENT_NOW'] if self.result else 'Nothing happens...'}
 Item,INFO,"{self.strings['ITS']} {self.strings['NAME']}{'\n' + self.strings['STATS'] if self.statistic_bonuses else ''}{'\n' + self.strings['ATTACK'] if self.attack else ''}"
 Item,ITS,It's a
 Item,ATTACK,Attack: {self.attack.strings['INFO']}

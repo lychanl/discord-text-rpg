@@ -1,2 +1,5 @@
 object,string,value
 forest_rat_factory,NAME,Forest Rat
+forest_rat_factory,NAME_PL, Forest Rats
+wolf_factory,NAME,Wolf
+wolf_factory,NAME_PL,Wolves

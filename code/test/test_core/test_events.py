@@ -186,3 +186,43 @@ class TestEvents(unittest.TestCase):
         self.assertEqual(res.variable, 'VAR')
         self.assertEqual(res.value, 'value')
         self.assertEqual(p.var, 'value')
+
+    def test_chance_event(self) -> None:
+        e = events.ChanceEvent()
+
+        r1 = object()
+        r2 = object()
+
+        e.if_ = mock.Mock()
+        e.else_ = mock.Mock()
+        e.if_.fire = mock.MagicMock(return_value=r1)
+        e.else_.fire = mock.MagicMock(return_value=r2)
+
+        e.randomizer = mock.MagicMock(return_value=0.1)
+        p = creature.Player()
+
+        ret = e.fire(p)
+
+        self.assertEqual(ret.result, r1)
+        e.if_.fire.assert_called_once()
+        e.else_.fire.assert_not_called()
+
+    def test_chance_event_else(self) -> None:
+        e = events.ChanceEvent()
+
+        r1 = object()
+        r2 = object()
+
+        e.if_ = mock.Mock()
+        e.else_ = mock.Mock()
+        e.if_.fire = mock.MagicMock(return_value=r1)
+        e.else_.fire = mock.MagicMock(return_value=r2)
+
+        e.randomizer = mock.MagicMock(return_value=0.8)
+        p = creature.Player()
+
+        ret = e.fire(p)
+
+        self.assertEqual(ret.result, r2)
+        e.if_.fire.assert_not_called()
+        e.else_.fire.assert_called_once()

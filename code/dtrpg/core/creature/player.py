@@ -4,7 +4,6 @@ from typing import Iterable, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.core.action import Action
-    from dtrpg.core.fighting import Attack
 
 
 class Player(Fighter):

@@ -431,6 +431,7 @@ class TestItemSlot(unittest.TestCase):
 
         self.assertRaises(item.SlotNotEquippedException, lambda: c.unequip_slot(slot2))
 
+
 class TestFighter(unittest.TestCase):
     def test_attack(self):
         c = creature.Fighter()

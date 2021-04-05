@@ -16,6 +16,7 @@ class FightEventResult(EventResult):
         self.result = None
         self.events = []
 
+        self.loot_events = []
         self.next = None
         self.on_killed = None
 
@@ -58,6 +59,10 @@ class FightEvent(ComplexEvent):
         result.result, result.events, killed, fled = params['fight_engine'].fight([player], enemies)
 
         if result.result == FightResult.GROUP1:
+            result.loot_events = [
+                event.fire(player) for enemy in enemies if enemy.killed for event in enemy.loot_events
+            ]
+
             if params['victory']:
                 result.next = params['victory'].fire(player, **self._get_subevent_params('victory', params))
         elif result.result == FightResult.GROUP2:

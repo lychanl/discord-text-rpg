@@ -28,3 +28,9 @@ class VariableSetEventResult(EventResult):
         super().__init__()
         self.variable = None
         self.value = None
+
+
+class ChanceEventResult(EventResult):
+    def __init__(self):
+        super().__init__()
+        self.result = None

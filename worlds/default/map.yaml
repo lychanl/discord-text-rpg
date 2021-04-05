@@ -32,6 +32,7 @@ Location loc_nothingthere_forest:
   local_actions:
     - nothingthere_forest_herbs
     - nothingthere_rat_hunt
+    - nothingthere_forest_explore
 
 Action nothingthere_job:
   costs:
@@ -86,7 +87,6 @@ FightEvent rat_hunting_event:
   enemy_factories:
     - forest_rat_factory
   fight_engine: fight_engine
-  victory: forest_rat_fur_event
 
 Action nothingthere_gather_stones:
   costs:
@@ -98,4 +98,22 @@ ItemReceiveEvent nothingthere_gather_stones_event:
   item_factory:
     item: item_stones
     stack: 1
-  
+
+Action nothingthere_forest_explore:
+  costs:
+    - resource: action_points
+      cost: 2
+  event: nothingthere_forest_explore_event
+
+ChanceEvent nothingthere_forest_explore_event:
+  chance: 0.2
+  if_: nothingthere_forest_wolves_attack_event
+  else_: nothingthere_forest_explore_nothing_event
+
+FightEvent nothingthere_forest_wolves_attack_event:
+  enemy_factories:
+    - wolf_factory
+    - wolf_factory
+  fight_engine: fight_engine
+
+InfoEvent nothingthere_forest_explore_nothing_event: {}

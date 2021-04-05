@@ -1,10 +1,12 @@
 # flake8: noqa: F401
 from dtrpg.core.events.action import Action
 from dtrpg.core.events.event_result import (
-    EventResult, InfoEventResult, ResourceChangeEventResult, SequenceEventResult, VariableSetEventResult
+    EventResult, InfoEventResult, ResourceChangeEventResult, SequenceEventResult,
+    VariableSetEventResult, ChanceEventResult
 )
 from dtrpg.core.events.event import (
-    ComplexEvent, Event, InfoEvent, ResourceChangesEvent, SequenceEvent, VariableSetEvent
+    ComplexEvent, Event, InfoEvent, ResourceChangesEvent, SequenceEvent,
+    VariableSetEvent, ChanceEvent
 )
 from dtrpg.core.events.trade import (
     BuyAction, BuyEvent, SellAction, SellEvent, TradeEventResult, BuyEventResult, SellEventResult,

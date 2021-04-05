@@ -79,6 +79,16 @@ SequenceEvent:
 SequenceEventResult:
   _class: dtrpg.core.events.SequenceEventResult
 
+ChanceEvent:
+  _class: dtrpg.core.events.ChanceEvent
+  _base: Event
+  optional chance: float
+  required if_: Event
+  optional else_: Event
+
+ChanceEventResult:
+  _class: dtrpg.core.events.ChanceEventResult
+
 RemoveItemEvent:
   _class: dtrpg.core.item.RemoveItemEvent
   _base: Event
@@ -170,6 +180,7 @@ NPCFighterFactory:
   _class: dtrpg.core.creature.NPCFighterFactory
   _base: FighterFactory
   required attack: Attack
+  optional loot_events: [ Event ]
 
 Player:
   _class: dtrpg.core.creature.Player

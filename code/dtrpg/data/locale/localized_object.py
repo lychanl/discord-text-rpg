@@ -1,4 +1,5 @@
 from dtrpg.data.locale.formatter import LocaleFormatter
+import dtrpg.data.locale.helpers as helpers
 
 from typing import Mapping, Tuple, Union
 
@@ -54,7 +55,8 @@ class LocalizedObjectFactory(LocalizedObject):
 class ObjectStrings:
     AVAILABLE_BUILTINS = {
         'int': int, 'float': float, 'str': str, 'abs': abs,
-        'len': len, 'sum': sum, 'any': any, 'all': all, 'enumerate': enumerate, 'zip': zip}
+        'len': len, 'sum': sum, 'any': any, 'all': all, 'enumerate': enumerate, 'zip': zip,
+        'helpers': helpers}
 
     formatter = LocaleFormatter()
 
