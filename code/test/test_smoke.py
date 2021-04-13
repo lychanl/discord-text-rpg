@@ -14,8 +14,8 @@ class TestIO(TextIO):
     def test(self, command: str) -> str:
         print(f'> {command}')
         out = self.command(self.TEST_PLAYER, command)
-        print(out)
-        return ' '.join(out.splitlines())
+        print('\n'.join(out))
+        return ' '.join(' '.join(out).splitlines())
 
 
 GAME_ARGS = {

@@ -1,6 +1,6 @@
 from dtrpg.core.events import Action, EventResult, Event
 
-from typing import Mapping, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.core.creature import Player
@@ -45,13 +45,13 @@ class TravelEvent(Event):
         self.to = None
         self.from_ = None
 
-    def _fire(self, player: 'Player', **params: Mapping[str, object]) -> TravelEventResult:
+    def _fire(self, player: 'Player') -> TravelEventResult:
         event = self.create()
 
-        event.to = params['to']
-        event.from_ = params['from_']
+        event.to = self.to
+        event.from_ = self.from_
         event.player = player
 
-        player.location = params['to']
+        player.location = self.to
 
         return event

@@ -1,7 +1,7 @@
 from dtrpg.core.events import ComplexEvent, EventResult
 from dtrpg.core.fighting.engine import FightResult
 
-from typing import List, Mapping, TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.core.creature import Fighter, Player
@@ -15,10 +15,6 @@ class FightEventResult(EventResult):
         self.group2 = []
         self.result = None
         self.events = []
-
-        self.loot_events = []
-        self.next = None
-        self.on_killed = None
 
     @property
     def winners(self) -> List['Fighter']:
@@ -48,31 +44,32 @@ class FightEvent(ComplexEvent):
         self.defeat = None
         self.draw = None
 
-    def _fire(self, player: 'Player', **params: Mapping[str, object]) -> FightEventResult:
+    def _fire(self, player: 'Player') -> FightEventResult:
         result = self.create()
 
-        enemies = [f.create() for f in params['enemy_factories']]
+        enemies = [f.create() for f in self.enemy_factories]
 
         result.group1 = [player]
         result.group2 = enemies
 
-        result.result, result.events, killed, fled = params['fight_engine'].fight([player], enemies)
+        result.result, result.events, killed, fled = self.fight_engine.fight([player], enemies)
 
         if result.result == FightResult.GROUP1:
-            result.loot_events = [
-                event.fire(player) for enemy in enemies if enemy.killed for event in enemy.loot_events
-            ]
+            for enemy in enemies:
+                if enemy.killed:
+                    for event in enemy.loot_events:
+                        player.events.register(event)
 
-            if params['victory']:
-                result.next = params['victory'].fire(player, **self._get_subevent_params('victory', params))
+            if self.victory:
+                player.events.register(self.victory, **self._get_subevent_params('victory'))
         elif result.result == FightResult.GROUP2:
-            if params['defeat']:
-                result.next = params['defeat'].fire(player, **self._get_subevent_params('defeat', params))
+            if self.defeat:
+                player.events.register(self.defeat, **self._get_subevent_params('defeat'))
         else:
-            if params['draw']:
-                result.next = params['draw'].fire(player, **self._get_subevent_params('draw', params))
+            if self.draw:
+                player.events.register(self.draw, **self._get_subevent_params('draw'))
 
         if player in killed and player.on_killed:
-            result.on_killed = player.on_killed.fire(player)
+            player.events.register(player.on_killed)
 
         return result

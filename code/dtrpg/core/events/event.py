@@ -1,36 +1,64 @@
 from dtrpg.core.game_object import GameObjectFactory
 from dtrpg.core.events.event_result import (
-    EventResult, ResourceChangeEventResult, InfoEventResult, SequenceEventResult,
-    VariableSetEventResult, ChanceEventResult
+    EventResult, ResourceChangeEventResult, InfoEventResult, VariableSetEventResult, ExceptionEventResult
 )
 
+import copy
 import random
 
-from typing import Mapping, TYPE_CHECKING
+from typing import Mapping, Sequence, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.core.creature import Player
 
 
+class EventsManager:
+    def __init__(self, player: 'Player') -> None:
+        self.player = player
+        self.events = []
+        self.results = []
+        self.next = 0
+
+    def register(self, event: 'Event', **kwargs: Mapping[str, object]) -> None:
+        self.events.insert(self.next, (event, kwargs))
+        self.next += 1
+
+    def fire_all(self) -> Sequence[EventResult]:
+        while self.events:
+            event, kwargs = self.events.pop(0)
+            self.next = 0
+
+            result = event.fire(self.player, **kwargs)
+
+            if result:
+                self.results.append(result)
+
+        results = self.results
+        self.results = []
+        return results
+
+
 class Event(GameObjectFactory):
     def fire(self, player: 'Player', **kwargs: Mapping[str, object]) -> EventResult:
-        params = {
-            p: getattr(self, p) for p in self.__dict__
-            if p not in dir(GameObjectFactory)
-        }
+        cpy = copy.copy(self)
+        cpy.__dict__.update(kwargs)
+        cpy.params = kwargs
 
-        params.update(kwargs)
+        try:
+            return type(self)._fire(cpy, player)
+        except Exception as e:
+            return ExceptionEventResult(e)
 
-        return self._fire(player, **params)
-
-    def _fire(self, player: 'Player', **params: Mapping[str, object]) -> EventResult:
+    def _fire(self, player: 'Player') -> EventResult:
         raise NotImplementedError
 
 
 class ComplexEvent(Event):
-    def _get_subevent_params(self, subevent_id: str, params: Mapping[str, object]) -> Mapping[str, object]:
+    def _get_subevent_params(self, subevent_id: str) -> Mapping[str, object]:
         return {
-            key[(len(subevent_id) + 1):]: value for key, value in params.items() if key.startswith(f'{subevent_id}.')
+            key[(len(subevent_id) + 1):]: value
+            for key, value in self.params.items()
+            if key.startswith(f'{subevent_id}.')
         }
 
 
@@ -38,10 +66,10 @@ class InfoEvent(Event):
     def __init__(self):
         super().__init__(InfoEventResult)
 
-    def _fire(self, player: 'Player', **params: Mapping[str, object]) -> InfoEventResult:
+    def _fire(self, player: 'Player') -> InfoEventResult:
         event = self.create()
         event.player = player
-        event.params = params
+        event.params = self.params
         return event
 
 
@@ -50,11 +78,11 @@ class ResourceChangesEvent(Event):
         super().__init__(ResourceChangeEventResult)
         self.resource_changes = []
 
-    def _fire(self, player: 'Player', **params: Mapping[str, object]) -> ResourceChangeEventResult:
+    def _fire(self, player: 'Player') -> ResourceChangeEventResult:
         event = self.create()
 
         changes = {}
-        for change in params['resource_changes']:
+        for change in self.resource_changes:
             diff = change.apply(player)
             changes[change.resource] = diff
         event.resource_changes = changes
@@ -64,18 +92,12 @@ class ResourceChangesEvent(Event):
 
 class SequenceEvent(ComplexEvent):
     def __init__(self):
-        super().__init__(SequenceEventResult)
+        super().__init__(EventResult)
         self.events = []
 
-    def _fire(self, player: 'Player', **params: Mapping[str, object]) -> SequenceEventResult:
-        event = self.create()
-
-        event.results = [
-            event.fire(player, **self._get_subevent_params(str(i), params))
-            for i, event in enumerate(params['events'])
-        ]
-
-        return event
+    def _fire(self, player: 'Player') -> None:
+        for i, event in enumerate(self.events):
+            player.events.register(event, **self._get_subevent_params(str(i)))
 
 
 class VariableSetEvent(Event):
@@ -84,34 +106,27 @@ class VariableSetEvent(Event):
         self.variable = None
         self.value = None
 
-    def _fire(self, player: 'Player', **params: Mapping[str, object]) -> VariableSetEventResult:
+    def _fire(self, player: 'Player') -> VariableSetEventResult:
         event = self.create()
 
-        variable = params['variable']
-        value = params['value']
+        event.variable = self.variable
+        event.value = self.value
 
-        event.variable = variable
-        event.value = value
-
-        player.set_variable(variable, value)
+        player.set_variable(self.variable, self.value)
 
         return event
 
 
 class ChanceEvent(ComplexEvent):
     def __init__(self):
-        super().__init__(ChanceEventResult)
+        super().__init__(EventResult)
         self.randomizer = random.random
         self.chance = 0.5
         self.if_ = None
         self.else_ = None
 
-    def _fire(self, player: 'Player', **params: Mapping[str, object]) -> EventResult:
-        event = self.create()
-
+    def _fire(self, player: 'Player') -> None:
         if self.randomizer() <= self.chance and self.if_:
-            event.result = self.if_.fire(player, **self._get_subevent_params('if', params))
+            player.events.register(self.if_, **self._get_subevent_params('if'))
         elif self.else_:
-            event.result = self.else_.fire(player, **self._get_subevent_params('if', params))
-
-        return event
+            player.events.register(self.else_, **self._get_subevent_params('else'))

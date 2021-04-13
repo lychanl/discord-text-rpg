@@ -141,19 +141,19 @@ class Attack(Event):
     def tester(self, tester: 'Tester') -> None:
         self.hit_test.tester = tester
 
-    def _fire(self, player: 'Fighter', target: 'Fighter', **params: Mapping[str, object]) -> AttackEventResult:
+    def _fire(self, player: 'Fighter') -> AttackEventResult:
         res = self.create()
-        res.target = target
+        res.target = self.target
         res.attacker = player
 
         for _ in range(self.attacks_number):
-            success = self.hit_test.test(player, target, self.hit_skill_modifier, self.evasion_skill_modifier)
+            success = self.hit_test.test(player, self.target, self.hit_skill_modifier, self.evasion_skill_modifier)
             res.hits.append(success)
 
             if success and self.on_hit:
-                attack_res = self.on_hit.fire(player, target=target)
+                attack_res = self.on_hit.fire(player, target=self.target)
             elif not success and self.on_miss:
-                attack_res = self.on_miss.fire(player, target=target)
+                attack_res = self.on_miss.fire(player, target=self.target)
             else:
                 attack_res = None
 
@@ -180,15 +180,13 @@ class Damage(Event):
 
         self.tester = None
 
-    def _fire(
-            self, player: 'Fighter', target: 'Fighter',
-            **params: Mapping[str, object]) -> AttackEventResult:
+    def _fire(self, player: 'Fighter') -> AttackEventResult:
         total_damage = 0
         for _ in range(self.damage_tests_number):
-            if self.tester.test(self.damage_test_mod, target.statistics[self.armor]):
+            if self.tester.test(self.damage_test_mod, self.target.statistics[self.armor]):
                 total_damage += self.damage_per_hit
 
-        target.resources[self.damaged_resource].value -= (total_damage)
+        self.target.resources[self.damaged_resource].value -= (total_damage)
 
         res = self.create()
         res.damage_dealt = total_damage

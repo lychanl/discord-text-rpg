@@ -1,4 +1,5 @@
 from dtrpg.core.creature.creature import Fighter, FighterFactory
+from dtrpg.core.events import EventsManager
 
 from typing import Iterable, TYPE_CHECKING
 
@@ -9,6 +10,8 @@ if TYPE_CHECKING:
 class Player(Fighter):
     def __init__(self):
         super().__init__()
+        self.events = EventsManager(self)
+
         self.location = None
         self.base_actions = []
         self.default_attack = None

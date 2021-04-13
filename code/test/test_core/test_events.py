@@ -114,7 +114,8 @@ class TestEvents(unittest.TestCase):
         p.resources = {res1: r1, res2: r2}
 
         self.assertFalse(a.check_requirements(p))
-        self.assertRaises(creature.InsufficientResourceError, lambda: a.take(p))
+        results = a.take(p)
+        self.assertIsInstance(results[0].exception, creature.InsufficientResourceError)
         self.assertEqual(p.resources[res1].value, 2)
         self.assertEqual(p.resources[res2].value, 3)
 
@@ -141,7 +142,9 @@ class TestEvents(unittest.TestCase):
 
         params = {'success.param': 4}
 
-        self.assertIs(e.fire(p, **params), sret)
+        p.events.register(e, **params)
+
+        self.assertIs(p.events.fire_all()[0], sret)
         e.success.fire.assert_called_once_with(p, param=4)
         e.failure.assert_not_called()
 
@@ -149,7 +152,9 @@ class TestEvents(unittest.TestCase):
         e.success.reset_mock()
         e.failure.reset_mock()
 
-        self.assertIs(e.fire(p, **params), fret)
+        p.events.register(e, **params)
+
+        self.assertIs(p.events.fire_all()[0], fret)
         e.success.assert_not_called()
         e.failure.fire.assert_called_once_with(p)
 
@@ -167,9 +172,10 @@ class TestEvents(unittest.TestCase):
         e.events = evs
         p = creature.Player()
 
-        ret = e.fire(p)
+        p.events.register(e)
+        ret = p.events.fire_all()
 
-        self.assertEqual(ret.results, [r1, r2])
+        self.assertSequenceEqual(ret, [r1, r2])
         evs[0].fire.assert_called_once()
         evs[1].fire.assert_called_once()
 
@@ -201,9 +207,10 @@ class TestEvents(unittest.TestCase):
         e.randomizer = mock.MagicMock(return_value=0.1)
         p = creature.Player()
 
-        ret = e.fire(p)
+        p.events.register(e)
+        ret = p.events.fire_all()
 
-        self.assertEqual(ret.result, r1)
+        self.assertSequenceEqual(ret, [r1])
         e.if_.fire.assert_called_once()
         e.else_.fire.assert_not_called()
 
@@ -221,8 +228,9 @@ class TestEvents(unittest.TestCase):
         e.randomizer = mock.MagicMock(return_value=0.8)
         p = creature.Player()
 
-        ret = e.fire(p)
+        p.events.register(e)
+        ret = p.events.fire_all()
 
-        self.assertEqual(ret.result, r2)
+        self.assertSequenceEqual(ret, [r2])
         e.if_.fire.assert_not_called()
         e.else_.fire.assert_called_once()

@@ -598,7 +598,7 @@ class TestFightingActions(unittest.TestCase):
 
 class TestFightEvent(unittest.TestCase):
     def test_fight_event_victory(self) -> None:
-        fighter = c.Fighter()
+        fighter = c.Player()
         enemy_factory = mock.Mock()
         enemy = mock.Mock()
         enemy_factory.create.return_value = enemy
@@ -615,21 +615,22 @@ class TestFightEvent(unittest.TestCase):
         e.fight_engine = mock.Mock()
         e.fight_engine.fight.return_value = f.FightResult.GROUP1, [], {}, {}
 
-        r = e.fire(fighter)
+        fighter.events.register(e)
+        r, loot, nxt, = fighter.events.fire_all()
 
         enemy_factory.create.assert_called_once()
         self.assertListEqual(r.group1, [fighter])
         self.assertListEqual(r.group2, [enemy])
         self.assertEqual(r.result, f.FightResult.GROUP1)
-        self.assertEqual(r.next, vr)
-        self.assertEqual(r.loot_events, [lr])
+        self.assertEqual(nxt, vr)
+        self.assertEqual(loot, lr)
 
         e.victory.fire.assert_called_once()
         e.fight_engine.fight.assert_called_once_with([fighter], [enemy])
         enemy.loot_events[0].fire.assert_called_once_with(fighter)
 
     def test_fight_event_defeat(self) -> None:
-        fighter = c.Fighter()
+        fighter = c.Player()
         fighter.on_killed = mock.Mock()
         fighter.on_killed.fire = mock.Mock()
         enemy_factory = mock.Mock()
@@ -644,20 +645,21 @@ class TestFightEvent(unittest.TestCase):
         e.fight_engine = mock.Mock()
         e.fight_engine.fight.return_value = f.FightResult.GROUP2, [], {}, {}
 
-        r = e.fire(fighter)
+        fighter.events.register(e)
+        r, nxt, = fighter.events.fire_all()
 
         enemy_factory.create.assert_called_once()
         self.assertListEqual(r.group1, [fighter])
         self.assertListEqual(r.group2, [enemy])
         self.assertEqual(r.result, f.FightResult.GROUP2)
-        self.assertEqual(r.next, dr)
+        self.assertEqual(nxt, dr)
 
         e.defeat.fire.assert_called_once()
         e.fight_engine.fight.assert_called_once_with([fighter], [enemy])
         fighter.on_killed.assert_not_called()
 
     def test_fight_event_defeat_killed(self) -> None:
-        fighter = c.Fighter()
+        fighter = c.Player()
         fighter.on_killed = mock.Mock()
         fighter.on_killed.fire = mock.Mock()
         okr = object()
@@ -674,21 +676,22 @@ class TestFightEvent(unittest.TestCase):
         e.fight_engine = mock.Mock()
         e.fight_engine.fight.return_value = f.FightResult.GROUP2, [], {fighter}, {}
 
-        r = e.fire(fighter)
+        fighter.events.register(e)
+        r, nxt, killed = fighter.events.fire_all()
 
         enemy_factory.create.assert_called_once()
         self.assertListEqual(r.group1, [fighter])
         self.assertListEqual(r.group2, [enemy])
         self.assertEqual(r.result, f.FightResult.GROUP2)
-        self.assertEqual(r.next, dr)
-        self.assertEqual(r.on_killed, okr)
+        self.assertEqual(nxt, dr)
+        self.assertEqual(killed, okr)
 
         e.defeat.fire.assert_called_once()
         e.fight_engine.fight.assert_called_once_with([fighter], [enemy])
         fighter.on_killed.fire.assert_called_once_with(fighter)
 
     def test_fight_event_draw(self) -> None:
-        fighter = c.Fighter()
+        fighter = c.Player()
         enemy_factory = mock.Mock()
         enemy = object()
         enemy_factory.create.return_value = enemy
@@ -701,13 +704,14 @@ class TestFightEvent(unittest.TestCase):
         e.fight_engine = mock.Mock()
         e.fight_engine.fight.return_value = f.FightResult.DRAW, [], {}, {}
 
-        r = e.fire(fighter)
+        fighter.events.register(e)
+        r, nxt, = fighter.events.fire_all()
 
         enemy_factory.create.assert_called_once()
         self.assertListEqual(r.group1, [fighter])
         self.assertListEqual(r.group2, [enemy])
         self.assertEqual(r.result, f.FightResult.DRAW)
-        self.assertEqual(r.next, dr)
+        self.assertEqual(nxt, dr)
 
         e.draw.fire.assert_called_once()
         e.fight_engine.fight.assert_called_once_with([fighter], [enemy])

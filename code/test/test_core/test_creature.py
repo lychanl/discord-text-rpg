@@ -18,7 +18,7 @@ class TestPlayer(unittest.TestCase):
         p = creature.Player()
         p.location = loc1
 
-        e = travel_action.take(p)
+        e = travel_action.take(p)[0]
 
         self.assertIs(p.location, loc2)
         self.assertIs(e.from_, loc1)

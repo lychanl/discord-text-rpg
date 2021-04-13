@@ -1,7 +1,7 @@
 from dtrpg.core.events.event import ComplexEvent
 from dtrpg.core.events.event_result import EventResult
 
-from typing import Mapping, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.core.creature import Player
@@ -14,9 +14,9 @@ class SkillTestEvent(ComplexEvent):
         self.success = None
         self.failure = None
 
-    def _fire(self, player: 'Player', **params: Mapping[str, object]) -> EventResult:
+    def _fire(self, player: 'Player') -> EventResult:
         success = self.test.test(player)
         if success:
-            return self.success.fire(player, **self._get_subevent_params('success', params))
+            player.events.register(self.success, **self._get_subevent_params('success'))
         else:
-            return self.failure.fire(player, **self._get_subevent_params('failure', params))
+            player.events.register(self.failure, **self._get_subevent_params('failure'))

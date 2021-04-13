@@ -30,6 +30,9 @@ Event:
   _class: dtrpg.core.events.Event
   _abstract: True
 
+ExceptionEventResult:
+  _class: dtrpg.core.events.ExceptionEventResult
+
 VariableSetEvent:
   _class: dtrpg.core.events.VariableSetEvent
   _base: Event
@@ -76,18 +79,12 @@ SequenceEvent:
   _base: Event
   required events: [ Event ]
 
-SequenceEventResult:
-  _class: dtrpg.core.events.SequenceEventResult
-
 ChanceEvent:
   _class: dtrpg.core.events.ChanceEvent
   _base: Event
   optional chance: float
   required if_: Event
   optional else_: Event
-
-ChanceEventResult:
-  _class: dtrpg.core.events.ChanceEventResult
 
 RemoveItemEvent:
   _class: dtrpg.core.item.RemoveItemEvent

@@ -5,7 +5,7 @@ class EventResult(GameObject):
     pass
 
 
-class InfoEventResult(GameObject):
+class InfoEventResult(EventResult):
     def __init__(self):
         super().__init__()
         self.player = None
@@ -17,12 +17,6 @@ class ResourceChangeEventResult(EventResult):
         self.resource_changes = {}
 
 
-class SequenceEventResult(EventResult):
-    def __init__(self):
-        super().__init__()
-        self.results = []
-
-
 class VariableSetEventResult(EventResult):
     def __init__(self):
         super().__init__()
@@ -30,7 +24,7 @@ class VariableSetEventResult(EventResult):
         self.value = None
 
 
-class ChanceEventResult(EventResult):
-    def __init__(self):
+class ExceptionEventResult(EventResult):
+    def __init__(self, e: Exception):
         super().__init__()
-        self.result = None
+        self.exception = e

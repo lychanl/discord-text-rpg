@@ -19,6 +19,6 @@ nothingthere_forest_herbs,REGEX,"((search |look )for )?herb(s)?"
 nothingthere_forest_herbs,NAME,Search for herbs
 nothingthere_rat_hunt,REGEX,hunt( for)?( rat(s)?)?
 nothingthere_rat_hunt,NAME,Hunt for forest rats
-nothingthere_forest_explore,NAME,explore
+nothingthere_forest_explore,NAME,Explore
 nothingthere_forest_explore,REGEX,explore( forest)?
 nothingthere_forest_explore_nothing_event,EVENT_NOW,You wander for some time, but find nothin interesting

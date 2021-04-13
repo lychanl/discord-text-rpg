@@ -5,9 +5,6 @@ from dtrpg.core.item import Item, TradeOffer, OfferNotFoundException
 from dtrpg.core.creature import Player
 
 
-from typing import Mapping
-
-
 class TradeEventResult(EventResult):
     def __init__(self):
         super().__init__()
@@ -45,18 +42,16 @@ class TradeEvent(OffersEvent):
 
         self.number = 1
 
-    def _fire(self, player: Player, **params: Mapping[str, object]) -> TradeEventResult:
-        item = params['item']
-        number = params['number']
-        offer = self._get_offer(item)
+    def _fire(self, player: Player) -> TradeEventResult:
+        offer = self._get_offer(self.item)
 
         result = self.create()
 
-        result.value = self._make_trade(player, offer, number)
+        result.value = self._make_trade(player, offer, self.number)
 
         result.resource = offer.resource
-        result.number = number
-        result.item = item
+        result.number = self.number
+        result.item = self.item
 
         return result
 
@@ -91,12 +86,13 @@ class OffersInfoEventResult(EventResult):
 class OffersInfoEvent(OffersEvent):
     def __init__(self):
         super().__init__(OffersInfoEventResult)
+        self.item = None
 
-    def _fire(self, player: Player, **params: Mapping[str, object]) -> TradeEventResult:
+    def _fire(self, player: Player) -> TradeEventResult:
         result = self.create()
 
-        if 'item' in params:
-            result.offers = [self._get_offer(params['item'])]
+        if self.item:
+            result.offers = [self._get_offer(self.item)]
         else:
             result.offers = self.offers
 

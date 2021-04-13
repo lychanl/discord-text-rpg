@@ -2,10 +2,14 @@ from dtrpg.core import Game, GameObject
 
 import re
 
-from typing import Any, Hashable, Iterable, TYPE_CHECKING
+from typing import Any, Hashable, Iterable, Sequence, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.core.action import Action, Event
+
+
+class ActionNotFound(Exception):
+    pass
 
 
 class ArgumentError(Exception):
@@ -21,22 +25,23 @@ class TextIO:
             'start': self._start,
         }
 
-    def command(self, player_id: Hashable, command: str) -> str:
+    def command(self, player_id: Hashable, command: str) -> Sequence[str]:
         try:
             command = command.strip().lower()
             if command in self._basic_commands:
                 return self._basic_commands[command](player_id)
-            event = self.action(player_id, command)
-            if event:
-                return event.strings['EVENT_NOW']
+            events = self.action(player_id, command)
+
+            if events:
+                return [event.strings['EVENT_NOW'] for event in events]
+            else:
+                return [self._game.config.strings['EMPTY']]
         except Exception as e:
             string = f'EXCEPTION_{type(e).__name__}'
             if string in self._game.config.strings:
-                return self._game.config.strings[string, {'e': e}]
+                return [self._game.config.strings[string, {'e': e}]]
             else:
                 raise
-
-        return self._invalid_command()
 
     def _get_object(self, name: str, t: type) -> object:
         if not name:
@@ -59,7 +64,7 @@ class TextIO:
             arg: self._get_object(value, action.args[arg]) for arg, value in match.groupdict().items() if value
         }
 
-    def action(self, player_id: Hashable, command: str) -> 'Event':
+    def action(self, player_id: Hashable, command: str) -> Sequence['Event']:
         player = self._game.player(player_id)
 
         argument_error = None
@@ -76,14 +81,11 @@ class TextIO:
         if argument_error:
             raise argument_error
 
-        return None
+        raise ActionNotFound
 
-    def _start(self, player_id: Hashable) -> str:
+    def _start(self, player_id: Hashable) -> Sequence[str]:
         player = self._game.create_player(player_id)
-        return player.strings['WELCOME']
-
-    def _invalid_command(self) -> str:
-        return self._game.config.strings['INVALID_COMMAND']
+        return [player.strings['WELCOME']]
 
     def run(self, *args: Any, **kwargs: Any) -> Any:
         raise NotImplementedError

@@ -1,7 +1,7 @@
 from dtrpg.core.game_object import GameObject
-from dtrpg.core.events.event_result import EventResult
+from dtrpg.core.events.event_result import EventResult, ExceptionEventResult
 
-from typing import Iterable, Mapping, TYPE_CHECKING
+from typing import Sequence, Mapping, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.core.creature.creature import Player
@@ -17,13 +17,15 @@ class Action(GameObject):
     def check_requirements(self, player: 'Player') -> bool:
         return all(cost.can_take(player) for cost in self.costs)
 
-    def take(self, player: 'Player', **args: Mapping[str, object]) -> EventResult:
-        for cost in self.costs:
-            cost.assert_can_take(player)
-        for cost in self.costs:
-            cost.apply(player)
+    def take(self, player: 'Player', **args: Mapping[str, object]) -> Sequence[EventResult]:
+        try:
+            for cost in self.costs:
+                cost.assert_can_take(player)
+            for cost in self.costs:
+                cost.apply(player)
 
-        return self.event.fire(player, **args)
+            player.events.register(self.event, **args)
+        except Exception as e:
+            player.events.results.append(ExceptionEventResult(e))
 
-    def _take(self, player: 'Player', *args: Iterable[object]) -> EventResult:
-        return self.event.fire(player)
+        return player.events.fire_all()

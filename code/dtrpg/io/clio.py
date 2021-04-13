@@ -9,5 +9,5 @@ class CommandLineIO(TextIO):
     def run(self, *args: Any, **kwargs: Any) -> None:
         while True:
             inp = input('> ')
-            out = self.command(self.PLAYER_ID, inp)
-            print(out)
+            outs = self.command(self.PLAYER_ID, inp)
+            print(*outs, sep='\n')
