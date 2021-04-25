@@ -174,3 +174,10 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('stats'), r'.*Current attack: fist.*')
         self.assertRegex(io.test('equip stones'), r'.*equip stones.*hand.*')
         self.assertRegex(io.test('stats'), r'.*Current attack: stone throw.*')
+
+        # RESTART
+
+        self.assertRegex(io.test('exit'), r'.*Bye.*')
+        self.assertRegex(io.test('exit'), r'.*not started.*')
+        self.assertRegex(io.test('start'), r'.*Welcome.*')
+        self.assertRegex(io.test('me'), r'.*have 60/60 action points.*have 10/10 health.*')

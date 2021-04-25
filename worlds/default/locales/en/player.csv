@@ -1,5 +1,8 @@
 object,string,value
-player_factory,WELCOME,Welcome!
+player_factory,WELCOME,"Welcome!
+
+_hint: use 'help' for help_"
+player_factory,GOODBYE,Bye!
 herbalism,NAME,Herbalism
 melee_fighting,NAME,Melee fighting
 ranged_fighting,NAME,Ranged fighting

@@ -23,6 +23,7 @@ class TextIO:
         self._game = game
         self._basic_commands = {
             'start': self._start,
+            'exit': self._exit,
         }
 
     def command(self, player_id: Hashable, command: str) -> Sequence[str]:
@@ -86,6 +87,11 @@ class TextIO:
     def _start(self, player_id: Hashable) -> Sequence[str]:
         player = self._game.create_player(player_id)
         return [player.strings['WELCOME']]
+
+    def _exit(self, player_id: Hashable) -> Sequence[str]:
+        player = self._game.player(player_id)
+        self._game.remove_player(player_id)
+        return [player.strings['GOODBYE']]
 
     def run(self, *args: Any, **kwargs: Any) -> Any:
         raise NotImplementedError

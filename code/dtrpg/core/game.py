@@ -32,6 +32,9 @@ class Game:
         self._players[id_] = self._config.player_factory.create()
         return self._players[id_]
 
+    def remove_player(self, id_: Hashable) -> None:
+        del self._players[id_]
+
     def player(self, id_: Hashable) -> Player:
         try:
             return self._players[id_]
