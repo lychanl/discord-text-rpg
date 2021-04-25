@@ -1,0 +1,60 @@
+object,string,value
+help_action,REGEX,help( (?P<what>.*))?
+help_action,NAME,help _topic_
+help_action,INFO,shows help
+
+help_event,EVENT_NOW,"{self.strings.get('HELP_' + self.params.get('what', '').upper(), None, self.strings['HELP'])}"
+help_event,HELP,"Welcome to the game's help!
+
+Use help _topic_ to see help on given topic.
+
+Available topics:
+ - actions
+ - player actions
+ - stats
+ - fight
+ - items
+
+You may use _exit_ command to delete current progress."
+help_event,HELP_ACTIONS,"Actions are what allows you to interact with the game.
+
+There are 3 groups of actions:
+ - **player actions**, that you have always available. They let you check your status and change some properties like equipped items,
+ - **local actions**, that depend on current location, and
+ - **travel actions**, that let you travel between locations.
+
+Some actions may have requirements or costs - you can't equip an item you don't have and can't buy an item you can't afford.
+
+Some actions may require **action points**, that represent the time and effort your character puts into this action. Action points regenerate over time."
+help_event,HELP_PLAYER ACTIONS,"List of available player actions:
+
+{'\n'.join(' - **' + a.strings['NAME'] + '** - ' + a.strings['INFO'] for a in self.player.base_actions)}"
+help_event,HELP_STATS,"There is a number of different statistics that characterize a character.
+
+Resources: 
+ - **health** - character's vitality. Regenrates over time. If health drops to 0 during fight, player will lose all action points as well
+ - **action points** - they represent character's effort. They are spent to perform some actions, and regenerate over time.
+ - **gold** - the in-game currency. You may earn it by performing some actions and use it to e.g. buy items
+
+Statistics:
+ - **armor** - how hard it is to deal damage to player. Comes from items.
+ - **attack** - player's attack. Comes from item, but everyone has fists too.
+
+Skills represent character's proficiency with given activity and improve when used."
+help_event,HELP_ITEMS,"Performing some actions may give items.
+Items are stored in inventory, and may stack (max stack size depends on item). If you would get item that won't fit into the container, you will lose it, so be careful.
+
+Some items may be equipped on inventory slots to improve statistics.
+
+Items may be bought and sold. However, a location may only have offers for a limited number of item types."
+help_event,HELP_FIGHT,"The world is a dangerous place and sometimes it may be necessary to fight.
+
+Fighting occurs automatically, according to selected tactics.
+
+On each round, participants make moves and actions.
+
+For moves, any conflicts are resolved using speed skill tests.
+
+A typical action is the attack action. An attack may be ranged or melee, and uses appropriate skill when checking if it hits, opposed to the evasion skill. If the attack hits, damage is determined randomly based on attack properties and target armor.
+
+Fight takes place for 60 rounds, unless some side has no fighters (because all have fled or were defeated)."

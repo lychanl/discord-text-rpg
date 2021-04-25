@@ -21,7 +21,7 @@ Goals (developement):
  - [x] Fully configurable worlds
  - [x] Localized texts
  - [ ] Discord bot UI (single global game, for now)
- - [ ] In-game help
+ - [x] In-game help
 
 Goals (gameplay):
  - [x] Creating a player

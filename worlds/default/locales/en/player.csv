@@ -15,22 +15,30 @@ health,VALUE,{value} health points
 health_factory,VALUE,{value}/{self.max} health
 armor,NAME,Armor
 here_action,REGEX,here
+here_action,NAME,here
+here_action,INFO,shows info about location, including local actions and travel destinations
 here_event,EVENT_NOW,"{self.player.location.strings['YOU_ARE_HERE']}
 
 You may:
 {'\n'.join(['- ' + a.strings['NAME'] for a in self.player.location.local_actions + self.player.location.travel_actions])}"
 me_action,REGEX,me
+me_action,NAME,me
+me_action,INFO,shows some basic info about the player, like resources, items and current location
 me_event,EVENT_NOW,"{'\n'.join([r.strings['YOU_HAVE'] for r in self.player.resources.values()])}
 
 You have {self.player.items.strings['USAGE']} items.
 
 {self.player.location.strings['YOU_ARE_HERE']}"
 stats_action,REGEX,stats|statistics
+stats_action,NAME,statistics
+stats_action,INFO,shows info about player statistics and current attack
 stats_event,EVENT_NOW,"{'\n'.join(self.strings['STAT', {'stat': stat, 'value': value}] for stat, value in self.player.statistics.items())}
 
 Current attack: {self.player.attack.strings['INFO']}"
 stats_event,STAT,{stat.strings['NAME']}: {value}
 items_action,REGEX,items
+items_action,NAME,items
+items_action,INFO,lists owned items
 items_event,SLOT,{slot.strings['NAME'].capitalize()}: {item.strings['NAME'] if item else 'empty'}
 items_event,EVENT_NOW,"Equipped:
 {'\n'.join(self.strings['SLOT', {'slot': slot, 'item': item}] for slot, item in self.player.item_slots.items())}
@@ -39,27 +47,45 @@ Inventory:
 {self.player.items.strings['ITEMS']}
 ({self.player.items.strings['USAGE']})"
 drop_action,REGEX,drop (?P<number>\d+ )?(?P<item>.+)
+drop_action,NAME,drop _n_ _item_
+drop_action,INFO,drops item from inventory
 drop_event,SUCCESS,"You drop {self.number}x {self.item.strings['NAME']}"
 drop_event,FAIL,You don't have enough items to do that.
 drop_event,EVENT_NOW,{self.strings['FAIL'] if self.failed else self.strings['SUCCESS']}
 skills_action,REGEX,skills
+skills_action,NAME,skills
+skills_action,INFO,lists skills and their current values
 skills_event,SKILL,"{skill.skill.strings['NAME']}: {skill.value}"
 skills_event,EVENT_NOW,"Your skills:
 {'\n'.join([self.strings['SKILL', {'skill': skill}] for skill in self.player.skills.values() if skill.value > 0])}"
 player_killed_info_event,EVENT_NOW,"You regain consciousness after some time."
 player_killed_resources_event,CAUSE_NOW,"You are tired and injured, but alive. "
 item_action,REGEX,(info )?item (?P<item>.+)
+item_action,NAME,item _item_
+item_action,INFO,shows information about an item
 item_info_event,EVENT_NOW,"{self.params['item'].strings['INFO']}"
 equip_action,REGEX,equip (?P<item>.+)
+equip_action,NAME,equip _item_
+equip_action,INFO,equips an item
 unequip_item_action,REGEX,unequip (?P<item>.+)
+unequip_item_action,NAME,unequip _item_
+unequip_item_action,INFO,unequips an item
 unequip_slot_action,REGEX,unequip from (?P<slot>.+)
+unequip_slot_action,NAME,unequip from _slot_
+unequip_slot_action,INFO,unequips an item
 tactic_info_event,CURRENT,"Current tactic: {self.player.tactic.strings['NAME']}
 {self.player.tactic.strings['INFO']}"
 tactic_info_event,EVENT_NOW,{self.params['tactic'].strings['INFO'] if 'tactic' in self.params else self.strings['CURRENT']}
 tactic_info_action,REGEX,tactic( info)?( (?P<tactic>.+))?
+tactic_info_action,NAME,tactic _tactic_
+tactic_info_action,INFO,gives info about a tactic (current tactic if none given)
 tactics_list_event,EVENT_NOW,"Available tactics:
 {'\n'.join([tactic.strings['NAME'] for tactic in self.player.available_tactics])}"
 tactics_list_action,REGEX,(list )?(available )?tactics
+tactics_list_action,NAME,list tactics
+tactics_list_action,INFO,lists available tactics
 set_tactic_action,REGEX,set (?P<value>.+) tactic
+set_tactic_action,NAME,set _tactic_ tactic
+set_tactic_action,INFO,sets current tactic
 set_tactic_event,EVENT_NOW,Tactic set.
 default_player_attack,NAME,fist

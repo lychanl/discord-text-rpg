@@ -15,6 +15,7 @@ PlayerFactory player_factory:
       base: 0
   container_factory: player_items
   base_actions:
+    - help_action
     - me_action
     - stats_action
     - here_action
@@ -204,3 +205,10 @@ ResourceChangesEvent player_killed_resources_event:
     - resource: action_points
       value: 0
       op: SET
+
+Action help_action:
+  event: help_event
+  args:
+    what: str
+
+InfoEvent help_event: {}

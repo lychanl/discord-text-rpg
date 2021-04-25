@@ -3,7 +3,7 @@ Location,YOU_ARE_HERE,"You are in {self.strings['NAME']}"
 Market,YOU_ARE_HERE,"You are in {self.strings['NAME']}"
 Location,REGEX_NAME,{self.strings['NAME']}
 Market,REGEX_NAME,{self.strings['NAME']}
-TravelAction,REGEX,Travel( to)? {self.to.strings['REGEX_NAME']}
+TravelAction,REGEX,(Travel|Go)( to)? {self.to.strings['REGEX_NAME']}
 TravelAction,NAME,Travel to {self.to.strings['NAME']}
 TravelEventResult,EVENT_NOW,You travel to {self.to.strings['NAME']}.
 CreatureResource,YOU_HAVE,"You have {self.strings['VALUE', {'value': self.value}]}"
