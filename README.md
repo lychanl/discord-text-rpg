@@ -1,5 +1,5 @@
 # discord-text-rpg
-A text rpg game meant for discord bot as UI. It currently has only command line UI (for testing purposes), but starting with a future version it will be run either as a discord bot or a command line text adventure game.
+A text rpg game meant for discord bot as UI. It can be run either as a discord bot or a command line text adventure game.
 
 It is a hobby project. If you are interested in developement, feel free to add an issue or pull request.
 
@@ -30,7 +30,7 @@ For a list of features for future versions see [https://github.com/lychanl/disco
 
 ## Changelog
 
-#### 0.0.1
+#### 0.1.0
  - configurable worlds
  - localized texts
  - discord bot UI (single global game, for now)
