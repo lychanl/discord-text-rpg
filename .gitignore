@@ -131,3 +131,7 @@ dmypy.json
 # vscode
 
 .vscode/
+
+# secrets
+
+/secrets/

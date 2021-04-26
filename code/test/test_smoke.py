@@ -152,7 +152,7 @@ class TestSmoke(unittest.TestCase):
             + r'Player attacks Forest Rat and hits, dealing 1 damage.*'
             + r'Player was defeated!.*Forest Rat wins!.*'
             + r'You regain consciousness after some time.*'
-            + r'You are tired and injured, but alive. You get 1 health points. You loose 8 action points.*')
+            + r'You are tired and injured, but alive. You get 1 health points. You lose 8 action points.*')
 
         # TACTICS
 

@@ -8,7 +8,7 @@ TravelAction,NAME,Travel to {self.to.strings['NAME']}
 TravelEventResult,EVENT_NOW,You travel to {self.to.strings['NAME']}.
 CreatureResource,YOU_HAVE,"You have {self.strings['VALUE', {'value': self.value}]}"
 CreatureResource,VALUE,"{self.resource.strings['VALUE', {'value': self.value}]}"
-ResourceChangeEventResult,EVENT_NOW,"{self.strings['CAUSE_NOW']}{' '.join([('You get ' if v > 0 else 'You loose ') + r.strings['VALUE', {'value': abs(v)}] + '.' for r, v in self.resource_changes.items() if not v == 0])}"
+ResourceChangeEventResult,EVENT_NOW,"{self.strings['CAUSE_NOW']}{' '.join([('You get ' if v > 0 else 'You lose ') + r.strings['VALUE', {'value': abs(v)}] + '.' for r, v in self.resource_changes.items() if not v == 0])}"
 ResourceChangeEventResult,CAUSE_NOW,
 ItemReceivedEventResult,EVENT_NOW,"{self.strings['CAUSE_NOW']}You get {self.number}x {self.item.strings['NAME']}.{'You dropped ' + str(self.overflow.stack.number) + ' because you have no more space.' if self.overflow else ''}"
 ItemReceivedEventResult,CAUSE_NOW,

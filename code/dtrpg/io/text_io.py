@@ -19,7 +19,7 @@ class ArgumentError(Exception):
 
 
 class TextIO:
-    def __init__(self, game: Game):
+    def __init__(self, game: Game, **kwargs):
         self._game = game
         self._basic_commands = {
             'start': self._start,

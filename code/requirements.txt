@@ -1,1 +1,2 @@
-PyYAML
+-r requirements-cli.txt
+discord-py >= 1.5
