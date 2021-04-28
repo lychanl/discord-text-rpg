@@ -63,3 +63,5 @@ class DiscordBotIO(Client, TextIO):
             print(message.content)
             print("Sender:")
             print(message.author)
+
+            await message.channel.send(self._game.config['UNHANDLED_EXCEPTION'])

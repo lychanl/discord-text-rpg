@@ -53,7 +53,7 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('fish'), r'.*fish.* get 1x fish.*')
         self.assertRegex(io.test('fishing'), r'.*fish.* get 1x fish.*')
         self.assertRegex(io.test('items'), r'.*2x fish.*1/10.*')
-        self.assertRegex(io.test('travel village'), r'.*travel.*village.*')
+        self.assertRegex(io.test('travel to village nothingthere'), r'.*travel.*village.*')
         self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
         self.assertRegex(io.test('get a job'), r'.*job.*get.*5.*gold.*')
         self.assertRegex(io.test('me'), r'.*have 56/60 action points.*have 10 gold.*have 1/10 items.*in.*village.*')
@@ -91,6 +91,13 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
         self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
         self.assertRegex(io.test('buy linen jacket'), r".*buy 1x linen jacket.*30*")
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('buy fishing rod'), r".*buy 1x fishing rod.*25*")
 
         # EQUIPMENT
 
@@ -169,11 +176,23 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('travel village'), r'.*travel.*village.*')
         self.assertRegex(io.test('travel coast'), r'.*travel.*coast.*')
         self.assertRegex(io.test('gather stones'), r'.*get 1x stones.*')
+        self.assertRegex(io.test('gather stones'), r'.*get 1x stones.*')
+        self.assertRegex(io.test('gather stones'), r'.*get 1x stones.*')
+        self.assertRegex(io.test('gather stones'), r'.*get 1x stones.*')
 
         self.assertRegex(io.test('item stones'), r'.*Attack: stone throw.*')
         self.assertRegex(io.test('stats'), r'.*Current attack: fist.*')
         self.assertRegex(io.test('equip stones'), r'.*equip stones.*hand.*')
         self.assertRegex(io.test('stats'), r'.*Current attack: stone throw.*')
+
+        # OVERFLOW
+
+        self.assertRegex(io.test('gather stones'), r'.*get 1x stones.*')
+        self.assertRegex(io.test('gather stones'), r'.*get 1x stones.*')
+        self.assertRegex(io.test('gather stones'), r'.*get 1x stones.*')
+        self.assertRegex(io.test('gather stones'), r'.*get 1x stones.*')
+        self.assertRegex(io.test('gather stones'), r'.*get 1x stones.*')
+        self.assertRegex(io.test('gather stones'), r'.*get 1x stones.*dropped 1.*')
 
         # RESTART
 

@@ -51,7 +51,7 @@ class TextIO:
             for obj in self._game.game_objects(t):
                 if 'NAME' in obj.strings and name == obj.strings['NAME']:
                     return obj
-                if 'REGEX_NAME' in obj.strings and re.match(obj.strings['REGEX_NAME'], name):
+                if 'REGEX_NAME' in obj.strings and re.fullmatch(obj.strings['REGEX_NAME'], name):
                     return obj
             raise ArgumentError(name)
         else:

@@ -1,6 +1,6 @@
 object,string,value
 loc_nothingthere_village,NAME,"village Nothingthere"
-loc_nothingthere_village,REGEX_NAME,"(village)|(nothingthere)|(village Nothingthere)"
+loc_nothingthere_village,REGEX_NAME,"village|nothingthere|village Nothingthere"
 loc_nothingthere_coast,NAME,"coast"
 loc_nothingthere_coast,YOU_ARE_HERE,"You are at the coast near the Nothingthere village."
 loc_nothingthere_forest,NAME,"forest"
