@@ -153,7 +153,7 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('me'), r'.*have 4/10 health.*')
 
         self.assertRegex(
-            io.test('hunt rats'), r'.*Player fights against Forest Rat.*'
+            io.test('hunt for forest rats'), r'.*Player fights against Forest Rat.*'
             + r'moves to melee.*'
             + r'Forest Rat attacks Player and hits, dealing 2 damage.*'
             + r'Player attacks Forest Rat and hits, dealing 1 damage.*'

@@ -17,7 +17,7 @@ nothingthere_forest_herbs_success,CAUSE_NOW,"You find some herbs. "
 nothingthere_forest_herbs_failure,EVENT_NOW,You search for some time but find nothing.
 nothingthere_forest_herbs,REGEX,"((search |look )for )?herb(s)?"
 nothingthere_forest_herbs,NAME,Search for herbs
-nothingthere_rat_hunt,REGEX,hunt( for)?( rat(s)?)?
+nothingthere_rat_hunt,REGEX,hunt(( for)?( forest)? rat(s)?)?
 nothingthere_rat_hunt,NAME,Hunt for forest rats
 nothingthere_forest_explore,NAME,Explore
 nothingthere_forest_explore,REGEX,explore( forest)?
