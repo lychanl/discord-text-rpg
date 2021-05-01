@@ -1,4 +1,5 @@
 from dtrpg.core import Game, GameObject
+from dtrpg.utils import similarity_with_wildcards
 
 import re
 
@@ -9,7 +10,10 @@ if TYPE_CHECKING:
 
 
 class ActionNotFound(Exception):
-    pass
+    def __init__(self, best_similarity, best_action):
+        super().__init__()
+        self.best_similarity = best_similarity
+        self.best_action = best_action
 
 
 class ArgumentError(Exception):
@@ -69,6 +73,7 @@ class TextIO:
         player = self._game.player(player_id)
 
         argument_error = None
+        best_match = None
 
         for action in player.available_actions:
             match = re.fullmatch(action.strings['REGEX'], command, flags=re.IGNORECASE)
@@ -78,11 +83,15 @@ class TextIO:
                     return action.take(player, **args)
                 except ArgumentError as e:
                     argument_error = e
+            else:
+                sim = similarity_with_wildcards(command, action.strings['HINT'])
+                if not best_match or best_match[0] < sim:
+                    best_match = sim, action
 
         if argument_error:
             raise argument_error
 
-        raise ActionNotFound
+        raise ActionNotFound(*best_match)
 
     def _start(self, player_id: Hashable) -> Sequence[str]:
         player = self._game.create_player(player_id)

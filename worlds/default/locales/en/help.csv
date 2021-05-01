@@ -1,5 +1,6 @@
 object,string,value
 help_action,REGEX,help( (?P<what>.*))?
+help_action,HINT,help *
 help_action,NAME,help _topic_
 help_action,INFO,shows help
 

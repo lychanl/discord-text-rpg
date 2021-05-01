@@ -50,6 +50,7 @@ Inventory:
 {self.player.items.strings['ITEMS']}
 ({self.player.items.strings['USAGE']})"
 drop_action,REGEX,drop (?P<number>\d+ )?(?P<item>.+)
+drop_action,HINT,drop * *
 drop_action,NAME,drop _n_ _item_
 drop_action,INFO,drops item from inventory
 drop_event,SUCCESS,"You drop {self.number}x {self.item.strings['NAME']}"
@@ -64,22 +65,27 @@ skills_event,EVENT_NOW,"Your skills:
 player_killed_info_event,EVENT_NOW,"You regain consciousness after some time."
 player_killed_resources_event,CAUSE_NOW,"You are tired and injured, but alive. "
 item_action,REGEX,(info )?item (?P<item>.+)
+item_action,HINT,item *
 item_action,NAME,item _item_
 item_action,INFO,shows information about an item
 item_info_event,EVENT_NOW,"{self.params['item'].strings['INFO']}"
 equip_action,REGEX,equip (?P<item>.+)
+equip_action,HINT,equip *
 equip_action,NAME,equip _item_
 equip_action,INFO,equips an item
 unequip_item_action,REGEX,unequip (?P<item>.+)
+unequip_item_action,HINT,unequip *
 unequip_item_action,NAME,unequip _item_
 unequip_item_action,INFO,unequips an item
 unequip_slot_action,REGEX,unequip from (?P<slot>.+)
+unequip_slot_action,HINT,unequip from *
 unequip_slot_action,NAME,unequip from _slot_
 unequip_slot_action,INFO,unequips an item
 tactic_info_event,CURRENT,"Current tactic: {self.player.tactic.strings['NAME']}
 {self.player.tactic.strings['INFO']}"
 tactic_info_event,EVENT_NOW,{self.params['tactic'].strings['INFO'] if 'tactic' in self.params else self.strings['CURRENT']}
 tactic_info_action,REGEX,tactic( info)?( (?P<tactic>.+))?
+tactic_info_action,HINT,tactic *
 tactic_info_action,NAME,tactic _tactic_
 tactic_info_action,INFO,gives info about a tactic (current tactic if none given)
 tactics_list_event,EVENT_NOW,"Available tactics:
@@ -88,6 +94,7 @@ tactics_list_action,REGEX,(list )?(available )?tactics
 tactics_list_action,NAME,list tactics
 tactics_list_action,INFO,lists available tactics
 set_tactic_action,REGEX,set (?P<value>.+) tactic
+set_tactic_action,HINT,set * tactic
 set_tactic_action,NAME,set _tactic_ tactic
 set_tactic_action,INFO,sets current tactic
 set_tactic_event,EVENT_NOW,Tactic set.

@@ -43,6 +43,7 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('here'), r'.*not started.*start.*')
         self.assertRegex(io.test('start'), r'.*Welcome.*')
         self.assertRegex(io.test('invalid'), r'.*Invalid.*')
+        self.assertRegex(io.test('mee'), r'.*Invalid.*Did you mean.*me.*')
         self.assertRegex(io.test('info item herb'), r'.*a herb.*')
         self.assertRegex(io.test('item linen jacket'), r'.*a linen jacket.*Armor \+1.*')
         self.assertRegex(io.test('me'), r'.*have 60/60 action points.*have 0 gold.*have 0/10 items.*in.*village.*')
