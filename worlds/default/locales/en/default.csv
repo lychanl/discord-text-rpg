@@ -19,11 +19,11 @@ Container,ITEMS,{'\n'.join(str(i.stack) + 'x ' + i.item.strings['NAME'] + ' (max
 SellEventResult,EVENT_NOW,You sell {self.number}x {self.item.strings['NAME']} for {self.value}
 SellAction,NAME,Sell item
 SellAction,REGEX,sell( (?P<number>\d+))? (?P<item>.+)
-SellAction,HINT,Sell * *
+SellAction,HINT,Sell *
 BuyEventResult,EVENT_NOW,You buy {self.number}x {self.item.strings['NAME']} for {self.value}
 BuyAction,NAME,Buy item
 BuyAction,REGEX,buy( (?P<number>\d+))? (?P<item>.+)
-BuyAction,HINT,Buy * *
+BuyAction,HINT,Buy *
 TradeOffer,DESCRIPTION,"{self.item.strings['NAME']}: {'sell ' + str(self.sell_value) if self.sell_value else ''}{', ' if self.sell_value and self.buy_value else ''}{'buy ' + str(self.buy_value) + ' ' if self.buy_value else ''}"
 OffersInfoEventResult,EVENT_NOW,{'\n'.join(offer.strings['DESCRIPTION'] for offer in self.offers)}
 OffersInfoAction,NAME,See offers
