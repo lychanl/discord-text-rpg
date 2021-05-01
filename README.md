@@ -30,6 +30,11 @@ For a list of features for future versions see [https://github.com/lychanl/disco
 
 ## Changelog
 
+#### 0.1.1
+ - default world string fixes
+ - argument name resolvig fix
+ - action hinting
+
 #### 0.1.0
  - configurable worlds
  - localized texts
