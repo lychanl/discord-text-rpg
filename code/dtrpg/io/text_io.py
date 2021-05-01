@@ -1,4 +1,4 @@
-from dtrpg.core import Game, GameObject
+from dtrpg.core import Game, GameObject, QuitGameException
 from dtrpg.utils import similarity_with_wildcards
 
 import re
@@ -26,8 +26,7 @@ class TextIO:
     def __init__(self, game: Game, **kwargs):
         self._game = game
         self._basic_commands = {
-            'start': self._start,
-            'exit': self._exit,
+            game.config.strings['START']: self._start,
         }
 
     def command(self, player_id: Hashable, command: str) -> Sequence[str]:
@@ -43,6 +42,10 @@ class TextIO:
                 return [self._game.config.strings['EMPTY']]
         except Exception as e:
             string = f'EXCEPTION_{type(e).__name__}'
+
+            if isinstance(e, QuitGameException):
+                self._exit(player_id)
+
             if string in self._game.config.strings:
                 return [self._game.config.strings[string, {'e': e}]]
             else:
@@ -98,9 +101,7 @@ class TextIO:
         return [player.strings['WELCOME']]
 
     def _exit(self, player_id: Hashable) -> Sequence[str]:
-        player = self._game.player(player_id)
         self._game.remove_player(player_id)
-        return [player.strings['GOODBYE']]
 
     def run(self, *args: Any, **kwargs: Any) -> Any:
         raise NotImplementedError

@@ -1,10 +1,15 @@
 from dtrpg.core.config import Config
 from dtrpg.core.creature import Player
+from dtrpg.core.events import Event, EventResult
 
 from typing import Hashable, Iterable, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.core.game_object import GameObject
+
+
+class QuitGameException(Exception):
+    pass
 
 
 class DuplicatePlayerError(Exception):
@@ -13,6 +18,14 @@ class DuplicatePlayerError(Exception):
 
 class InvalidPlayerError(Exception):
     pass
+
+
+class QuitGameEvent(Event):
+    def __init__(self):
+        super().__init__(EventResult)
+
+    def _fire(self, player: 'Player') -> None:
+        raise QuitGameException
 
 
 class Game:

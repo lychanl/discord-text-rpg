@@ -29,6 +29,7 @@ PlayerFactory player_factory:
     - tactic_info_action
     - tactics_list_action
     - set_tactic_action
+    - quit_game_action
 
   item_slots:
     - itemslot_hand
@@ -212,3 +213,8 @@ Action help_action:
     what: str
 
 InfoEvent help_event: {}
+
+Action quit_game_action:
+  event: quit_game_event
+
+QuitGameEvent quit_game_event: {}

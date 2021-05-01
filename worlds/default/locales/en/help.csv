@@ -16,7 +16,7 @@ Available topics:
  - fight
  - items
 
-You may use _exit_ command to delete current progress."
+You may use _exit_ action to delete current progress."
 help_event,HELP_ACTIONS,"Actions are what allows you to interact with the game.
 
 There are 3 groups of actions:

@@ -1,4 +1,5 @@
 from dtrpg.core.game_object import GameObjectFactory
+from dtrpg.core.game_exception import GameException
 from dtrpg.core.events.event_result import (
     EventResult, ResourceChangeEventResult, InfoEventResult, VariableSetEventResult, ExceptionEventResult
 )
@@ -46,7 +47,7 @@ class Event(GameObjectFactory):
 
         try:
             return type(self)._fire(cpy, player)
-        except Exception as e:
+        except GameException as e:
             return ExceptionEventResult(e)
 
     def _fire(self, player: 'Player') -> EventResult:

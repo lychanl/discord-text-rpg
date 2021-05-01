@@ -99,3 +99,5 @@ set_tactic_action,NAME,set _tactic_ tactic
 set_tactic_action,INFO,sets current tactic
 set_tactic_event,EVENT_NOW,Tactic set.
 default_player_attack,NAME,fist
+quit_game_action,NAME,exit
+quit_game_action,REGEX,exit

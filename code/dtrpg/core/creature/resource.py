@@ -1,4 +1,5 @@
 from dtrpg.core.game_object import GameObject, GameObjectFactory
+from dtrpg.core.game_exception import GameException
 
 from enum import Enum
 from operator import add
@@ -10,7 +11,7 @@ if TYPE_CHECKING:
     from dtrpg.core.creature.player import Player
 
 
-class InsufficientResourceError(Exception):
+class InsufficientResourceError(GameException):
     def __init__(self, resource: 'Resource', required: int, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
         self.resource = resource

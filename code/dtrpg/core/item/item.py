@@ -1,23 +1,24 @@
 from dtrpg.core.game_object import GameObject, GameObjectFactory
+from dtrpg.core.game_exception import GameException
 
 
-class InsufficientItemsException(Exception):
+class InsufficientItemsException(GameException):
     def __init__(self, item: 'Item', number: int):
         self.item = item
         self.number = number
 
 
-class NotEquippableException(Exception):
+class NotEquippableException(GameException):
     def __init__(self, item: 'Item'):
         self.item = item
 
 
-class ItemNotEquippedException(Exception):
+class ItemNotEquippedException(GameException):
     def __init__(self, item: 'Item'):
         self.item = item
 
 
-class SlotNotEquippedException(Exception):
+class SlotNotEquippedException(GameException):
     def __init__(self, slot: 'ItemSlot'):
         self.slot = slot
 
