@@ -1,10 +1,12 @@
 from dtrpg.core.creature.creature import Fighter, FighterFactory
-from dtrpg.core.events import EventsManager
+from dtrpg.core.creature.state_machine import InvalidStateException
+from dtrpg.core.events import EventsManager, Event
 
-from typing import Iterable, TYPE_CHECKING
+from typing import Iterable, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.core.action import Action
+    from dtrpg.core.creature.state_machine import State, StateMachine
 
 
 class Player(Fighter):
@@ -20,9 +22,45 @@ class Player(Fighter):
         self.available_tactics = ()
         self.variable_holder = None
 
+        self.active_states = []
+
+    @property
+    def active_state(self) -> Tuple['State', 'StateMachine']:
+        return self.active_states[-1] if self.active_states else (None, None)
+
+    def enter_state_machine(self, state_machine: 'StateMachine') -> None:
+        self.active_states.append((state_machine.initial, state_machine))
+
+    def exit_state_machine(self, state_machine: 'StateMachine') -> None:
+        if self.active_states and self.active_state[1] == state_machine:
+            self.active_states.pop()
+        else:
+            raise InvalidStateException
+
+    def on_event(self, event: 'Event') -> None:
+        if self.active_states:
+            self.active_state[0].on_event(self, event)
+
+    def change_state(self, from_: 'State', to: 'State') -> None:
+        if from_ is not self.active_state[0]:
+            raise InvalidStateException
+        self.active_states[-1] = (to, self.active_states[-1][1])
+
     @property
     def available_actions(self) -> Iterable['Action']:
-        return self.base_actions + self.location.travel_actions + self.location.local_actions
+        stateless_actions = self.base_actions + self.location.travel_actions + self.location.local_actions
+
+        state, state_group = self.active_state
+
+        if not state_group:
+            return stateless_actions
+
+        allowed = filter(
+            lambda action: any(group in state_group.allowed_action_groups for group in action.groups),
+            stateless_actions
+        )
+
+        return list(allowed) + state.actions
 
 
 class PlayerFactory(FighterFactory):

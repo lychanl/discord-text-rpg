@@ -25,6 +25,10 @@ Action:
   optional costs: [ ResourceCost ]
   optional args: { str: type }
   required event: Event
+  optional gropus: [ ActionGroup ]
+
+ActionGroup:
+  _class: dtrpg.core.events.ActionGroup
 
 Event:
   _class: dtrpg.core.events.Event
@@ -385,3 +389,28 @@ DefeatedEventResult:
 
 QuitGameEvent:
   _class: dtrpg.core.QuitGameEvent
+
+ActiveStateMachine:
+  _class: dtrpg.core.creature.ActiveStateMachine
+  required initial: ActiveState
+  optional allowed_action_groups: [ActionGroup]
+
+ActiveState:
+  _class: dtrpg.core.creature.ActiveState
+  optional actions: [Action]
+  optional transitions: {Event: ActiveStateTransition}
+
+ActiveStateTransition:
+  _class: dtrpg.core.creature.StateTransition
+  optional to: ActiveState
+  optional event: Event
+
+ActiveStateMachineInitEvent:
+  _class: dtrpg.core.events.StateMachineInitEvent
+  _base: Event
+  required machine: ActiveStateMachine
+
+ActiveStateMachineExitEvent:
+  _class: dtrpg.core.events.StateMachineExitEvent
+  _base: Event
+  required machine: ActiveStateMachine

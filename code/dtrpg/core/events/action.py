@@ -13,6 +13,7 @@ class Action(GameObject):
         self.args = {}
         self.costs = []
         self.event = None
+        self.groups = []
 
     def check_requirements(self, player: 'Player') -> bool:
         return all(cost.can_take(player) for cost in self.costs)
@@ -29,3 +30,7 @@ class Action(GameObject):
             player.events.results.append(ExceptionEventResult(e))
 
         return player.events.fire_all()
+
+
+class ActionGroup(GameObject):
+    pass

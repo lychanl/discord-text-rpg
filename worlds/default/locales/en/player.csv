@@ -101,3 +101,9 @@ set_tactic_event,EVENT_NOW,Tactic set.
 default_player_attack,NAME,fist
 quit_game_action,NAME,exit
 quit_game_action,REGEX,exit
+quit_game_ask_sm_enter,EVENT_NOW,"Are you sure?{('\n\n' + self.player.strings['STATE_ACTIONS_HINT']) if self.player.active_states else ''}"
+confirm_quit_game,REGEX,yes
+confirm_quit_game,NAME,yes
+reject_quit_game,REGEX,no
+reject_quit_game,NAME,no
+quit_game_ask_sm_exit,EVENT_NOW,Ok!

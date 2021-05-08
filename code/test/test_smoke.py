@@ -196,8 +196,12 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('gather stones'), r'.*get 1x stones.*dropped 1.*')
 
         # RESTART
-
-        self.assertRegex(io.test('exit'), r'.*Bye.*')
+        self.assertRegex(io.test('exit'), r'.*Are you sure.*')
+        self.assertRegex(io.test('help'), r'.*Invalid.*')
+        self.assertRegex(io.test('no'), r'.*Ok!.*')
+        self.assertRegex(io.test('yes'), r'.*Invalid.*')
+        self.assertRegex(io.test('exit'), r'.*Are you sure.*')
+        self.assertRegex(io.test('yes'), r'.*Bye.*')
         self.assertRegex(io.test('exit'), r'.*not started.*')
         self.assertRegex(io.test('start'), r'.*Welcome.*')
         self.assertRegex(io.test('me'), r'.*have 60/60 action points.*have 10/10 health.*')

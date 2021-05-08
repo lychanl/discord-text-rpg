@@ -4,6 +4,7 @@ from unittest import mock
 import dtrpg.core.item as item
 import dtrpg.core.map as map_
 import dtrpg.core.creature as creature
+import dtrpg.core.events as events
 
 
 class TestPlayer(unittest.TestCase):
@@ -450,3 +451,97 @@ class TestFighter(unittest.TestCase):
 
         c.item_slots[slot] = i
         self.assertIs(c.attack, a2)
+
+
+class TestStateMachine(unittest.TestCase):
+    def test_machine_init(self):
+        p = creature.Player()
+
+        m = creature.StateMachine()
+        s = creature.State()
+        m.initial = s
+
+        p.enter_state_machine(m)
+
+        self.assertTupleEqual(p.active_state, (s, m))
+
+    def test_machine_exit(self):
+        p = creature.Player()
+
+        m = creature.StateMachine()
+        s = creature.State()
+        m.initial = s
+
+        m2 = creature.StateMachine()
+        s2 = creature.State()
+        m2.initial = s2
+
+        p.enter_state_machine(m)
+        p.enter_state_machine(m2)
+
+        self.assertTupleEqual(p.active_state, (s2, m2))
+        p.exit_state_machine(m2)
+        self.assertTupleEqual(p.active_state, (s, m))
+        p.exit_state_machine(m)
+        self.assertTupleEqual(p.active_state, (None, None))
+
+    def test_state_transition(self):
+        p = creature.Player()
+
+        m = creature.StateMachine()
+        s = creature.State()
+        s2 = creature.State()
+        m.initial = s
+        t = creature.StateTransition()
+        t2 = creature.StateTransition()
+        t.event = object()
+        t.to = s2
+
+        e = object()
+        e2 = object()
+
+        s.transitions = {e: t, e2: t2}
+
+        p.enter_state_machine(m)
+        p.on_event(e2)
+
+        self.assertTupleEqual(p.active_state, (s, m))
+
+        p.on_event(e)
+
+        self.assertTupleEqual(p.active_state, (s2, m))
+        self.assertSequenceEqual(p.events.events, [(t.event, {})])
+
+    def test_avaliable_actions(self):
+        p = creature.Player()
+
+        m = creature.ActiveStateMachine()
+        s = creature.ActiveState()
+        m.initial = s
+
+        g1 = object()
+        g2 = object()
+
+        m.allowed_action_groups = [g1]
+
+        a1 = events.Action()
+        a2 = events.Action()
+        a3 = events.Action()
+        a4 = events.Action()
+        a5 = events.Action()
+
+        s.actions = [a5]
+
+        a1.groups = []
+        a2.groups = [g1]
+        a3.groups = [g2]
+        a4.groups = [g1, g2]
+
+        p.base_actions = [a1, a2, a3, a4]
+        p.location = mock.Mock()
+        p.location.travel_actions = []
+        p.location.local_actions = []
+
+        self.assertSequenceEqual(p.available_actions, [a1, a2, a3, a4])
+        p.enter_state_machine(m)
+        self.assertSequenceEqual(p.available_actions, [a2, a4, a5])

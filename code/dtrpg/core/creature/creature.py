@@ -8,6 +8,7 @@ from typing import Iterable, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.core.figthting.fight_action import Attack
+    from dtrpg.core.events import Event
 
 
 class Creature(GameObject):
@@ -21,6 +22,9 @@ class Creature(GameObject):
         self.items = None
         self.item_slots = {}
         self.loot_events = ()
+
+    def on_event(self, event: 'Event'):
+        pass
 
     def equip(self, item: 'Item') -> None:
         if not item.slot:

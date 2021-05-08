@@ -46,9 +46,16 @@ class Event(GameObjectFactory):
         cpy.params = kwargs
 
         try:
-            return type(self)._fire(cpy, player)
+            result = type(self)._fire(cpy, player)
         except GameException as e:
-            return ExceptionEventResult(e)
+            result = ExceptionEventResult(e)
+
+        if result:
+            result.player = player
+
+        player.on_event(self)
+
+        return result
 
     def _fire(self, player: 'Player') -> EventResult:
         raise NotImplementedError
@@ -69,7 +76,6 @@ class InfoEvent(Event):
 
     def _fire(self, player: 'Player') -> InfoEventResult:
         event = self.create()
-        event.player = player
         event.params = self.params
         return event
 

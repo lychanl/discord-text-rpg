@@ -215,6 +215,26 @@ Action help_action:
 InfoEvent help_event: {}
 
 Action quit_game_action:
+  event: quit_game_ask_sm_enter
+
+ActiveStateMachineInitEvent quit_game_ask_sm_enter:
+  machine: quit_game_ask_sm
+
+Action confirm_quit_game:
   event: quit_game_event
+
+Action reject_quit_game:
+  event: quit_game_ask_sm_exit
+
+ActiveStateMachineExitEvent quit_game_ask_sm_exit:
+  machine: quit_game_ask_sm
+
+ActiveStateMachine quit_game_ask_sm:
+  initial: quit_game_ask_sm_state
+
+ActiveState quit_game_ask_sm_state:
+  actions:
+    - confirm_quit_game
+    - reject_quit_game
 
 QuitGameEvent quit_game_event: {}

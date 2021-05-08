@@ -30,6 +30,8 @@ OffersInfoAction,NAME,See offers
 OffersInfoAction,REGEX,((see|check|list) )?(offer|offers)(( for)? (?P<item>.+))?
 OffersInfoAction,HINT,{self.strings['NAME']}
 Player,NAME,Player
+Player,STATE_ACTIONS_HINT,"*Possible actions:*
+{('\n'.join(' - *' + action.strings['HINT'] + '*' for action in self.active_state[0].actions)) if self.active_states else ''}"
 FightEventResult,GROUP,"{', '.join(str(num) + ' ' + name if num > 1 else name for name, num in helpers.plurals_group(group, 'NAME', 'NAME_PL').items())}"
 FightEventResult,GROUP_S,{'s' if len(group) == 1 else ''}
 FightEventResult,RESULT_G,"{self.strings['GROUP', {'group': group}]} win{self.strings['GROUP_S', {'group': group}]}!"

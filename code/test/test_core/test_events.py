@@ -234,3 +234,23 @@ class TestEvents(unittest.TestCase):
         self.assertSequenceEqual(ret, [r2])
         e.if_.fire.assert_not_called()
         e.else_.fire.assert_called_once()
+
+
+class TestStateMachineEvents(unittest.TestCase):
+    def test_state_init_event(self):
+        e = events.StateMachineInitEvent()
+        p = mock.Mock()
+        m = object()
+        e.machine = m
+        r = e.fire(p)
+        p.enter_state_machine.assert_called_once_with(m)
+        self.assertIs(r.machine, m)
+
+    def test_state_exit_event(self):
+        e = events.StateMachineExitEvent()
+        p = mock.Mock()
+        m = object()
+        e.machine = m
+        r = e.fire(p)
+        p.exit_state_machine.assert_called_once_with(m)
+        self.assertIs(r.machine, m)
