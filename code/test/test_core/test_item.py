@@ -281,3 +281,27 @@ class TestTrade(unittest.TestCase):
 
         self.assertEqual(p.resources[res].value, 10)
         self.assertEqual(p.items.count(i), 4)
+
+    def test_items_requirement(self) -> None:
+        req = item.ItemsRequirement()
+        i = item.Item()
+        c = creature.Creature()
+
+        i.max_stack = 10
+        c.items = item.Container()
+        req.item = i
+        req.number = 5
+
+        self.assertFalse(req.meets(c))
+        self.assertRaises(item.InsufficientItemsException, lambda: req.assert_meets(c))
+
+        c.items.add(item.ItemStack(i, 3))
+
+        self.assertFalse(req.meets(c))
+
+        c.items.add(item.ItemStack(i, 3))
+        self.assertTrue(req.meets(c))
+        req.assert_meets(c)
+
+    def test_item_equipped_requirement(self) -> None:
+        pass

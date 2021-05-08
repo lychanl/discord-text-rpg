@@ -7,19 +7,31 @@ if TYPE_CHECKING:
     from dtrpg.core.creature.creature import Player
 
 
+class Requirement(GameObject):
+    def meets(player: 'Player') -> bool:
+        raise NotImplementedError
+
+    def assert_meets(player: 'Player') -> None:
+        raise NotImplementedError
+
+
 class Action(GameObject):
     def __init__(self):
         super().__init__()
         self.args = {}
         self.costs = []
+        self.requirements = []
         self.event = None
         self.groups = []
 
     def check_requirements(self, player: 'Player') -> bool:
-        return all(cost.can_take(player) for cost in self.costs)
+        return all(cost.can_take(player) for cost in self.costs)\
+            and all(req.meets(player) for req in self.requirements)
 
     def take(self, player: 'Player', **args: Mapping[str, object]) -> Sequence[EventResult]:
         try:
+            for req in self.requirements:
+                req.assert_meets(player)
             for cost in self.costs:
                 cost.assert_can_take(player)
             for cost in self.costs:

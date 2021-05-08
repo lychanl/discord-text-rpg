@@ -1,5 +1,5 @@
 # flake8: noqa: F401
-from dtrpg.core.events.action import Action, ActionGroup
+from dtrpg.core.events.action import Action, ActionGroup, Requirement
 from dtrpg.core.events.event_result import (
     EventResult, InfoEventResult, ResourceChangeEventResult, VariableSetEventResult, ExceptionEventResult
 )

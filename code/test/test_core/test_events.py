@@ -119,6 +119,22 @@ class TestEvents(unittest.TestCase):
         self.assertEqual(p.resources[res1].value, 2)
         self.assertEqual(p.resources[res2].value, 3)
 
+    def test_action_requirement(self) -> None:
+        a = events.Action()
+        req = type('', (), {})
+        req.meets = mock.Mock()
+        req.assert_meets = mock.Mock()
+        req.meets.return_value = False
+
+        a.requirements = [req]
+        p = mock.Mock()
+
+        self.assertFalse(a.check_requirements(p))
+        req.meets.return_value = True
+        self.assertTrue(a.check_requirements(p))
+        a.take(p)
+        req.assert_meets.assert_called_once_with(p)
+
     def test_skill_event(self) -> None:
         s = creature.Skill()
         p = creature.Player()

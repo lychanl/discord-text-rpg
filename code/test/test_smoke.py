@@ -51,17 +51,15 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('here'), r'.*You are in.*village.*Travel to coast.*')
         self.assertRegex(io.test('Travel to coast'), r'.*travel.*coast.*')
         self.assertRegex(io.test('here'), r'.*You are at.*coast.*Travel to village.*')
-        self.assertRegex(io.test('fish'), r'.*fish.* get 1x fish.*')
-        self.assertRegex(io.test('fishing'), r'.*fish.* get 1x fish.*')
-        self.assertRegex(io.test('items'), r'.*2x fish.*1/10.*')
+        self.assertRegex(io.test('fish'), r'.*You don\'t have fishing rod equipped.*')
         self.assertRegex(io.test('travel to village nothingthere'), r'.*travel.*village.*')
         self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
         self.assertRegex(io.test('get a job'), r'.*job.*get.*5.*gold.*')
-        self.assertRegex(io.test('me'), r'.*have 56/60 action points.*have 10 gold.*have 1/10 items.*in.*village.*')
+        self.assertRegex(io.test('me'), r'.*have 58/60 action points.*have 10 gold.*have 0/10 items.*in.*village.*')
 
         clock.now_with_diff.return_value = object(), 0.1
 
-        self.assertRegex(io.test('me'), r'.*have 57/60 action points.*have 10.*You are in.*village.*')
+        self.assertRegex(io.test('me'), r'.*have 59/60 action points.*have 10.*You are in.*village.*')
 
         clock.now_with_diff.return_value = object(), 0
 
@@ -70,17 +68,31 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('me'), r'.*have 0/60 action points.*')
         self.assertRegex(io.test('find a job'), r'.*don.*have.*action points.*1 needed.*')
 
-        self.assertRegex(io.test('drop 2 fishes'), r'.*drop 2x fish*')
         self.assertRegex(io.test('items'), r'.*No items.*0/10.*')
         self.assertRegex(io.test('drop fish'), r".*don't have enough items*")
 
         self.assertRegex(io.test('here'), r".*See offers.*Buy item.*Sell item.*")
         self.assertRegex(io.test('see offers'), r".*fish.*sell 6.*buy 15.*herbs.*sell 8.*fishing rod.*buy 25.*")
-        self.assertRegex(io.test('travel coast'), r'.*travel.*coast.*')
 
         game.player(TestIO.TEST_PLAYER).resources[action_points].value = 20
 
         # BUYING AND SELLING
+
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('buy fishing rod'), r".*buy 1x fishing rod.*25*")
+
+        self.assertRegex(io.test('travel coast'), r'.*travel.*coast.*')
+        self.assertRegex(io.test('equip fishing rod'), r'.*equip.*fishing rod.*')
+
+        self.assertRegex(io.test('fish'), r'.*fish.* get 1x fish.*')
+        self.assertRegex(io.test('fishing'), r'.*fish.* get 1x fish.*')
+        self.assertRegex(io.test('items'), r'.*2x fish.*1/10.*')
+        self.assertRegex(io.test('drop 2 fishes'), r'.*drop 2x fish*')
 
         self.assertRegex(io.test('fish'), r'.*fish.* get 1x fish.*')
         self.assertRegex(io.test('fish'), r'.*fish.* get 1x fish.*')
@@ -92,13 +104,6 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
         self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
         self.assertRegex(io.test('buy linen jacket'), r".*buy 1x linen jacket.*30*")
-        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
-        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
-        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
-        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
-        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
-        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
-        self.assertRegex(io.test('buy fishing rod'), r".*buy 1x fishing rod.*25*")
 
         # EQUIPMENT
 

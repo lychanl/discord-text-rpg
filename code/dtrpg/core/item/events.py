@@ -1,7 +1,7 @@
 
 from dtrpg.core.item.container import ContainerOverflowException
-from dtrpg.core.item.item import InsufficientItemsException
-from dtrpg.core.events import Event, EventResult
+from dtrpg.core.item.item import InsufficientItemsException, ItemNotEquippedException
+from dtrpg.core.events import Event, EventResult, Requirement
 
 from typing import TYPE_CHECKING
 
@@ -119,3 +119,30 @@ class UnequipSlotEvent(Event):
 
         event.item = item
         return event
+
+
+class ItemsRequirement(Requirement):
+    def __init__(self):
+        super().__init__()
+        self.item = None
+        self.number = 1
+
+    def meets(self, player: 'Player') -> bool:
+        return player.items.count(self.item) > self.number
+
+    def assert_meets(self, player: 'Player') -> None:
+        if not self.meets(player):
+            raise InsufficientItemsException(self.item, self.number)
+
+
+class ItemEquippedRequirement(Requirement):
+    def __init__(self):
+        super().__init__()
+        self.item = None
+
+    def meets(self, player: 'Player') -> bool:
+        return self.item in player.equipped_items
+
+    def assert_meets(self, player: 'Player') -> None:
+        if not self.meets(player):
+            raise ItemNotEquippedException(self.item)

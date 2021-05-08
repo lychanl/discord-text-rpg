@@ -49,7 +49,12 @@ Action nothingthere_fish:
   costs:
     - resource: action_points
       cost: 1
+  requirements:
+    - fishing_rod_equipped_req
   event: nothingthere_fish_event
+
+ItemEquippedRequirement fishing_rod_equipped_req:
+  item: item_fishing_rod
 
 ItemReceiveEvent nothingthere_fish_event:
   item_factory:

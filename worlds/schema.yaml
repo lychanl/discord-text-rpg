@@ -23,9 +23,14 @@ TradeOffer:
 Action:
   _class: dtrpg.core.events.Action
   optional costs: [ ResourceCost ]
+  optional requirements: [ Requirement ]
   optional args: { str: type }
   required event: Event
   optional gropus: [ ActionGroup ]
+
+Requirement:
+  _class: dtrpg.core.events.Requirement
+  _abstract: True
 
 ActionGroup:
   _class: dtrpg.core.events.ActionGroup
@@ -149,6 +154,17 @@ SellEvent:
 
 SellEventResult:
   _class: dtrpg.core.events.SellEventResult
+
+ItemsRequirement:
+  _class: dtrpg.core.item.ItemsRequirement
+  _base: Requirement
+  required item: Item
+  optional number: int
+
+ItemEquippedRequirement:
+  _class: dtrpg.core.item.ItemEquippedRequirement
+  _base: Requirement
+  required item: Item
 
 SkillTestEvent:
   _class: dtrpg.core.events.SkillTestEvent
