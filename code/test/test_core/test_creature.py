@@ -457,7 +457,7 @@ class TestStateMachine(unittest.TestCase):
     def test_machine_init(self):
         p = creature.Player()
 
-        m = creature.StateMachine()
+        m = creature.ActiveStateMachine()
         s = creature.State()
         m.initial = s
 
@@ -468,11 +468,11 @@ class TestStateMachine(unittest.TestCase):
     def test_machine_exit(self):
         p = creature.Player()
 
-        m = creature.StateMachine()
+        m = creature.ActiveStateMachine()
         s = creature.State()
         m.initial = s
 
-        m2 = creature.StateMachine()
+        m2 = creature.ActiveStateMachine()
         s2 = creature.State()
         m2.initial = s2
 
@@ -488,10 +488,12 @@ class TestStateMachine(unittest.TestCase):
     def test_state_transition(self):
         p = creature.Player()
 
-        m = creature.StateMachine()
+        m = creature.ActiveStateMachine()
         s = creature.State()
         s2 = creature.State()
         m.initial = s
+        s.machine = m
+        s2.machine = m
         t = creature.StateTransition()
         t2 = creature.StateTransition()
         t.event = object()
@@ -545,3 +547,54 @@ class TestStateMachine(unittest.TestCase):
         self.assertSequenceEqual(p.available_actions, [a1, a2, a3, a4])
         p.enter_state_machine(m)
         self.assertSequenceEqual(p.available_actions, [a2, a4, a5])
+
+    def test_passive_machine_init(self):
+        p = creature.Player()
+
+        m = creature.PassiveStateMachine()
+        s = creature.State()
+        m.initial = s
+
+        p.enter_state_machine(m)
+
+        self.assertIs(p.passive_state(m), s)
+
+    def test_passive_machine_exit(self):
+        p = creature.Player()
+
+        m = creature.PassiveStateMachine()
+        s = creature.State()
+        m.initial = s
+
+        p.enter_state_machine(m)
+        p.exit_state_machine(m)
+        self.assertIs(p.passive_state(m), None)
+
+    def test_passive_state_transition(self):
+        p = creature.Player()
+
+        m = creature.PassiveStateMachine()
+        s = creature.State()
+        s.machine = m
+        s2 = creature.State()
+        s2.machine = m
+        m.initial = s
+        t = creature.StateTransition()
+        t2 = creature.StateTransition()
+        t.event = object()
+        t.to = s2
+
+        e = object()
+        e2 = object()
+
+        s.transitions = {e: t, e2: t2}
+
+        p.enter_state_machine(m)
+        p.on_event(e2)
+
+        self.assertIs(p.passive_state(m), s)
+
+        p.on_event(e)
+
+        self.assertIs(p.passive_state(m), s2)
+        self.assertSequenceEqual(p.events.events, [(t.event, {})])

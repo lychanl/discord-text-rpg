@@ -10,7 +10,7 @@ class Loader:
     def preload(self) -> object:
         raise NotImplementedError
 
-    def load(self, obj: object, objects_dict: dict, values: dict) -> object:
+    def load(self, obj: object, objects_dict: dict, values: dict, game_objects: list) -> object:
         raise NotImplementedError
 
 
@@ -32,7 +32,7 @@ class BuiltInLoader(Loader):
     def class_(self) -> type:
         return self._class
 
-    def load(self, obj: object, objects_dict: dict, values: dict) -> object:
+    def load(self, obj: object, objects_dict: dict, values: dict, game_objects: list) -> object:
         return self.class_(values)
 
 
@@ -49,5 +49,5 @@ class TypenameLoader(Loader):
     def class_(self) -> type:
         return type
 
-    def load(self, obj: object, objects_dict: dict, values: dict) -> type:
+    def load(self, obj: object, objects_dict: dict, values: dict, game_objects: list) -> type:
         return self._types_dict[values].class_

@@ -7,6 +7,9 @@ class GameObject(LocalizedObject):
         self.variable_properties = {}
         self.variables = {}
 
+    def finalize(self) -> None:
+        pass
+
     def add_variable_property(self, name: str, variable: str):
         self.variable_properties[name] = variable
 

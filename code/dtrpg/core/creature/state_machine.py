@@ -12,11 +12,17 @@ class InvalidStateException:
         super().__init__()
 
 
+class StateMachineAlreadyEnteredException:
+    def __init__(self):
+        super().__init__()
+
+
 class State(GameObject):
     def __init__(self):
         super().__init__()
 
         self.transitions = {}
+        self.machine = None
 
     def on_event(self, player: 'Player', event: 'Event'):
         if event in self.transitions:
@@ -27,6 +33,17 @@ class State(GameObject):
                 player.events.register(transition.event)
 
 
+class ActiveState(State):
+    def __init__(self):
+        super().__init__()
+
+        self.actions = []
+
+
+class PassiveState(State):
+    pass
+
+
 class StateTransition(GameObject):
     def __init__(self):
         super().__init__()
@@ -35,22 +52,32 @@ class StateTransition(GameObject):
         self.to = None
 
 
-class ActiveState(State):
-    def __init__(self):
-        super().__init__()
-
-        self.actions = []
-
-
 class StateMachine(GameObject):
-    def __init__(self):
+    def __init__(self, active: bool):
         super().__init__()
 
         self.initial = None
+        self.active = active
+
+    def finalize(self) -> None:
+        states = [self.initial]
+        while states:
+            state = states.pop()
+            for tr in state.transitions.values():
+                if tr.to and tr.to.machine is not self:
+                    if tr.to.machine:
+                        raise ValueError('State is in two state machines')
+                    tr.to = self
+                    states.append(tr.to)
 
 
-class ActiveStateMachine(GameObject):
+class PassiveStateMachine(StateMachine):
     def __init__(self):
-        super().__init__()
+        super().__init__(False)
+
+
+class ActiveStateMachine(StateMachine):
+    def __init__(self):
+        super().__init__(True)
 
         self.allowed_action_groups = []

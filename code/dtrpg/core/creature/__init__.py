@@ -7,5 +7,8 @@ from dtrpg.core.creature.resource import (
 )
 from dtrpg.core.creature.skill import Skill, CreatureSkill, CreatureSkillFactory, SkillTest, OpposedSkillTest
 from dtrpg.core.creature.npc import NPCFighter, NPCFighterFactory
-from dtrpg.core.creature.state_machine import State, StateMachine, StateTransition, ActiveState, ActiveStateMachine
+from dtrpg.core.creature.state_machine import (
+    State, StateMachine, StateTransition, ActiveState, ActiveStateMachine,
+    PassiveState, PassiveStateMachine
+)
 from dtrpg.core.creature.statistic import Statistic, CreatureStatistic, StatisticFactory
