@@ -15,6 +15,7 @@ Available topics:
  - stats
  - fight
  - items
+ - npcs
 
 You may use _exit_ action to delete current progress."
 help_event,HELP_ACTIONS,"Actions are what allows you to interact with the game.
@@ -59,3 +60,4 @@ For moves, any conflicts are resolved using speed skill tests.
 A typical action is the attack action. An attack may be ranged or melee, and uses appropriate skill when checking if it hits, opposed to the evasion skill. If the attack hits, damage is determined randomly based on attack properties and target armor.
 
 Fight takes place for 60 rounds, unless some side has no fighters (because all have fled or were defeated)."
+help_event,HELP_NPCS,"NPCs are characters that are part of the world. With some of them you can interact, for example talk to them. When talking to an NPC some actions may be locked, e.g. traveling.

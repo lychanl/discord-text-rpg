@@ -18,6 +18,7 @@ Market loc_nothingthere_village:
     - { to: loc_nothingthere_forest }
   local_actions:
     - nothingthere_job
+    - nothingthere_village_elder_dialogue
 
 Location loc_nothingthere_coast:
   travel_actions:
@@ -33,6 +34,41 @@ Location loc_nothingthere_forest:
     - nothingthere_forest_herbs
     - nothingthere_rat_hunt
     - nothingthere_forest_explore
+
+Action nothingthere_village_elder_dialogue:
+  event: nothingthere_dialogue_init
+
+ActiveStateMachineInitEvent nothingthere_dialogue_init:
+  machine: nothingthere_dialogue
+
+ActiveStateMachine nothingthere_dialogue:
+  initial: nothingthere_dialogue_root
+  allowed_action_groups: 
+    - action_group_help
+    - action_group_info
+    - action_group_admin
+
+ActiveState nothingthere_dialogue_root:
+  actions:
+    - nothingthere_dialogue_exit
+    - nothingthere_dialogue_about
+    - nothingthere_dialogue_who
+
+Action nothingthere_dialogue_exit:
+  event: nothingthere_dialogue_exit_event
+
+ActiveStateMachineExitEvent nothingthere_dialogue_exit_event:
+  machine: nothingthere_dialogue
+
+Action nothingthere_dialogue_about:
+  event: nothingthere_dialogue_about_event
+
+InfoEvent nothingthere_dialogue_about_event: {}
+
+Action nothingthere_dialogue_who:
+  event: nothingthere_dialogue_who_event
+
+InfoEvent nothingthere_dialogue_who_event: {}
 
 Action nothingthere_job:
   costs:

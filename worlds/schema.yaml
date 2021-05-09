@@ -26,7 +26,7 @@ Action:
   optional requirements: [ Requirement ]
   optional args: { str: type }
   required event: Event
-  optional gropus: [ ActionGroup ]
+  optional groups: [ ActionGroup ]
 
 Requirement:
   _class: dtrpg.core.events.Requirement
