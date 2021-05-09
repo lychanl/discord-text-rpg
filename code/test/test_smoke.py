@@ -124,6 +124,14 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('unequip linen jacket'), r'.*remove linen jacket.*body.*')
         self.assertRegex(io.test('unequip linen jacket'), r'.*don\'t have linen jacket equipped.*')
 
+        # DIALOGUE
+
+        self.assertRegex(io.test('Talk to the village elder'), r'.*approach the village elder.*Possible actions.*')
+        self.assertRegex(io.test('me'), r'.*have 7/60 action points.*')
+        self.assertRegex(io.test('travel to coast'), r'.*Invalid.*')
+
+        self.assertRegex(io.test('bye'), r'.*see you soon.*')
+
         # SKILLS
 
         self.assertRegex(io.test('skills'), r".*Herbalism: 1.*")
