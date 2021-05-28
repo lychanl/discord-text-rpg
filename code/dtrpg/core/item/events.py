@@ -6,7 +6,7 @@ from dtrpg.core.events import Event, EventResult, Requirement
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from dtrpg.core.player import Player
+    from dtrpg.core.creature import Player
 
 
 class ItemReceivedEventResult(EventResult):

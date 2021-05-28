@@ -298,7 +298,7 @@ class TestStateMachineEvents(unittest.TestCase):
         p = creature.Player()
 
         r = events.StateRequirement()
-        r.state_machine = sm
+        r.machine = sm
 
         self.assertTrue(r.meets(p))
 
