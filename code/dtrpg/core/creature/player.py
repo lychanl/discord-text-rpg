@@ -1,11 +1,10 @@
 from dtrpg.core.creature.creature import Fighter, FighterFactory
 from dtrpg.core.creature.state_machine import InvalidStateException, StateMachineAlreadyEnteredException
-from dtrpg.core.events import EventsManager, Event
+from dtrpg.core.events import Action, EventsManager, Event
 
 from typing import Iterable, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from dtrpg.core.action import Action
     from dtrpg.core.creature.state_machine import State, StateMachine
 
 
@@ -65,19 +64,17 @@ class Player(Fighter):
 
     @property
     def available_actions(self) -> Iterable['Action']:
-        stateless_actions = self.base_actions + self.location.travel_actions + self.location.local_actions
+        actions = self.base_actions + self.location.travel_actions + self.location.local_actions
 
         state, state_group = self.active_state
 
-        if not state_group:
-            return stateless_actions
+        if state_group:
+            actions = list(filter(
+                lambda action: any(group in state_group.allowed_action_groups for group in action.groups),
+                actions
+            )) + state.actions
 
-        allowed = filter(
-            lambda action: any(group in state_group.allowed_action_groups for group in action.groups),
-            stateless_actions
-        )
-
-        return list(allowed) + state.actions
+        return list(filter(lambda a: a.visible(self), actions))
 
 
 class PlayerFactory(FighterFactory):

@@ -1,4 +1,5 @@
 from dtrpg.core.game_object import GameObject
+from dtrpg.core.game_exception import GameException
 
 from typing import TYPE_CHECKING
 
@@ -7,7 +8,7 @@ if TYPE_CHECKING:
     from dtrpg.core.events import Event
 
 
-class InvalidStateException:
+class InvalidStateException(GameException):
     def __init__(self):
         super().__init__()
 

@@ -15,5 +15,6 @@ from dtrpg.core.events.trade import (
 from dtrpg.core.events.skill import SkillTestEvent
 from dtrpg.core.events.state_machine import (
     StateMachineExitEvent, StateMachineExitEventResult,
-    StateMachineInitEvent, StateMachineInitEventResult
+    StateMachineInitEvent, StateMachineInitEventResult,
+    StateRequirement
 )

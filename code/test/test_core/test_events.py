@@ -135,6 +135,25 @@ class TestEvents(unittest.TestCase):
         a.take(p)
         req.assert_meets.assert_called_once_with(p)
 
+    def test_action_visibility(self) -> None:
+        a = events.Action()
+        req = type('', (), {})
+        req.meets = mock.Mock()
+        req.meets.return_value = False
+
+        a.visibility = [req]
+        p = creature.Player()
+        p.base_actions = [a]
+        p.location = type('', (), {})
+        p.location.travel_actions = []
+        p.location.local_actions = []
+
+        req.meets.return_value = False
+        self.assertListEqual(p.available_actions, [])
+
+        req.meets.return_value = True
+        self.assertListEqual(p.available_actions, [a])
+
     def test_skill_event(self) -> None:
         s = creature.Skill()
         p = creature.Player()
@@ -253,7 +272,7 @@ class TestEvents(unittest.TestCase):
 
 
 class TestStateMachineEvents(unittest.TestCase):
-    def test_state_init_event(self):
+    def test_state_init_event(self) -> None:
         e = events.StateMachineInitEvent()
         p = mock.Mock()
         m = object()
@@ -262,7 +281,7 @@ class TestStateMachineEvents(unittest.TestCase):
         p.enter_state_machine.assert_called_once_with(m)
         self.assertIs(r.machine, m)
 
-    def test_state_exit_event(self):
+    def test_state_exit_event(self) -> None:
         e = events.StateMachineExitEvent()
         p = mock.Mock()
         m = object()
@@ -270,3 +289,24 @@ class TestStateMachineEvents(unittest.TestCase):
         r = e.fire(p)
         p.exit_state_machine.assert_called_once_with(m)
         self.assertIs(r.machine, m)
+
+    def test_state_requirement(self) -> None:
+        sm = creature.PassiveStateMachine()
+        s = creature.PassiveState()
+        sm.initial = s
+
+        p = creature.Player()
+
+        r = events.StateRequirement()
+        r.state_machine = sm
+
+        self.assertTrue(r.meets(p))
+
+        r.state = s
+        self.assertFalse(r.meets(p))
+
+        p.enter_state_machine(sm)
+        self.assertTrue(r.meets(p))
+
+        r.state = None
+        self.assertFalse(r.meets(p))
