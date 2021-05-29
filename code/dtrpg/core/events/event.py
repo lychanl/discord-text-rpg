@@ -94,6 +94,9 @@ class ResourceChangesEvent(Event):
             changes[change.resource] = diff
         event.resource_changes = changes
 
+        if player.killed:
+            player.events.register(player.on_killed)
+
         return event
 
 
@@ -105,6 +108,22 @@ class SequenceEvent(ComplexEvent):
     def _fire(self, player: 'Player') -> None:
         for i, event in enumerate(self.events):
             player.events.register(event, **self._get_subevent_params(str(i)))
+
+
+class ConditionEvent(ComplexEvent):
+    def __init__(self):
+        super().__init__(EventResult)
+        self.true = None
+        self.false = None
+        self.condition = None
+
+    def _fire(self, player: 'Player') -> None:
+        if self.condition.meets(player):
+            if self.true:
+                player.events.register(self.true, **self._get_subevent_params('true'))
+        else:
+            if self.false:
+                player.events.register(self.false, **self._get_subevent_params('false'))
 
 
 class VariableSetEvent(Event):

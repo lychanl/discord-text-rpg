@@ -23,6 +23,12 @@ class SlotNotEquippedException(GameException):
         self.slot = slot
 
 
+class FreeSpaceRequiredException(GameException):
+    def __init__(self, slots: int) -> None:
+        super().__init__()
+        self.slots = slots
+
+
 class Item(GameObject):
     def __init__(self):
         super().__init__()

@@ -4,7 +4,7 @@ from dtrpg.data.locale.locale_loader import LocaleLoader
 
 from dtrpg.core import Config
 
-from typing import Dict, Iterable
+from typing import Dict, Iterable, Tuple
 
 import csv
 import os
@@ -39,10 +39,12 @@ class DataLoader:
 
     def _load_world(self, world_dir: str) -> dict:
         obj_dicts = self._load_world_files(world_dir)
-        objects = self._parse_obj_dicts(obj_dicts)
+        objects, game_objects = self._parse_obj_dicts(obj_dicts)
+        for obj in game_objects:
+            obj.finalize()
         return objects
 
-    def _load_world_files(self, world_dir: str) -> dict:
+    def _load_world_files(self, world_dir: str):
         obj_dicts = {}
         for root, _, filenames in os.walk(world_dir):
             for filename in filenames:
@@ -59,18 +61,19 @@ class DataLoader:
 
         return obj_dicts
 
-    def _parse_obj_dicts(self, obj_dicts: dict) -> dict:
+    def _parse_obj_dicts(self, obj_dicts: dict) -> Tuple[dict, list]:
+        game_objects = []
         objects = {name: self._loaders[type_].preload() for name, (type_, _) in obj_dicts.items()}
 
         for name, (type_, dict_) in obj_dicts.items():
             try:
                 loader = self._loaders[type_]
                 obj = objects[name]
-                loader.load(obj, objects, dict_)
+                loader.load(obj, objects, dict_, game_objects)
             except Exception as e:
                 raise LoadException(f'Error while loading {name}: {e}') from e
 
-        return objects
+        return objects, game_objects
 
     def _split_name_type(self, value: str) -> None:
         tokens = value.split()

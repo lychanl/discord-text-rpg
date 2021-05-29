@@ -11,3 +11,12 @@ nothingthere_dialogue_about_event,EVENT_NOW,"We are at the Nothingthere village.
 nothingthere_dialogue_who,NAME,Who are you?
 nothingthere_dialogue_who,REGEX,who( are)?( you)\??
 nothingthere_dialogue_who_event,EVENT_NOW,"I am Bilch, and you could say that I lead these people.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_captain_dialogue_init,NAME,Talk to the fisherman
+nothingthere_captain_dialogue_init,REGEX,(talk|speak)(( to| with)?( the)?( fisherman))?
+nothingthere_captain_dialogue_init_event,EVENT_NOW,"You walk to the fisherman. He doesn's seem to pay much attention to you.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_captain_dialogue_exit,NAME,Bye
+nothingthere_captain_dialogue_exit,REGEX,bye|goodbye
+nothingthere_captain_dialogue_exit_event,EVENT_NOW,Yeap.
+nothingthere_captain_who,NAME,Who are you?
+nothingthere_captain_who,REGEX,who( are)?( you)\??
+nothingthere_captain_who_event,EVENT_NOW,"I'm Tom.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"

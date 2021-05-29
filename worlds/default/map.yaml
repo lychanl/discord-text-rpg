@@ -13,6 +13,9 @@ Market loc_nothingthere_village:
     - item: item_linen_jacket
       resource: gold
       buy_value: 30
+    - item: item_small_fur
+      resource: gold
+      sell_value: 10
   travel_actions:
     - { to: loc_nothingthere_coast }
     - { to: loc_nothingthere_forest }
@@ -22,10 +25,14 @@ Market loc_nothingthere_village:
 
 Location loc_nothingthere_coast:
   travel_actions:
-    - { to: loc_nothingthere_village }
+    - to: loc_nothingthere_village
+    - to: loc_nothingthere_small_bay
+      visibility:
+        - nothingthere_small_bay_visibility_req
   local_actions:
     - nothingthere_fish
     - nothingthere_gather_stones
+    - nothingthere_captain_dialogue_init
 
 Location loc_nothingthere_forest:
   travel_actions:
@@ -34,6 +41,12 @@ Location loc_nothingthere_forest:
     - nothingthere_forest_herbs
     - nothingthere_rat_hunt
     - nothingthere_forest_explore
+
+Location loc_nothingthere_small_bay:
+  travel_actions:
+    - { to: loc_nothingthere_coast }
+  local_actions:
+    - nothingthere_bay_search_skeleton
 
 Action nothingthere_village_elder_dialogue:
   event: nothingthere_dialogue_init
@@ -53,6 +66,10 @@ ActiveState nothingthere_dialogue_root:
     - nothingthere_dialogue_exit
     - nothingthere_dialogue_about
     - nothingthere_dialogue_who
+    - nothingthere_dialogue_init_tutorial
+    - nothingthere_dialogue_job_report
+    - nothingthere_dialogue_fish_report
+    - tutorial_nothingthere_dialogue_journey_return
 
 Action nothingthere_dialogue_exit:
   event: nothingthere_dialogue_exit_event
@@ -69,6 +86,40 @@ Action nothingthere_dialogue_who:
   event: nothingthere_dialogue_who_event
 
 InfoEvent nothingthere_dialogue_who_event: {}
+
+Action nothingthere_captain_dialogue_init:
+  event: nothingthere_captain_dialogue_init_event
+
+ActiveStateMachineInitEvent nothingthere_captain_dialogue_init_event:
+  machine: nothingthere_captain_dialogue
+
+ActiveStateMachine nothingthere_captain_dialogue:
+  initial: nothingthere_captain_dialogue_root
+  allowed_action_groups: 
+    - action_group_help
+    - action_group_info
+    - action_group_admin
+
+ActiveState nothingthere_captain_dialogue_root:
+  actions:
+    - nothingthere_captain_dialogue_exit
+    - nothingthere_captain_who
+    - tutorial_captain_talk_dialogue
+    - tutorial_captain_talk_journey_return
+  transitions:
+    tutorial_captain_talk_dialogue_event:
+      to: tutorial_captain_talk_confirmation
+
+Action nothingthere_captain_dialogue_exit:
+  event: nothingthere_captain_dialogue_exit_event
+
+ActiveStateMachineExitEvent nothingthere_captain_dialogue_exit_event:
+  machine: nothingthere_captain_dialogue
+
+Action nothingthere_captain_who:
+  event: nothingthere_captain_who_event
+
+InfoEvent nothingthere_captain_who_event: {}
 
 Action nothingthere_job:
   costs:
@@ -158,3 +209,51 @@ FightEvent nothingthere_forest_wolves_attack_event:
   fight_engine: fight_engine
 
 InfoEvent nothingthere_forest_explore_nothing_event: {}
+
+PassiveStateMachine nothingthere_bay_visibility:
+  initial: nothingthere_bay_visible
+
+PassiveState nothingthere_bay_visible: {}
+
+PassiveStateRequirement nothingthere_small_bay_visibility_req:
+  machine: nothingthere_bay_visibility
+  state: nothingthere_bay_visible
+
+Action nothingthere_bay_search_skeleton:
+  event: nothingthere_bay_search_skeleton_event
+
+ConditionEvent nothingthere_bay_search_skeleton_event:
+  condition: nothingthere_bay_skeleton_searched
+  'true': nothingthere_bay_search_skeleton_searched_event
+  'false': nothingthere_bay_search_skeleton_search_event
+
+PassiveStateRequirement nothingthere_bay_skeleton_searched:
+  machine: nothingthere_bay_skeleton_flag
+  state: nothingthere_bay_skeleton_searched_flag
+
+PassiveStateMachine nothingthere_bay_skeleton_flag:
+  initial: nothingthere_bay_skeleton_searched_flag
+
+PassiveState nothingthere_bay_skeleton_searched_flag: {}
+
+InfoEvent nothingthere_bay_search_skeleton_searched_event: {}
+
+ConditionEvent nothingthere_bay_search_skeleton_search_event:
+  condition: free_space_req
+  'true': nothingthere_bay_search_skeleton_search_successful_event
+  'false': nothingthere_bay_search_skeleton_search_free_space_event
+
+InfoEvent nothingthere_bay_search_skeleton_search_free_space_event: {}
+
+SequenceEvent nothingthere_bay_search_skeleton_search_successful_event:
+  events:
+    - nothingthere_bay_skeleton_searched_init_flag
+    - nothingthere_bay_search_skeleton_search_successful_spear_event
+
+PassiveStateMachineInitEvent nothingthere_bay_skeleton_searched_init_flag:
+  machine: nothingthere_bay_skeleton_flag
+
+ItemReceiveEvent nothingthere_bay_search_skeleton_search_successful_spear_event:
+  item_factory:
+    item: item_rusty_spear
+    stack: 1

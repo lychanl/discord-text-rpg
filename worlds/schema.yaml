@@ -24,6 +24,7 @@ Action:
   _class: dtrpg.core.events.Action
   optional costs: [ ResourceCost ]
   optional requirements: [ Requirement ]
+  optional visibility: [ Requirement ]
   optional args: { str: type }
   required event: Event
   optional groups: [ ActionGroup ]
@@ -70,6 +71,10 @@ ItemReceivedEventResult:
 TravelAction:
   _class: dtrpg.core.map.TravelAction
   required to: Location
+  optional costs: [ ResourceCost ]
+  optional requirements: [ Requirement ]
+  optional visibility: [ Requirement ]
+  optional groups: [ ActionGroup ]
 
 TravelEvent:
   _class: dtrpg.core.map.TravelEvent
@@ -87,6 +92,13 @@ SequenceEvent:
   _class: dtrpg.core.events.SequenceEvent
   _base: Event
   required events: [ Event ]
+
+ConditionEvent:
+  _class: dtrpg.core.events.ConditionEvent
+  _base: Event
+  optional true: Event
+  optional false: Event
+  optional condition: Requirement
 
 ChanceEvent:
   _class: dtrpg.core.events.ChanceEvent
@@ -165,6 +177,11 @@ ItemEquippedRequirement:
   _class: dtrpg.core.item.ItemEquippedRequirement
   _base: Requirement
   required item: Item
+
+FreeSpaceRequirement:
+  _class: dtrpg.core.item.FreeSpaceRequirement
+  _base: Requirement
+  optional slots: int
 
 SkillTestEvent:
   _class: dtrpg.core.events.SkillTestEvent
@@ -276,6 +293,7 @@ ResourceChange:
   required resource: Resource
   required value: int
   optional op: ResourceChangeOp
+  optional vital: bool
 
 ResourceChangeOp:
   _class: dtrpg.core.creature.ResourceChangeOp
@@ -430,3 +448,32 @@ ActiveStateMachineExitEvent:
   _class: dtrpg.core.events.StateMachineExitEvent
   _base: Event
   required machine: ActiveStateMachine
+
+PassiveStateMachine:
+  _class: dtrpg.core.creature.PassiveStateMachine
+  required initial: PassiveState
+
+PassiveState:
+  _class: dtrpg.core.creature.PassiveState
+  optional transitions: {Event: PassiveStateTransition}
+
+PassiveStateTransition:
+  _class: dtrpg.core.creature.StateTransition
+  optional to: PassiveState
+  optional event: Event
+
+PassiveStateRequirement:
+  _class: dtrpg.core.events.StateRequirement
+  _base: Requirement
+  required machine: PassiveStateMachine
+  optional state: PassiveState
+
+PassiveStateMachineInitEvent:
+  _class: dtrpg.core.events.StateMachineInitEvent
+  _base: Event
+  required machine: PassiveStateMachine
+
+PassiveStateMachineExitEvent:
+  _class: dtrpg.core.events.StateMachineExitEvent
+  _base: Event
+  required machine: PassiveStateMachine

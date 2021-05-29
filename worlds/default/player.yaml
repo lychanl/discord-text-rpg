@@ -18,10 +18,11 @@ PlayerFactory player_factory:
     - help_action
     - me_action
     - stats_action
+    - skills_action
+    - journal_action
     - here_action
     - item_action
     - items_action
-    - skills_action
     - drop_action
     - equip_action
     - unequip_item_action
@@ -104,6 +105,9 @@ ActionGroup action_group_admin: {}
 Action me_action: { event: me_event, groups: [action_group_info] }
 InfoEvent me_event: {}
 
+Action journal_action: { event: journal_event, groups: [action_group_info] }
+InfoEvent journal_event: {}
+
 Action here_action: { event: here_event, groups: [action_group_info] }
 InfoEvent here_event: {}
 
@@ -147,11 +151,9 @@ Action set_tactic_action:
 VariableSetEvent set_tactic_event:
   variable: TACTIC
 
-Action skills_action: {event: skills_event }
-InfoEvent skills_event: {}
-
-Action stats_action: {event: stats_event }
-InfoEvent stats_event: {}
+Action skills_action: {event: skills_stats_event }
+Action stats_action: {event: skills_stats_event }
+InfoEvent skills_stats_event: {}
 
 Action drop_action:
   event: drop_event

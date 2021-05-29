@@ -21,8 +21,12 @@ class Action(GameObject):
         self.args = {}
         self.costs = []
         self.requirements = []
+        self.visibility = []
         self.event = None
         self.groups = []
+
+    def visible(self, player: 'Player') -> bool:
+        return all(req.meets(player) for req in self.visibility)
 
     def check_requirements(self, player: 'Player') -> bool:
         return all(cost.can_take(player) for cost in self.costs)\
