@@ -2,8 +2,10 @@ object,string,value
 loc_nothingthere_village,NAME,"village Nothingthere"
 loc_nothingthere_village,REGEX_NAME,"village|nothingthere|village Nothingthere"
 loc_nothingthere_coast,NAME,"coast"
-loc_nothingthere_coast,YOU_ARE_HERE,"You are at the coast near the Nothingthere village."
+loc_nothingthere_coast,YOU_ARE_HERE,"You are at the coast near the Nothingthere village. A fisherman is scrubbing his boat."
 loc_nothingthere_forest,NAME,"forest"
+loc_nothingthere_small_bay,NAME,"small bay"
+loc_nothingthere_small_bay,YOU_ARE_HERE,"You are in the small bay near the Nothingthere village. The sea current brings here lots of debris."
 nothingthere_job,REGEX,"((find |take |get )(a )?)?job"
 nothingthere_job,NAME,Find a job
 nothingthere_job_event,CAUSE_NOW,"You got a job helping some fishermen. "
@@ -22,3 +24,9 @@ nothingthere_rat_hunt,NAME,Hunt for forest rats
 nothingthere_forest_explore,NAME,Explore
 nothingthere_forest_explore,REGEX,explore( forest)?
 nothingthere_forest_explore_nothing_event,EVENT_NOW,You wander for some time, but find nothing interesting
+nothingthere_bay_search_skeleton,NAME,Search around
+nothingthere_bay_search_skeleton,REGEX,search( around)?
+nothingthere_bay_search_skeleton_searched_event,EVENT_NOW,You don't find anything new.
+nothingthere_bay_skeleton_searched_init_flag,EVENT_NOW,You find a human skeleton. Near it lies a rusty spear. It may be useful.
+nothingthere_bay_search_skeleton_search_free_space_event,EVENT_NOW,You find a human skeleton. Near it lies a rusty spear. You don't have space to take it right now, so you leave it.
+

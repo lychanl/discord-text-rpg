@@ -60,15 +60,19 @@ class StateMachine(GameObject):
         self.initial = None
         self.active = active
 
+    def finalize_set_state(self, state) -> None:
+        if state.machine:
+            raise ValueError('State is in two state machines')
+        state.machine = self
+
     def finalize(self) -> None:
+        self.finalize_set_state(self.initial)
         states = [self.initial]
         while states:
             state = states.pop()
             for tr in state.transitions.values():
                 if tr.to and tr.to.machine is not self:
-                    if tr.to.machine:
-                        raise ValueError('State is in two state machines')
-                    tr.to = self
+                    self.finalize_set_state(tr.to)
                     states.append(tr.to)
 
 

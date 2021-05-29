@@ -214,6 +214,24 @@ class TestEvents(unittest.TestCase):
         evs[0].fire.assert_called_once()
         evs[1].fire.assert_called_once()
 
+    def test_cond_event(self) -> None:
+        e = events.ConditionEvent()
+
+        e.true = object()
+        e.false = object()
+        e.condition = mock.Mock()
+
+        p = creature.Player()
+
+        e.condition.meets.return_value = True
+        e.fire(p)
+        self.assertIs(p.events.events[0][0], e.true)
+
+        p.events.events = []
+        e.condition.meets.return_value = False
+        e.fire(p)
+        self.assertIs(p.events.events[0][0], e.false)
+
     def test_variable_set_event(self) -> None:
         e = events.VariableSetEvent()
         e.variable = 'VAR'

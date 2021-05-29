@@ -7,7 +7,7 @@ from dtrpg.core.item import (
 from typing import Iterable, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from dtrpg.core.figthting.fight_action import Attack
+    from dtrpg.core.fighting.fight_action import Attack
     from dtrpg.core.events import Event
 
 

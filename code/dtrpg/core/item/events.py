@@ -1,6 +1,6 @@
 
 from dtrpg.core.item.container import ContainerOverflowException
-from dtrpg.core.item.item import InsufficientItemsException, ItemNotEquippedException
+from dtrpg.core.item.item import InsufficientItemsException, ItemNotEquippedException, FreeSpaceRequiredException
 from dtrpg.core.events import Event, EventResult, Requirement
 
 from typing import TYPE_CHECKING
@@ -146,3 +146,16 @@ class ItemEquippedRequirement(Requirement):
     def assert_meets(self, player: 'Player') -> None:
         if not self.meets(player):
             raise ItemNotEquippedException(self.item)
+
+
+class FreeSpaceRequirement(Requirement):
+    def __init__(self):
+        super().__init__()
+        self.slots = 1
+
+    def meets(self, player: 'Player') -> bool:
+        return player.items.max_items - len(player.items) >= self.slots
+
+    def assert_meets(self, player: 'Player') -> None:
+        if not self.meets(player):
+            raise FreeSpaceRequiredException(self.slots)

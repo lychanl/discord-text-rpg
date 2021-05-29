@@ -6,7 +6,7 @@ from dtrpg.core.events.event_result import (
 from dtrpg.core.events.event import (
     EventsManager,
     ComplexEvent, Event, InfoEvent, ResourceChangesEvent, SequenceEvent,
-    VariableSetEvent, ChanceEvent
+    VariableSetEvent, ChanceEvent, ConditionEvent
 )
 from dtrpg.core.events.trade import (
     BuyAction, BuyEvent, SellAction, SellEvent, TradeEventResult, BuyEventResult, SellEventResult,

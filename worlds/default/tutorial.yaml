@@ -1,0 +1,138 @@
+PassiveStateMachine tutorial_quest:
+  initial: tutorial_job
+
+PassiveState tutorial_job:
+  transitions:
+    nothingthere_job_event:
+      to: tutorial_job_report
+
+PassiveState tutorial_job_report:
+  transitions:
+    nothingthere_dialogue_job_report_event:
+      to: tutorial_fish
+
+PassiveState tutorial_fish:
+  transitions: 
+    nothingthere_fish_event:
+      to: tutorial_fish_report
+
+PassiveState tutorial_fish_report:
+  transitions:
+    nothingthere_dialogue_fish_report_event:
+      to: tutorial_captain_talk
+
+PassiveState tutorial_captain_talk:
+  transitions:
+    tutorial_captain_talk_dialogue_accept_event:
+      to: tutorial_journey_return
+
+PassiveState tutorial_journey_return: {}
+
+Action nothingthere_dialogue_init_tutorial:
+  visibility:
+    - tutorial_init_req
+  event: tutorial_init
+
+PassiveStateRequirement tutorial_init_req:
+  machine: tutorial_quest
+  # no state - not entered
+
+PassiveStateMachineInitEvent tutorial_init:
+  machine: tutorial_quest
+
+Action nothingthere_dialogue_job_report:
+  visibility:
+    - tutorial_job_report_req
+  event: nothingthere_dialogue_job_report_event
+
+SequenceEvent nothingthere_dialogue_job_report_event:
+  events:
+    - nothingthere_dialogue_job_report_event_text
+    - tutorial_job_report_reward
+
+InfoEvent nothingthere_dialogue_job_report_event_text: {}
+ResourceChangesEvent tutorial_job_report_reward:
+  resource_changes:
+    - resource: gold
+      value: 20
+
+PassiveStateRequirement tutorial_job_report_req:
+  machine: tutorial_quest
+  state: tutorial_job_report
+
+Action nothingthere_dialogue_fish_report:
+  visibility: 
+    - tutorial_fish_report_req
+  event: nothingthere_dialogue_fish_report_event
+
+InfoEvent nothingthere_dialogue_fish_report_event: {}
+
+PassiveStateRequirement tutorial_fish_report_req:
+  machine: tutorial_quest
+  state: tutorial_fish_report
+
+Action tutorial_captain_talk_dialogue:
+  visibility:
+    - tutorial_captain_talk_req
+  event: tutorial_captain_talk_dialogue_event
+
+PassiveStateRequirement tutorial_captain_talk_req:
+  machine: tutorial_quest
+  state: tutorial_captain_talk
+
+InfoEvent tutorial_captain_talk_dialogue_event: {}
+
+ActiveState tutorial_captain_talk_confirmation:
+  transitions:
+    tutorial_captain_talk_dialogue_decline_event:
+      to: nothingthere_captain_dialogue_root
+  actions:
+    - tutorial_captain_talk_dialogue_accept
+    - tutorial_captain_talk_dialogue_decline
+
+Action tutorial_captain_talk_dialogue_accept:
+  event: tutorial_captain_talk_dialogue_accept_event
+
+SequenceEvent tutorial_captain_talk_dialogue_accept_event:
+  events:
+    - tutorial_captain_talk_dialogue_exit_event
+    - tutorial_journey_hit_event
+    - nothingthere_bay_visibility_init
+    - tutorial_journey_travel_event
+
+PassiveStateMachineInitEvent nothingthere_bay_visibility_init:
+  machine: nothingthere_bay_visibility
+
+ActiveStateMachineExitEvent tutorial_captain_talk_dialogue_exit_event:
+  machine: nothingthere_captain_dialogue
+
+ResourceChangesEvent tutorial_journey_hit_event:
+  resource_changes:
+    - resource: health
+      value: -5
+
+TravelEvent tutorial_journey_travel_event:
+  to: loc_nothingthere_small_bay
+
+Action tutorial_captain_talk_dialogue_decline:
+  event: tutorial_captain_talk_dialogue_decline_event
+
+InfoEvent tutorial_captain_talk_dialogue_decline_event: {}
+
+PassiveStateRequirement tutorial_journey_return_req:
+  machine: tutorial_quest
+  state: tutorial_journey_return
+
+Action tutorial_captain_talk_journey_return:
+  visibility:
+    - tutorial_journey_return_req
+  event: tutorial_captain_talk_dialogue_journey_return_event
+
+InfoEvent tutorial_captain_talk_dialogue_journey_return_event: {}
+
+Action tutorial_nothingthere_dialogue_journey_return:
+  visibility:
+    - tutorial_journey_return_req
+  event: tutorial_nothingthere_dialogue_journey_return_event
+
+InfoEvent tutorial_nothingthere_dialogue_journey_return_event: {}

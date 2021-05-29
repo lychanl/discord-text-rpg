@@ -71,6 +71,10 @@ ItemReceivedEventResult:
 TravelAction:
   _class: dtrpg.core.map.TravelAction
   required to: Location
+  optional costs: [ ResourceCost ]
+  optional requirements: [ Requirement ]
+  optional visibility: [ Requirement ]
+  optional groups: [ ActionGroup ]
 
 TravelEvent:
   _class: dtrpg.core.map.TravelEvent
@@ -88,6 +92,13 @@ SequenceEvent:
   _class: dtrpg.core.events.SequenceEvent
   _base: Event
   required events: [ Event ]
+
+ConditionEvent:
+  _class: dtrpg.core.events.ConditionEvent
+  _base: Event
+  optional true: Event
+  optional false: Event
+  optional condition: Requirement
 
 ChanceEvent:
   _class: dtrpg.core.events.ChanceEvent
@@ -166,6 +177,11 @@ ItemEquippedRequirement:
   _class: dtrpg.core.item.ItemEquippedRequirement
   _base: Requirement
   required item: Item
+
+FreeSpaceRequirement:
+  _class: dtrpg.core.item.FreeSpaceRequirement
+  _base: Requirement
+  optional slots: int
 
 SkillTestEvent:
   _class: dtrpg.core.events.SkillTestEvent
@@ -277,6 +293,7 @@ ResourceChange:
   required resource: Resource
   required value: int
   optional op: ResourceChangeOp
+  optional vital: bool
 
 ResourceChangeOp:
   _class: dtrpg.core.creature.ResourceChangeOp
@@ -420,7 +437,7 @@ ActiveState:
 ActiveStateTransition:
   _class: dtrpg.core.creature.StateTransition
   optional to: ActiveState
-  required event: Event
+  optional event: Event
 
 ActiveStateMachineInitEvent:
   _class: dtrpg.core.events.StateMachineInitEvent
@@ -443,10 +460,20 @@ PassiveState:
 PassiveStateTransition:
   _class: dtrpg.core.creature.StateTransition
   optional to: PassiveState
-  required event: Event
+  optional event: Event
 
 PassiveStateRequirement:
   _class: dtrpg.core.events.StateRequirement
   _base: Requirement
   required machine: PassiveStateMachine
   optional state: PassiveState
+
+PassiveStateMachineInitEvent:
+  _class: dtrpg.core.events.StateMachineInitEvent
+  _base: Event
+  required machine: PassiveStateMachine
+
+PassiveStateMachineExitEvent:
+  _class: dtrpg.core.events.StateMachineExitEvent
+  _base: Event
+  required machine: PassiveStateMachine

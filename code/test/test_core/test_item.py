@@ -304,4 +304,30 @@ class TestTrade(unittest.TestCase):
         req.assert_meets(c)
 
     def test_item_equipped_requirement(self) -> None:
-        pass
+        req = item.ItemEquippedRequirement()
+        i = item.Item()
+        s = item.ItemSlot()
+        c = creature.Creature()
+
+        req.item = i
+        i.slot = s
+        c.item_slots = {s: None}
+
+        self.assertFalse(req.meets(c))
+        self.assertRaises(item.ItemNotEquippedException, lambda: req.assert_meets(c))
+
+        c.item_slots[s] = i
+        self.assertTrue(req.meets(c))
+        req.assert_meets(c)
+
+    def test_free_space_requirement(self) -> None:
+        req = item.FreeSpaceRequirement()
+        c = creature.Creature()
+        c.items = item.Container()
+
+        req.slots = c.items.max_items
+        self.assertTrue(req.meets(c))
+
+        c.items.add(item.ItemStack(item.Item()))
+        self.assertFalse(req.meets(c))
+        self.assertRaises(item.FreeSpaceRequiredException, lambda: req.assert_meets(c))
