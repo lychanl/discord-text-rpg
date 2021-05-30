@@ -41,7 +41,7 @@ class TestSmoke(unittest.TestCase):
         clock.now_with_diff.return_value = (object(), 0)
 
         self.assertRegex(io.test('here'), r'.*not started.*start.*')
-        self.assertRegex(io.test('start'), r'.*Welcome.*')
+        self.assertRegex(io.test('start'), r'.*finally awake.*')
         self.assertRegex(io.test('invalid'), r'.*Invalid.*')
         self.assertRegex(io.test('mee'), r'.*Invalid.*Did you mean.*me.*')
         self.assertRegex(io.test('info item herb'), r'.*a herb.*')
@@ -51,17 +51,15 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('here'), r'.*You are in.*village.*Travel to coast.*')
         self.assertRegex(io.test('Travel to coast'), r'.*travel.*coast.*')
         self.assertRegex(io.test('here'), r'.*You are at.*coast.*Travel to village.*')
-        self.assertRegex(io.test('fish'), r'.*fish.* get 1x fish.*')
-        self.assertRegex(io.test('fishing'), r'.*fish.* get 1x fish.*')
-        self.assertRegex(io.test('items'), r'.*2x fish.*1/10.*')
+        self.assertRegex(io.test('fish'), r'.*You don\'t have fishing rod equipped.*')
         self.assertRegex(io.test('travel to village nothingthere'), r'.*travel.*village.*')
         self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
         self.assertRegex(io.test('get a job'), r'.*job.*get.*5.*gold.*')
-        self.assertRegex(io.test('me'), r'.*have 56/60 action points.*have 10 gold.*have 1/10 items.*in.*village.*')
+        self.assertRegex(io.test('me'), r'.*have 58/60 action points.*have 10 gold.*have 0/10 items.*in.*village.*')
 
         clock.now_with_diff.return_value = object(), 0.1
 
-        self.assertRegex(io.test('me'), r'.*have 57/60 action points.*have 10.*You are in.*village.*')
+        self.assertRegex(io.test('me'), r'.*have 59/60 action points.*have 10.*You are in.*village.*')
 
         clock.now_with_diff.return_value = object(), 0
 
@@ -70,17 +68,31 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('me'), r'.*have 0/60 action points.*')
         self.assertRegex(io.test('find a job'), r'.*don.*have.*action points.*1 needed.*')
 
-        self.assertRegex(io.test('drop 2 fishes'), r'.*drop 2x fish*')
         self.assertRegex(io.test('items'), r'.*No items.*0/10.*')
         self.assertRegex(io.test('drop fish'), r".*don't have enough items*")
 
         self.assertRegex(io.test('here'), r".*See offers.*Buy item.*Sell item.*")
         self.assertRegex(io.test('see offers'), r".*fish.*sell 6.*buy 15.*herbs.*sell 8.*fishing rod.*buy 25.*")
-        self.assertRegex(io.test('travel coast'), r'.*travel.*coast.*')
 
         game.player(TestIO.TEST_PLAYER).resources[action_points].value = 20
 
         # BUYING AND SELLING
+
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
+        self.assertRegex(io.test('buy fishing rod'), r".*buy 1x fishing rod.*25*")
+
+        self.assertRegex(io.test('travel coast'), r'.*travel.*coast.*')
+        self.assertRegex(io.test('equip fishing rod'), r'.*equip.*fishing rod.*')
+
+        self.assertRegex(io.test('fish'), r'.*fish.* get 1x fish.*')
+        self.assertRegex(io.test('fishing'), r'.*fish.* get 1x fish.*')
+        self.assertRegex(io.test('items'), r'.*2x fish.*1/10.*')
+        self.assertRegex(io.test('drop 2 fishes'), r'.*drop 2x fish*')
 
         self.assertRegex(io.test('fish'), r'.*fish.* get 1x fish.*')
         self.assertRegex(io.test('fish'), r'.*fish.* get 1x fish.*')
@@ -92,13 +104,6 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
         self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
         self.assertRegex(io.test('buy linen jacket'), r".*buy 1x linen jacket.*30*")
-        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
-        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
-        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
-        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
-        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
-        self.assertRegex(io.test('job'), r'.*job.*get.*5.*gold.*')
-        self.assertRegex(io.test('buy fishing rod'), r".*buy 1x fishing rod.*25*")
 
         # EQUIPMENT
 
@@ -118,6 +123,14 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('items'), r'.*Body: linen jacket.*')
         self.assertRegex(io.test('unequip linen jacket'), r'.*remove linen jacket.*body.*')
         self.assertRegex(io.test('unequip linen jacket'), r'.*don\'t have linen jacket equipped.*')
+
+        # DIALOGUE
+
+        self.assertRegex(io.test('Talk to the village elder'), r'.*approach the village elder.*Possible actions.*')
+        self.assertRegex(io.test('me'), r'.*have 7/60 action points.*')
+        self.assertRegex(io.test('travel to coast'), r'.*Invalid.*')
+
+        self.assertRegex(io.test('bye'), r'.*see you soon.*')
 
         # SKILLS
 
@@ -196,8 +209,47 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('gather stones'), r'.*get 1x stones.*dropped 1.*')
 
         # RESTART
-
-        self.assertRegex(io.test('exit'), r'.*Bye.*')
+        self.assertRegex(io.test('exit'), r'.*Are you sure.*')
+        self.assertRegex(io.test('help'), r'.*Invalid.*')
+        self.assertRegex(io.test('no'), r'.*Ok!.*')
+        self.assertRegex(io.test('yes'), r'.*Invalid.*')
+        self.assertRegex(io.test('exit'), r'.*Are you sure.*')
+        self.assertRegex(io.test('yes'), r'.*Bye.*')
         self.assertRegex(io.test('exit'), r'.*not started.*')
-        self.assertRegex(io.test('start'), r'.*Welcome.*')
+        self.assertRegex(io.test('start'), r'.*finally awake.*')
         self.assertRegex(io.test('me'), r'.*have 60/60 action points.*have 10/10 health.*')
+
+        # QUESTS
+        self.assertRegex(io.test('Journal'), 'No entries')
+        self.assertRegex(io.test('Talk to the village elder'), 'How can I help')
+        self.assertNotRegex(io.test('How can I help?'), 'What to do next')
+        self.assertRegex(io.test('Bye'), 'see you soon')
+
+        self.assertRegex(io.test('job'), 'some fishermen')
+        self.assertRegex(io.test('Talk to the village elder'), 'What to do next?')
+        self.assertRegex(io.test('What to do next?'), 'catch some fish.*get 20 gold')
+        self.assertRegex(io.test('Bye'), 'see you soon')
+
+        self.assertRegex(io.test('Buy fishing rod'), 'You buy 1x fishing rod')
+        self.assertRegex(io.test('Travel to the coast'), 'You travel')
+        self.assertRegex(io.test('fish'), 'don\'t have fishing rod')
+        self.assertRegex(io.test('equip fishing rod'), 'fishing rod.*hand')
+        self.assertRegex(io.test('fish'), 'get 1x fish')
+        self.assertRegex(io.test('Travel to the village'), 'You travel')
+        self.assertRegex(io.test('Talk to the village elder'), 'What to do next?')
+        self.assertRegex(io.test('What to do next?'), 'Tom.*coast')
+        self.assertRegex(io.test('Bye'), 'see you soon')
+
+        self.assertRegex(io.test('Travel to the coast'), 'You travel')
+        self.assertNotRegex(io.test('here'), 'small bay')
+        self.assertRegex(io.test('Travel to the small bay'), 'Invalid command')
+        self.assertRegex(io.test('Talk to the fisherman'), 'need some help')
+        self.assertRegex(io.test('Do you need some help?'), 'Yeah.*Ready')
+        self.assertRegex(io.test('No'), 'need some help')
+        self.assertRegex(io.test('Do you need some help?'), 'Yeah.*Ready')
+        self.assertRegex(io.test('Yes'), 'awake on the coast')
+        self.assertRegex(io.test('here'), 'in the small bay')
+        self.assertRegex(io.test('search'), 'rusty spear')
+        self.assertNotRegex(io.test('search'), 'rusty spear')
+        self.assertRegex(io.test('Travel to the coast'), 'You travel')
+        self.assertRegex(io.test('here'), 'small bay')

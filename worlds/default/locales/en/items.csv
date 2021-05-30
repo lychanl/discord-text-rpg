@@ -14,3 +14,6 @@ item_stones,REGEX_NAME,(throwing )?stone(s)?
 stone_throw,NAME,stone throw
 itemslot_body,NAME,body
 itemslot_hand,NAME,hand
+item_rusty_spear,NAME,rusty spear
+item_rusty_spear,REGEX_NAME,rusty spear(s)?
+rusty_spear_attack,NAME,rusty spear

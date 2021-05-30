@@ -2,13 +2,15 @@ from dtrpg.core.game_object import GameObject
 
 
 class EventResult(GameObject):
-    pass
+    def __init__(self):
+        super().__init__()
+        self.player = None
 
 
 class InfoEventResult(EventResult):
     def __init__(self):
         super().__init__()
-        self.player = None
+        self.params = None
 
 
 class ResourceChangeEventResult(EventResult):

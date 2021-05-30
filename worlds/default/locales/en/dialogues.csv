@@ -1,0 +1,22 @@
+object,string,value
+nothingthere_village_elder_dialogue,NAME,Talk to the village elder
+nothingthere_village_elder_dialogue,REGEX,(talk|speak)(( to| with)?( the)?( village)?( elder))?
+nothingthere_dialogue_init,EVENT_NOW,"You approach the village elder. He looks at you, waiting.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_dialogue_exit,NAME,Bye
+nothingthere_dialogue_exit,REGEX,bye|goodbye
+nothingthere_dialogue_exit_event,EVENT_NOW,Hope to see you soon.
+nothingthere_dialogue_about,NAME,Where are we?
+nothingthere_dialogue_about,REGEX,where( are)?( we)\??
+nothingthere_dialogue_about_event,EVENT_NOW,"We are at the Nothingthere village. This is a small community. Nearest town - here, the elder points toward the forest - is a few days from here, but we had not have any conact for some time...{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_dialogue_who,NAME,Who are you?
+nothingthere_dialogue_who,REGEX,who( are)?( you)\??
+nothingthere_dialogue_who_event,EVENT_NOW,"I am Bilch, and you could say that I lead these people.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_captain_dialogue_init,NAME,Talk to the fisherman
+nothingthere_captain_dialogue_init,REGEX,(talk|speak)(( to| with)?( the)?( fisherman))?
+nothingthere_captain_dialogue_init_event,EVENT_NOW,"You walk to the fisherman. He doesn's seem to pay much attention to you.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_captain_dialogue_exit,NAME,Bye
+nothingthere_captain_dialogue_exit,REGEX,bye|goodbye
+nothingthere_captain_dialogue_exit_event,EVENT_NOW,Yeap.
+nothingthere_captain_who,NAME,Who are you?
+nothingthere_captain_who,REGEX,who( are)?( you)\??
+nothingthere_captain_who_event,EVENT_NOW,"I'm Tom.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"

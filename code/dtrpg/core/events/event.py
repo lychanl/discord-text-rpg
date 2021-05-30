@@ -1,4 +1,5 @@
 from dtrpg.core.game_object import GameObjectFactory
+from dtrpg.core.game_exception import GameException
 from dtrpg.core.events.event_result import (
     EventResult, ResourceChangeEventResult, InfoEventResult, VariableSetEventResult, ExceptionEventResult
 )
@@ -45,9 +46,16 @@ class Event(GameObjectFactory):
         cpy.params = kwargs
 
         try:
-            return type(self)._fire(cpy, player)
-        except Exception as e:
-            return ExceptionEventResult(e)
+            result = type(self)._fire(cpy, player)
+        except GameException as e:
+            result = ExceptionEventResult(e)
+
+        if result:
+            result.player = player
+
+        player.on_event(self)
+
+        return result
 
     def _fire(self, player: 'Player') -> EventResult:
         raise NotImplementedError
@@ -68,7 +76,6 @@ class InfoEvent(Event):
 
     def _fire(self, player: 'Player') -> InfoEventResult:
         event = self.create()
-        event.player = player
         event.params = self.params
         return event
 
@@ -87,6 +94,9 @@ class ResourceChangesEvent(Event):
             changes[change.resource] = diff
         event.resource_changes = changes
 
+        if player.killed:
+            player.events.register(player.on_killed)
+
         return event
 
 
@@ -98,6 +108,22 @@ class SequenceEvent(ComplexEvent):
     def _fire(self, player: 'Player') -> None:
         for i, event in enumerate(self.events):
             player.events.register(event, **self._get_subevent_params(str(i)))
+
+
+class ConditionEvent(ComplexEvent):
+    def __init__(self):
+        super().__init__(EventResult)
+        self.true = None
+        self.false = None
+        self.condition = None
+
+    def _fire(self, player: 'Player') -> None:
+        if self.condition.meets(player):
+            if self.true:
+                player.events.register(self.true, **self._get_subevent_params('true'))
+        else:
+            if self.false:
+                player.events.register(self.false, **self._get_subevent_params('false'))
 
 
 class VariableSetEvent(Event):

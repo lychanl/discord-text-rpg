@@ -1,0 +1,35 @@
+object,string,value
+tutorial_quest,JOURNAL_NAME,Tutorial
+tutorial_job,JOURNAL_ENTRY,Find a job in Nothingthere village.
+tutorial_job_report,JOURNAL_ENTRY,"You completed job. Return to Bilch, the village elder, and find out what is your next task."
+tutorial_fish,JOURNAL_ENTRY,Buy a fishing rod in the village and catch a fish at the coast.
+tutorial_fish_report,JOURNAL_ENTRY,"You caught a fish. Return to Bilch, the village elder, and find out what is your next task."
+tutorial_captain_talk,JOURNAL_ENTRY,"Tom, a fisherman, is looking for some help. Talk to him at the coast."
+tutorial_journey_return,JOURNAL_ENTRY,"You managed to survive a fishing trip. This is the end of this quest in current version."
+nothingthere_dialogue_init_tutorial,NAME,How can I help?
+nothingthere_dialogue_init_tutorial,REGEX,((how )?can i )?help\??
+tutorial_init,EVENT_NOW,"There is a lot of things to do around here, you can start by asking around if you could do some job for someone.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_dialogue_job_report,NAME,What to do next?
+nothingthere_dialogue_job_report,REGEX,(what to do )?next\??
+nothingthere_dialogue_job_report_event_text,EVENT_NOW,"You can always ask around, there is never enough hands to do all things. You can also try to catch some fish by yourself. Here, take this, buy yourself a fising rod and go to the coast.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_dialogue_fish_report,NAME,What to do next?
+nothingthere_dialogue_fish_report,REGEX,(what to do )?next\??
+nothingthere_dialogue_fish_report_event,EVENT_NOW,"I have just heard that Tom is going offshore and wants a helping hand. Meet him at the coast.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+tutorial_captain_talk_dialogue,NAME,Do you need some help?
+tutorial_captain_talk_dialogue,REGEX,((do you )?need (some )?)?help\??
+tutorial_captain_talk_dialogue_event,EVENT_NOW,"Yeah, gonna set off soon. Ready?{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+tutorial_captain_talk_dialogue_accept,NAME,Yes
+tutorial_captain_talk_dialogue_accept,REGEX,yes|ready
+tutorial_captain_talk_dialogue_exit_event,EVENT_NOW,You set off after some quick preparations. Fishing goes great for some time, however the weather changes. The wind gets strong, it starts to rain. Suddenly, a large wave washes you overboard. Some debris hits you in the head and you lose consciousness for a some time.
+tutorial_journey_travel_event,EVENT_NOW,You awake on the coast after some.
+nothingthere_bay_visibility_init,EVENT_NOW,You find yourself in a small bay, covered by a piece of driftwood.
+tutorial_captain_talk_dialogue_decline,NAME,No
+tutorial_captain_talk_dialogue_decline,REGEX,no|not|(not yet)
+tutorial_captain_talk_dialogue_decline_event,EVENT_NOW,"Sure.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+tutorial_captain_talk_journey_return,NAME,Are you all right?
+tutorial_captain_talk_journey_return,REGEX,(are you )?(all right|fine)\??
+tutorial_captain_talk_dialogue_journey_return_event,EVENT_NOW,Yeap. See you made it too.
+tutorial_nothingthere_dialogue_journey_return,NAME,I'm back
+tutorial_nothingthere_dialogue_journey_return,REGEX,(i'm )?back
+tutorial_nothingthere_dialogue_journey_return_event,EVENT_NOW,"Good. I see that you are hurt, but nothing that time won't heal.
+I don't have anything to do for you now."

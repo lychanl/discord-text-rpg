@@ -131,4 +131,6 @@ class SchemaLoader:
 
         key, value = next(iter(attribute.items()))
 
-        return DictLoader(self._parse_simple_attribute(key), self._parse_simple_attribute(value))
+        return DictLoader(
+            {self._parse_simple_attribute(key): self._parse_simple_attribute(value) for key, value in attribute.items()}
+        )

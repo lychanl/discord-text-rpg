@@ -1,0 +1,2 @@
+class GameException(Exception):
+    pass

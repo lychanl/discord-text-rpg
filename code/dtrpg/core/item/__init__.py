@@ -1,7 +1,8 @@
 # flake8: noqa: F401
 from dtrpg.core.item.item import (
     Item, ItemStack, ItemStackFactory, ItemSlot,
-    NotEquippableException, ItemNotEquippedException, SlotNotEquippedException
+    NotEquippableException, ItemNotEquippedException, SlotNotEquippedException,
+    FreeSpaceRequiredException
 )
 from dtrpg.core.item.container import (
     Container, ContainerFactory, 
@@ -10,5 +11,6 @@ from dtrpg.core.item.container import (
 from dtrpg.core.item.trade import TradeOffer, OfferNotFoundException
 from dtrpg.core.item.events import (
     ItemReceivedEventResult, RemoveItemEventResult, ItemReceiveEvent, RemoveItemEvent,
-    EquipItemEvent, EquipEventResult, UnequipItemEvent, UnequipSlotEvent, UnequipEventResult
+    EquipItemEvent, EquipEventResult, UnequipItemEvent, UnequipSlotEvent, UnequipEventResult,
+    ItemEquippedRequirement, ItemsRequirement, FreeSpaceRequirement
 )

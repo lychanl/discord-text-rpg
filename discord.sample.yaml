@@ -1,4 +1,5 @@
 # Not a real token. Use token of your bot.
 token: ABCDEFGHIJKLMNOPQRSTUVWX.abcdef.ABCDEFGHIJKLMNOP-abcdefghij
-channel: game-channel
-prefix: ?
+prefix: "dtrpg:"
+admin_prefix: "dtrpg-a:"
+config_path: config_cache.yaml

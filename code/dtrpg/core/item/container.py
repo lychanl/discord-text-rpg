@@ -1,15 +1,16 @@
 from dtrpg.core.game_object import GameObject, GameObjectFactory
+from dtrpg.core.game_exception import GameException
 from dtrpg.core.item.item import Item, ItemStack, InsufficientItemsException
 
 from typing import Iterable
 
 
-class ContainerOverflowException(Exception):
+class ContainerOverflowException(GameException):
     def __init__(self, stack: ItemStack):
         self.stack = stack
 
 
-class ContainerCapacityException(Exception):
+class ContainerCapacityException(GameException):
     pass
 
 

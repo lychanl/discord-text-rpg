@@ -119,6 +119,41 @@ class TestEvents(unittest.TestCase):
         self.assertEqual(p.resources[res1].value, 2)
         self.assertEqual(p.resources[res2].value, 3)
 
+    def test_action_requirement(self) -> None:
+        a = events.Action()
+        req = type('', (), {})
+        req.meets = mock.Mock()
+        req.assert_meets = mock.Mock()
+        req.meets.return_value = False
+
+        a.requirements = [req]
+        p = mock.Mock()
+
+        self.assertFalse(a.check_requirements(p))
+        req.meets.return_value = True
+        self.assertTrue(a.check_requirements(p))
+        a.take(p)
+        req.assert_meets.assert_called_once_with(p)
+
+    def test_action_visibility(self) -> None:
+        a = events.Action()
+        req = type('', (), {})
+        req.meets = mock.Mock()
+        req.meets.return_value = False
+
+        a.visibility = [req]
+        p = creature.Player()
+        p.base_actions = [a]
+        p.location = type('', (), {})
+        p.location.travel_actions = []
+        p.location.local_actions = []
+
+        req.meets.return_value = False
+        self.assertListEqual(p.available_actions, [])
+
+        req.meets.return_value = True
+        self.assertListEqual(p.available_actions, [a])
+
     def test_skill_event(self) -> None:
         s = creature.Skill()
         p = creature.Player()
@@ -179,6 +214,24 @@ class TestEvents(unittest.TestCase):
         evs[0].fire.assert_called_once()
         evs[1].fire.assert_called_once()
 
+    def test_cond_event(self) -> None:
+        e = events.ConditionEvent()
+
+        e.true = object()
+        e.false = object()
+        e.condition = mock.Mock()
+
+        p = creature.Player()
+
+        e.condition.meets.return_value = True
+        e.fire(p)
+        self.assertIs(p.events.events[0][0], e.true)
+
+        p.events.events = []
+        e.condition.meets.return_value = False
+        e.fire(p)
+        self.assertIs(p.events.events[0][0], e.false)
+
     def test_variable_set_event(self) -> None:
         e = events.VariableSetEvent()
         e.variable = 'VAR'
@@ -234,3 +287,44 @@ class TestEvents(unittest.TestCase):
         self.assertSequenceEqual(ret, [r2])
         e.if_.fire.assert_not_called()
         e.else_.fire.assert_called_once()
+
+
+class TestStateMachineEvents(unittest.TestCase):
+    def test_state_init_event(self) -> None:
+        e = events.StateMachineInitEvent()
+        p = mock.Mock()
+        m = object()
+        e.machine = m
+        r = e.fire(p)
+        p.enter_state_machine.assert_called_once_with(m)
+        self.assertIs(r.machine, m)
+
+    def test_state_exit_event(self) -> None:
+        e = events.StateMachineExitEvent()
+        p = mock.Mock()
+        m = object()
+        e.machine = m
+        r = e.fire(p)
+        p.exit_state_machine.assert_called_once_with(m)
+        self.assertIs(r.machine, m)
+
+    def test_state_requirement(self) -> None:
+        sm = creature.PassiveStateMachine()
+        s = creature.PassiveState()
+        sm.initial = s
+
+        p = creature.Player()
+
+        r = events.StateRequirement()
+        r.machine = sm
+
+        self.assertTrue(r.meets(p))
+
+        r.state = s
+        self.assertFalse(r.meets(p))
+
+        p.enter_state_machine(sm)
+        self.assertTrue(r.meets(p))
+
+        r.state = None
+        self.assertFalse(r.meets(p))

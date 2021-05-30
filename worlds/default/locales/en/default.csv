@@ -4,7 +4,7 @@ Market,YOU_ARE_HERE,"You are in {self.strings['NAME']}"
 Location,REGEX_NAME,{self.strings['NAME']}
 Action,HINT,{self.strings['NAME']}
 Market,REGEX_NAME,{self.strings['NAME']}
-TravelAction,REGEX,(Travel|Go)( to)? ({self.to.strings['REGEX_NAME']})
+TravelAction,REGEX,(Travel|Go)( to)?( the)? ({self.to.strings['REGEX_NAME']})
 TravelAction,HINT,{self.strings['NAME']}
 TravelAction,NAME,Travel to {self.to.strings['NAME']}
 TravelEventResult,EVENT_NOW,You travel to {self.to.strings['NAME']}.
@@ -30,6 +30,9 @@ OffersInfoAction,NAME,See offers
 OffersInfoAction,REGEX,((see|check|list) )?(offer|offers)(( for)? (?P<item>.+))?
 OffersInfoAction,HINT,{self.strings['NAME']}
 Player,NAME,Player
+Player,STATE_ACTIONS_HINT,"*Possible actions:*
+{('\n'.join(' - *' + action.strings['HINT'] + '*' for action in self.active_state[0].actions if action.visible(self))) if self.active_states else ''}"
+Player,POSSIBLE_STATE_ACTIONS_HINT,"{('\n\n' + self.strings['STATE_ACTIONS_HINT']) if self.active_states else ''}"
 FightEventResult,GROUP,"{', '.join(str(num) + ' ' + name if num > 1 else name for name, num in helpers.plurals_group(group, 'NAME', 'NAME_PL').items())}"
 FightEventResult,GROUP_S,{'s' if len(group) == 1 else ''}
 FightEventResult,RESULT_G,"{self.strings['GROUP', {'group': group}]} win{self.strings['GROUP_S', {'group': group}]}!"
