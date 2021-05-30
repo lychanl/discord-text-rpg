@@ -30,6 +30,22 @@ For a list of features for future versions see [https://github.com/lychanl/disco
 
 ## Changelog
 
+#### 0.2.0
+##### Engine
+ - Player state via active and passive state machine with state-dependant actions, visibility and requirements
+ - Conditional events
+ - Action visibility
+ - Equipped items as action requirements
+##### UI
+ - Discord bot admin console with prefix and channel setting
+##### Default world
+ - 2 new NPCs
+ - 1 new item
+ - 1 new location
+ - The first questline: first three parts of the tutorial
+ - Journal action, merged skills and stats action
+ - Other minor tweaks 
+
 #### 0.1.1
  - default world string fixes
  - argument name resolvig fix
