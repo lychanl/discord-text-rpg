@@ -6,7 +6,7 @@ import re
 from typing import Any, Hashable, Iterable, Sequence, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from dtrpg.core.action import Action, Event
+    from dtrpg.core.events import Action, Event
 
 
 class ActionNotFound(Exception):

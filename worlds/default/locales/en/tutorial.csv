@@ -21,7 +21,7 @@ tutorial_captain_talk_dialogue_event,EVENT_NOW,"Yeah, gonna set off soon. Ready?
 tutorial_captain_talk_dialogue_accept,NAME,Yes
 tutorial_captain_talk_dialogue_accept,REGEX,yes|ready
 tutorial_captain_talk_dialogue_exit_event,EVENT_NOW,You set off after some quick preparations. Fishing goes great for some time, however the weather changes. The wind gets strong, it starts to rain. Suddenly, a large wave washes you overboard. Some debris hits you in the head and you lose consciousness for a some time.
-tutorial_journey_travel_event,EVENT_NOW,You awake on the coast after some.
+tutorial_journey_travel_event,EVENT_NOW,You awake on the coast after some time.
 nothingthere_bay_visibility_init,EVENT_NOW,You find yourself in a small bay, covered by a piece of driftwood.
 tutorial_captain_talk_dialogue_decline,NAME,No
 tutorial_captain_talk_dialogue_decline,REGEX,no|not|(not yet)
