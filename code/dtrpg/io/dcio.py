@@ -1,10 +1,11 @@
 from dtrpg.io.text_io import TextIO
+from dtrpg.utils import split_messages
 
 from asyncio import Lock
 from discord import Client, Guild, Message
 import os
 from traceback import print_exception
-from typing import Sequence, TYPE_CHECKING
+from typing import TYPE_CHECKING
 import yaml
 
 if TYPE_CHECKING:
@@ -48,18 +49,6 @@ class DiscordBotIO(Client, TextIO):
     def run(self) -> None:
         Client.run(self, self._token)
 
-    def split_messages(self, messages: Sequence[str]) -> Sequence[str]:
-        if not messages:
-            return None
-        out = [messages[0]]
-        for msg in messages[1:]:
-            if len(msg) + len(out[-1]) + 1 < self.LIMIT:
-                out[-1] = out[-1] + '\n' + msg
-            else:
-                out[-1] = [msg]
-
-        return out
-
     async def on_message(self, message: Message) -> None:
         if message.author == self.user:
             return
@@ -70,7 +59,7 @@ class DiscordBotIO(Client, TextIO):
                 out = await self.on_admin_message(message, admin_message)
 
                 if out:
-                    for msg in self.split_messages(out):
+                    for msg in split_messages(out):
                         await message.channel.send(msg)
                 return
         except Exception as e:
