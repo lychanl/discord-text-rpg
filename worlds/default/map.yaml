@@ -60,6 +60,7 @@ ActiveStateMachine nothingthere_dialogue:
     - action_group_help
     - action_group_info
     - action_group_admin
+  invalid_action_event: dialogue_invalid_action_event
 
 ActiveState nothingthere_dialogue_root:
   actions:
@@ -99,6 +100,7 @@ ActiveStateMachine nothingthere_captain_dialogue:
     - action_group_help
     - action_group_info
     - action_group_admin
+  invalid_action_event: dialogue_invalid_action_event
 
 ActiveState nothingthere_captain_dialogue_root:
   actions:

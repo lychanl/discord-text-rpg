@@ -1,6 +1,5 @@
 object,string,value
 config,START,start
-config,EXCEPTION_ActionNotFound,"You can't do that... (Invalid command){'\nDid you mean _' + e.best_action.strings['HINT'].replace('*', '\*') + '_?' if e.best_similarity > 0.5 else ''}"
 config,EXCEPTION_DuplicatePlayerError,Your character already exists!
 config,EXCEPTION_InvalidPlayerError,You have not started the game. Try 'start'
 config,EXCEPTION_ArgumentError,You can't do that with {e.value} (Invalid argument)
