@@ -1,4 +1,3 @@
-from dtrpg.core.game_object import GameObject
 from dtrpg.data.loaders import Loader
 from dtrpg.data.loaders.qualifier import QualifierError, Qualifiers, QualifierCheckFailed
 
@@ -72,17 +71,30 @@ class TypeLoader(Loader):
             raise AbstractTypeException
         return self._class()
 
+    def _split_name_and_type(self, name: str) -> Tuple[str, str]:
+        if name.startswith('(') and ')' in name:
+            tokens = name[1:].split(')')
+            assert len(tokens) == 2, "Invalid type specification"
+            typename, attr_name = tokens
+            return (attr_name.strip(), *self._split_typename_and_obj_name(typename))
+
+        return name, None, None
+
     def _load(
-        self, objects_dict: dict, values: dict, attr_values: dict, variables: dict, game_objects: list
+        self, objects_dict: dict, values: dict, attr_values: dict,
+        variables: dict, game_objects: list, type_loaders: dict
     ) -> Tuple[dict, dict, dict]:
         unused = {}
 
         for name, value in values.items():
+            name, typename, obj_name = self._split_name_and_type(name)
+
             if name in self._attributes:
                 if isinstance(value, str) and value.startswith('variable(') and value.endswith(')'):
                     variables[name] = value[len('variable('):-1]
                 else:
-                    attr_values[name] = self._attributes[name][0].load(None, objects_dict, value, game_objects)
+                    attr_values[name] = self._attributes[name][0].load(
+                        None, obj_name, typename, objects_dict, value, game_objects, type_loaders)
             else:
                 unused[name] = value
 
@@ -98,18 +110,20 @@ class TypeLoader(Loader):
                 raise QualifierCheckFailed(f'Qualifier check failed for {name}: {e}') from e
 
         if self._base:
-            return self._base._load(objects_dict, unused, attr_values, variables, game_objects)
+            return self._base._load(objects_dict, unused, attr_values, variables, game_objects, type_loaders)
         else:
             return unused, attr_values, variables
 
     def _load_enum(self, value: str) -> object:
         return self._class[value]
 
-    def _load_obj(self, obj: object, objects_dict: dict, values: Union[dict, str], game_objects: list) -> object:
+    def _load_obj(
+            self, obj: object, objects_dict: dict, values: Union[dict, str],
+            game_objects: list, type_loaders: dict) -> object:
         if obj is None:
             obj = self.preload()
 
-        unused, attr_values, variables = self._load(objects_dict, values, {}, {}, game_objects)
+        unused, attr_values, variables = self._load(objects_dict, values, {}, {}, game_objects, type_loaders)
 
         if unused:
             raise KeyError(f'Undefined attributes: {list(unused.keys())}')
@@ -121,13 +135,14 @@ class TypeLoader(Loader):
 
         return obj
 
-    def load(self, obj: object, objects_dict: dict, values: Union[dict, str], game_objects: list) -> object:
+    def load(
+            self, obj: object, name: str, typename: str, objects_dict: dict,
+            values: Union[dict, str], game_objects: list, type_loaders: dict) -> object:
         if self._enum:
             obj = self._load_enum(values)
         else:
-            obj = self._load_obj(obj, objects_dict, values, game_objects)
+            obj = self._load_obj(obj, objects_dict, values, game_objects, type_loaders)
 
-        if issubclass(self.class_, GameObject):
-            game_objects.append(obj)
+        game_objects.append((name, obj))
 
         return obj
