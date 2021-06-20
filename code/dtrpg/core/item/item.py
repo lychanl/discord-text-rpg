@@ -36,6 +36,8 @@ class Item(GameObject):
         self.slot = None
         self.bonus = None
         self.attack = None
+        self.use = None
+        self.remove_on_use = False
 
 
 class ItemStack(GameObject):

@@ -1,6 +1,10 @@
 
+from dtrpg.core.events.event import ComplexEvent
+from dtrpg.core.game_exception import GameException
 from dtrpg.core.item.container import ContainerOverflowException
-from dtrpg.core.item.item import InsufficientItemsException, ItemNotEquippedException, FreeSpaceRequiredException
+from dtrpg.core.item.item import (
+    InsufficientItemsException, ItemNotEquippedException, FreeSpaceRequiredException, Item
+)
 from dtrpg.core.events import Event, EventResult, Requirement
 
 from typing import TYPE_CHECKING
@@ -159,3 +163,38 @@ class FreeSpaceRequirement(Requirement):
     def assert_meets(self, player: 'Player') -> None:
         if not self.meets(player):
             raise FreeSpaceRequiredException(self.slots)
+
+
+class UnusableItemException(GameException):
+    def __init__(self, item: Item) -> None:
+        super().__init__()
+        self.item = item
+
+
+class UseItemEventResult(EventResult):
+    def __init__(self):
+        super().__init__()
+        self.item = None
+
+
+class UseItemEvent(ComplexEvent):
+    def __init__(self):
+        super().__init__(UseItemEventResult)
+        self.item = None
+
+    def _fire(self, player: 'Player') -> UseItemEventResult:
+        if not self.item.use:
+            raise UnusableItemException(self.item)
+
+        if not player.items.count(self.item):
+            raise InsufficientItemsException(self.item, 1)
+
+        if self.item.remove_on_use:
+            player.items.remove(self.item, 1)
+
+        player.events.register(self.item.use, **self._get_subevent_params('use'))
+
+        result = self.create()
+        result.item = self.item
+
+        return result

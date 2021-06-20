@@ -1,5 +1,12 @@
 Item item_fish:
   max_stack: 10
+  (AddTimedBonusEvent) use:
+    time: 2
+    (Bonus item_fish_bonus) bonus:
+      resource_bonuses:
+        action_points:
+          regen_rate: 2
+  remove_on_use: True
 
 Item item_herbs:
   max_stack: 20

@@ -9,6 +9,7 @@ config,EMPTY,Nothing happens...
 ExceptionEventResult,EVENT_NOW,"{self.strings[self.exception.__class__.__name__, {'e': self.exception}]}"
 ExceptionEventResult,InsufficientResourceError,"You don't have enough {e.resource.resource.strings['NAME']}, {e.required} needed."
 ExceptionEventResult,InsufficientItemsException,You don't have enough items to do that.
+ExceptionEventResult,UnusableItemException,You can't use this item.
 ExceptionEventResult,OfferNotFoundException,Your offer was not accepted.
 ExceptionEventResult,ContainerCapacityException,You don't have enough space for these items.
 ExceptionEventResult,NotEquippableException,{e.item.strings['NAME'].capitalize()} cannot be equipped.

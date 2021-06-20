@@ -235,6 +235,8 @@ Item:
   optional bonus: Bonus
   optional slot: ItemSlot
   optional attack: Attack
+  optional use: Event
+  optional remove_on_use: bool
 
 ItemStackFactory:
   _class: dtrpg.core.item.ItemStackFactory
@@ -244,6 +246,14 @@ ItemStackFactory:
 
 ItemSlot:
   _class: dtrpg.core.item.ItemSlot
+
+UseItemEvent:
+  _class: dtrpg.core.item.UseItemEvent
+  _base: Event
+  optional item: Item
+
+UseItemEventResult:
+  _class: dtrpg.core.item.UseItemEventResult
 
 CreatureResourceFactory:
   _class: dtrpg.core.creature.CreatureResourceFactory
@@ -314,6 +324,15 @@ ResourceBonus:
   _class: dtrpg.core.creature.ResourceBonus
   optional max_value: int
   optional regen_rate: int
+
+AddTimedBonusEventResult:
+  _class: dtrpg.core.events.event.AddTimedBonusEventResult
+
+AddTimedBonusEvent:
+  _class: dtrpg.core.events.event.AddTimedBonusEvent
+  _base: Event
+  required bonus: Bonus
+  required time: float
 
 Config:
   _class: dtrpg.core.Config

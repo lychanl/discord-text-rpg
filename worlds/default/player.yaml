@@ -23,6 +23,7 @@ PlayerFactory player_factory:
     - here_action
     - item_action
     - items_action
+    - use_item_action
     - drop_action
     - equip_action
     - unequip_item_action
@@ -250,3 +251,8 @@ ActiveState quit_game_ask_sm_state:
     - reject_quit_game
 
 QuitGameEvent quit_game_event: {}
+
+Action use_item_action:
+  (UseItemEvent) event: {}
+  args:
+    item: Item

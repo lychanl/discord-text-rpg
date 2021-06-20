@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from dtrpg.data.locale.formatter import LocaleFormatter
 import dtrpg.data.locale.helpers as helpers
 
@@ -56,6 +57,8 @@ class ObjectStrings:
     AVAILABLE_BUILTINS = {
         'int': int, 'float': float, 'str': str, 'abs': abs,
         'len': len, 'sum': sum, 'any': any, 'all': all, 'enumerate': enumerate, 'zip': zip,
+        'colon': ':',
+        'datetime': datetime, 'timedelta': timedelta,
         'helpers': helpers}
 
     formatter = LocaleFormatter()
