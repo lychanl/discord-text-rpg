@@ -21,8 +21,16 @@ class Player(Fighter):
         self.available_tactics = ()
         self.variable_holder = None
 
+        self.default_invalid_action_event = None
+
         self.active_states = []
         self.passive_states = {}
+
+    @property
+    def invalid_action_event(self) -> Event:
+        if self.active_state[1] and self.active_state[1].invalid_action_event:
+            return self.active_state[1].invalid_action_event
+        return self.default_invalid_action_event
 
     @property
     def active_state(self) -> Tuple['State', 'StateMachine']:
@@ -85,6 +93,7 @@ class PlayerFactory(FighterFactory):
         self.default_attack = None
         self.available_tactics = ()
         self.default_variable_values = {}
+        self.default_invalid_action_event = None
 
     def create(self) -> Player:
         player = self._create()
@@ -93,5 +102,6 @@ class PlayerFactory(FighterFactory):
         player.base_actions = self.base_actions
         player.default_attack = self.default_attack
         player.available_tactics = self.available_tactics
+        player.default_invalid_action_event = self.default_invalid_action_event
 
         return player

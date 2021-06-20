@@ -6,6 +6,7 @@ You're finally awake, welcome to this cliche. Take your time, then come talk to 
 You walk out of the room and find yourself in a small fishing village.
 
 _hint: use 'help' for help_"
+default_invalid_action_event,EVENT_NOW,"You can't do that... (Invalid command){'\nDid you mean _' + self.params['best_action'].strings['HINT'].replace('*', '\*') + '_?' if self.params['best_similarity'] > 0.5 else ''}"
 player_factory,GOODBYE,Bye!
 herbalism,NAME,Herbalism
 melee_fighting,NAME,Melee fighting
@@ -114,6 +115,7 @@ default_player_attack,NAME,fist
 quit_game_action,NAME,exit
 quit_game_action,REGEX,exit
 quit_game_ask_sm_enter,EVENT_NOW,"Are you sure?{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+invalid_quit_game_response_event,EVENT_NOW,"Please confirm or cancel quitting game.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
 confirm_quit_game,REGEX,yes
 confirm_quit_game,NAME,yes
 reject_quit_game,REGEX,no

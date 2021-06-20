@@ -6,14 +6,7 @@ import re
 from typing import Any, Hashable, Iterable, Sequence, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from dtrpg.core.events import Action, Event
-
-
-class ActionNotFound(Exception):
-    def __init__(self, best_similarity, best_action):
-        super().__init__()
-        self.best_similarity = best_similarity
-        self.best_action = best_action
+    from dtrpg.core.events import Action, EventResult
 
 
 class ArgumentError(Exception):
@@ -72,7 +65,7 @@ class TextIO:
             arg: self._get_object(value, action.args[arg]) for arg, value in match.groupdict().items() if value
         }
 
-    def action(self, player_id: Hashable, command: str) -> Sequence['Event']:
+    def action(self, player_id: Hashable, command: str) -> Sequence['EventResult']:
         player = self._game.player(player_id)
 
         argument_error = None
@@ -94,7 +87,13 @@ class TextIO:
         if argument_error:
             raise argument_error
 
-        raise ActionNotFound(*best_match)
+        if player.invalid_action_event:
+            player.events.register(
+                player.invalid_action_event,
+                best_action=best_match[1], best_similarity=best_match[0]
+            )
+            return player.events.fire_all()
+        return []
 
     def _start(self, player_id: Hashable) -> Sequence[str]:
         player = self._game.create_player(player_id)

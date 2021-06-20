@@ -598,3 +598,21 @@ class TestStateMachine(unittest.TestCase):
 
         self.assertIs(p.passive_state(m), s2)
         self.assertSequenceEqual(p.events.events, [(t.event, {})])
+
+    def test_invalid_action_event(self):
+        p = creature.Player()
+        p.default_invalid_action_event = object()
+
+        self.assertIs(p.invalid_action_event, p.default_invalid_action_event)
+
+        m = creature.ActiveStateMachine()
+        s = creature.State()
+
+        m.initial = s
+
+        p.enter_state_machine(m)
+
+        self.assertIs(p.invalid_action_event, p.default_invalid_action_event)
+
+        m.invalid_action_event = object()
+        self.assertIs(p.invalid_action_event, m.invalid_action_event)

@@ -48,6 +48,7 @@ PlayerFactory player_factory:
   tactic: variable(TACTIC)
   default_attack: default_player_attack
   on_killed: player_killed_event
+  (InfoEvent default_invalid_action_event) default_invalid_action_event: {}
 
 Resource gold: {}
 
@@ -242,6 +243,7 @@ ActiveStateMachineExitEvent quit_game_ask_sm_exit:
 
 ActiveStateMachine quit_game_ask_sm:
   initial: quit_game_ask_sm_state
+  (InfoEvent invalid_quit_game_response_event) invalid_action_event: {}
 
 ActiveState quit_game_ask_sm_state:
   actions:

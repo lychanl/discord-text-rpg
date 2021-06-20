@@ -128,7 +128,7 @@ class TestSmoke(unittest.TestCase):
 
         self.assertRegex(io.test('Talk to the village elder'), r'.*approach the village elder.*Possible actions.*')
         self.assertRegex(io.test('me'), r'.*have 7/60 action points.*')
-        self.assertRegex(io.test('travel to coast'), r'.*Invalid.*')
+        self.assertRegex(io.test('travel to coast'), r'.*It would be rude to leave in the middle of a conversation.*')
 
         self.assertRegex(io.test('bye'), r'.*see you soon.*')
 
@@ -210,7 +210,7 @@ class TestSmoke(unittest.TestCase):
 
         # RESTART
         self.assertRegex(io.test('exit'), r'.*Are you sure.*')
-        self.assertRegex(io.test('help'), r'.*Invalid.*')
+        self.assertRegex(io.test('help'), r'.*Please confirm or cancel.*')
         self.assertRegex(io.test('no'), r'.*Ok!.*')
         self.assertRegex(io.test('yes'), r'.*Invalid.*')
         self.assertRegex(io.test('exit'), r'.*Are you sure.*')

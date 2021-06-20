@@ -209,6 +209,7 @@ PlayerFactory:
   required default_attack: Attack
   optional on_killed: Event
   optional available_tactics: [ Tactic ]
+  optional default_invalid_action_event: Event
 
 NPCFighterFactory:
   _class: dtrpg.core.creature.NPCFighterFactory
@@ -428,6 +429,7 @@ ActiveStateMachine:
   _class: dtrpg.core.creature.ActiveStateMachine
   required initial: ActiveState
   optional allowed_action_groups: [ActionGroup]
+  optional invalid_action_event: Event
 
 ActiveState:
   _class: dtrpg.core.creature.ActiveState
