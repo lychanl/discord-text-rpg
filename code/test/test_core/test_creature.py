@@ -57,6 +57,7 @@ class TestPlayerFactory(unittest.TestCase):
         self.assertIn(res, p.resources)
         self.assertEqual(p.resources[res].value, 1)
         self.assertIs(p.resources[res].resource, res)
+        self.assertIs(p.resources[res].creature, p)
 
 
 class TestResourceFactory(unittest.TestCase):
@@ -67,9 +68,6 @@ class TestResourceFactory(unittest.TestCase):
         factory.max = 10
         factory.base_gen_rate = 0.5
         factory.resource = res
-        clock = mock.Mock()
-        clock.configure_mock(**{'now.return_value': None, 'now_with_diff.return_value': (None, 5)})
-        factory.clock = clock
 
         r = factory.create()
 
@@ -77,7 +75,6 @@ class TestResourceFactory(unittest.TestCase):
         self.assertEqual(r.max, 10)
         self.assertEqual(r.base_gen_rate, 0.5)
         self.assertIs(r.resource, res)
-        self.assertIs(r.clock, clock)
 
 
 class TestResource(unittest.TestCase):
@@ -92,36 +89,120 @@ class TestResource(unittest.TestCase):
     def test_resource_gen(self) -> None:
         time = object()
         nexttime = object()
+        creat = creature.Creature()
         clock = mock.Mock()
-        clock.configure_mock(**{'now.return_value': time, 'now_with_diff.return_value': (nexttime, 5)})
+        clock.configure_mock(**{'now.return_value': time, 'diff.return_value': 5})
+        creat.clock = clock
 
         r = creature.CreatureResource()
         r.value = 10
         r.base_gen_rate = 0.5
-        r.clock = clock
+        creat.resources = {object(): r}
+        r.creature = creat
 
         self.assertEqual(r.value, 12)
-        clock.now_with_diff.assert_called_with(time)
+        clock.diff.assert_called_with(time, time)
+        clock.now.return_value = nexttime
         self.assertEqual(r.value, 15)
-        clock.now_with_diff.assert_called_with(nexttime)
+        clock.diff.assert_called_with(nexttime, time)
 
     def test_resource_gen_with_max(self) -> None:
         time = object()
-        nexttime = object()
+        creat = creature.Creature()
         clock = mock.Mock()
-        clock.configure_mock(**{'now.return_value': time, 'now_with_diff.return_value': (nexttime, 5)})
+        clock.configure_mock(**{'now.return_value': time, 'diff.return_value': 5})
+        creat.clock = clock
 
         r = creature.CreatureResource()
         r.value = 10
         r.max = 12
         r.base_gen_rate = 0.5
-        r.clock = clock
-
+        creat.resources = {object(): r}
+        r.creature = creat
         self.assertEqual(r.value, 12)
         self.assertEqual(r.value, 12)
         self.assertEqual(r.value, 12)
         r.value = 5
         self.assertEqual(r.value, 7)
+
+    def test_resource_bonus_max(self) -> None:
+        c = creature.Creature()
+        res = creature.Resource()
+        r = creature.CreatureResource()
+        r.resource = res
+        r.creature = c
+
+        slot = item.ItemSlot()
+
+        i = item.Item()
+        i.slot = slot
+        i.bonus = creature.Bonus()
+        i.bonus.resource_bonuses = {res: ResourceBonus(max_value=5)}
+
+        c.item_slots = {slot: i}
+
+        r.max = 10
+        r.value = 20
+
+        self.assertEqual(r.value, 15)
+
+    def test_resource_bonus_max_gen(self) -> None:
+        c = creature.Creature()
+        res = creature.Resource()
+        r = creature.CreatureResource()
+        clock = mock.Mock()
+        clock.configure_mock(**{'now.return_value': object(), 'diff.return_value': 0})
+        c.clock = clock
+        r.resource = res
+        r.creature = c
+
+        slot = item.ItemSlot()
+
+        i = item.Item()
+        i.slot = slot
+        i.bonus = creature.Bonus()
+        i.bonus.resource_bonuses = {res: ResourceBonus(max_value=5)}
+
+        c.item_slots = {slot: i}
+        c.resources = {res: r}
+
+        r.value = 10
+        r.max = 10
+        r.base_gen_rate = 0.5
+
+        clock.configure_mock(**{'now.return_value': object(), 'diff.return_value': 5})
+
+        self.assertEqual(r.value, 12)
+        self.assertEqual(r.value, 15)
+        self.assertEqual(r.value, 15)
+
+    def test_resource_bonus_gen(self) -> None:
+        c = creature.Creature()
+        res = creature.Resource()
+        r = creature.CreatureResource()
+        clock = mock.Mock()
+        clock.configure_mock(**{'now.return_value': object(), 'diff.return_value': 0})
+        c.clock = clock
+        r.resource = res
+        r.creature = c
+
+        slot = item.ItemSlot()
+
+        i = item.Item()
+        i.slot = slot
+        i.bonus = creature.Bonus()
+        i.bonus.resource_bonuses = {res: ResourceBonus(regen_rate=0.5)}
+
+        c.item_slots = {slot: i}
+        c.resources = {res: r}
+
+        r.value = 10
+        r.base_gen_rate = 0.5
+
+        clock.configure_mock(**{'now.return_value': object(), 'diff.return_value': 5})
+
+        self.assertEqual(r.value, 15)
+        self.assertEqual(r.value, 20)
 
     def test_killed(self) -> None:
         r = creature.Resource()

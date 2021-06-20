@@ -210,6 +210,7 @@ PlayerFactory:
   optional on_killed: Event
   optional available_tactics: [ Tactic ]
   optional default_invalid_action_event: Event
+  optional clock: Clock
 
 NPCFighterFactory:
   _class: dtrpg.core.creature.NPCFighterFactory
@@ -251,7 +252,6 @@ CreatureResourceFactory:
   optional initial: int
   optional max: int
   optional base_gen_rate: float
-  optional clock: Clock
 
 CreatureSkillFactory:
   _class: dtrpg.core.creature.CreatureSkillFactory

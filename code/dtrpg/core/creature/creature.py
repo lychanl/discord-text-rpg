@@ -1,6 +1,6 @@
 from dtrpg.core.game_object import GameObject, GameObjectFactory
 from dtrpg.core.creature.statistic import CreatureStatistics
-from dtrpg.core.creature.bonus import Bonus
+from dtrpg.core.creature.bonus import Bonus, ResourceBonus
 from dtrpg.core.item import (
     Item, ItemSlot, ItemStack, NotEquippableException, ItemNotEquippedException, SlotNotEquippedException
 )
@@ -8,6 +8,7 @@ from dtrpg.core.item import (
 from typing import Iterable, TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from dtrpg.core.clock import Clock
     from dtrpg.core.fighting.fight_action import Attack
     from dtrpg.core.events import Event
 
@@ -23,6 +24,7 @@ class Creature(GameObject):
         self.items = None
         self.item_slots = {}
         self.loot_events = ()
+        self._clock = None
 
     def on_event(self, event: 'Event'):
         pass
@@ -60,13 +62,36 @@ class Creature(GameObject):
     def equipped_items(self) -> Iterable['Item']:
         return [v for v in self.item_slots.values() if v]
 
-    @property
-    def bonuses(self):
+    def _bonuses(self):
         bonus = Bonus()
         for item in self.equipped_items:
             if item.bonus:
                 bonus += item.bonus
         return bonus
+
+    @property
+    def bonuses(self):
+        self.update_timed()
+        return self._bonuses()
+
+    def update_timed(self):
+        bonus = self._bonuses()
+
+        if not self._clock:
+            return
+
+        now = self._clock.now()
+        for resource, value in self.resources.items():
+            value.update_timed(bonus.resource_bonuses.get(resource, ResourceBonus()), now)
+
+    @property
+    def clock(self) -> 'Clock':
+        return self._clock
+
+    @clock.setter
+    def clock(self, clock: 'Clock') -> None:
+        self._clock = clock
+        self.update_timed()
 
 
 class Fighter(Creature):
@@ -106,6 +131,10 @@ class FighterFactory(GameObjectFactory):
         creature.resources = {
             f.resource: f.create() for f in self.resource_factories
         }
+
+        for res in creature.resources.values():
+            res.creature = creature
+
         creature.skills = {
             f.skill: f.create() for f in self.skill_factories
         }

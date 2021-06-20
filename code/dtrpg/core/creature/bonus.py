@@ -4,7 +4,10 @@ from dtrpg.core.game_object import GameObject
 def _dict_sum(dict1, dict2):
     new = dict(dict1)
     for key, value in dict2.items():
-        new[key] = new.get(key, 0) + value
+        if key in new:
+            new[key] += value
+        else:
+            new[key] = value
 
     return new
 

@@ -49,6 +49,7 @@ PlayerFactory player_factory:
   default_attack: default_player_attack
   on_killed: player_killed_event
   (InfoEvent default_invalid_action_event) default_invalid_action_event: {}
+  clock: clock
 
 Resource gold: {}
 
@@ -65,14 +66,12 @@ CreatureResourceFactory action_points_factory:
   initial: 60
   max: 60
   base_gen_rate: 12
-  clock: clock
 
 CreatureResourceFactory health_factory:
   resource: health
   initial: 10
   max: 10
   base_gen_rate: 10
-  clock: clock
 
 Skill herbalism:
   progression: "10 * level**2"
