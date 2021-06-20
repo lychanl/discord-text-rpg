@@ -31,15 +31,13 @@ Attack forest_rat_attack:
   hit_skill: melee_fighting
   evasion_skill: evasion
   tester: default_tester
-  on_hit: forest_rat_damage
-
-Damage forest_rat_damage:
-  damage_tests_number: 2
-  damage_test_mod: 1
-  damage_per_hit: 1
-  damaged_resource: health
-  armor: armor
-  tester: default_tester
+  (Damage) on_hit:
+    damage_tests_number: 2
+    damage_test_mod: 1
+    damage_per_hit: 1
+    damaged_resource: health
+    armor: armor
+    tester: default_tester
 
 NPCFighterFactory wolf_factory:
   resource_factories: 
@@ -66,12 +64,10 @@ Attack wolf_attack:
   hit_skill: melee_fighting
   evasion_skill: evasion
   tester: default_tester
-  on_hit: wolf_damage
-
-Damage wolf_damage:
-  damage_tests_number: 2
-  damage_test_mod: 2
-  damage_per_hit: 2
-  damaged_resource: health
-  armor: armor
-  tester: default_tester
+  (Damage) on_hit:
+    damage_tests_number: 2
+    damage_test_mod: 2
+    damage_per_hit: 2
+    damaged_resource: health
+    armor: armor
+    tester: default_tester

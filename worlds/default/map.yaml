@@ -247,13 +247,9 @@ InfoEvent nothingthere_bay_search_skeleton_search_free_space_event: {}
 
 SequenceEvent nothingthere_bay_search_skeleton_search_successful_event:
   events:
-    - nothingthere_bay_skeleton_searched_init_flag
-    - nothingthere_bay_search_skeleton_search_successful_spear_event
-
-PassiveStateMachineInitEvent nothingthere_bay_skeleton_searched_init_flag:
-  machine: nothingthere_bay_skeleton_flag
-
-ItemReceiveEvent nothingthere_bay_search_skeleton_search_successful_spear_event:
-  item_factory:
-    item: item_rusty_spear
-    stack: 1
+    - (PassiveStateMachineInitEvent nothingthere_bay_skeleton_searched_init_flag):
+        machine: nothingthere_bay_skeleton_flag
+    - (ItemReceiveEvent):
+        item_factory:
+          item: item_rusty_spear
+          stack: 1
