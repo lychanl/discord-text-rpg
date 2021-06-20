@@ -13,8 +13,9 @@ Item item_small_fur:
 
 Item item_linen_jacket:
   max_stack: 1
-  statistic_bonuses:
-    armor: 1
+  bonus:
+    statistic_bonuses:
+      armor: 1
   slot: itemslot_body
 
 Item item_stones:
@@ -24,8 +25,9 @@ Item item_stones:
 
 Item item_rusty_spear:
   max_stack: 1
-  statistic_bonuses:
-    armor: 1
+  bonus:
+    statistic_bonuses:
+      armor: 1
   slot: itemslot_hand
   attack: rusty_spear_attack
 

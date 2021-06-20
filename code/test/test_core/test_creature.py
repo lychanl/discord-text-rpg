@@ -1,3 +1,4 @@
+from dtrpg.core.creature.bonus import ResourceBonus
 import unittest
 from unittest import mock
 
@@ -188,6 +189,32 @@ class TestResource(unittest.TestCase):
         self.assertEqual(cr.value, 0)
 
 
+class TestBonus(unittest.TestCase):
+    def test_bonus_sum(self) -> None:
+        b1 = creature.Bonus()
+        b2 = creature.Bonus()
+
+        s1 = object()
+        s2 = object()
+
+        b1.statistic_bonuses = {s1: 1}
+        b2.statistic_bonuses = {s1: 2, s2: 3}
+
+        r1 = object()
+        r2 = object()
+
+        b1.resource_bonuses = {r1: ResourceBonus(1, 0), r2: ResourceBonus(2, 2)}
+        b2.resource_bonuses = {r2: ResourceBonus(1, 2)}
+
+        s = b1 + b2
+
+        self.assertDictEqual(s.statistic_bonuses, {s1: 3, s2: 3})
+        self.assertEqual(s.resource_bonuses[r1].max_value, 1)
+        self.assertEqual(s.resource_bonuses[r1].regen_rate, 0)
+        self.assertEqual(s.resource_bonuses[r2].max_value, 3)
+        self.assertEqual(s.resource_bonuses[r2].regen_rate, 4)
+
+
 class TestSkill(unittest.TestCase):
     def test_player_skill(self) -> None:
         s1 = creature.Skill()
@@ -277,7 +304,8 @@ class TestStatistic(unittest.TestCase):
 
         i = item.Item()
         i.slot = slot1
-        i.statistic_bonuses[s] = 3
+        i.bonus = creature.Bonus()
+        i.bonus.statistic_bonuses = {s: 3}
 
         c.item_slots = {slot1: i, slot2: None}
 

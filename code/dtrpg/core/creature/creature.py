@@ -1,5 +1,6 @@
 from dtrpg.core.game_object import GameObject, GameObjectFactory
 from dtrpg.core.creature.statistic import CreatureStatistics
+from dtrpg.core.creature.bonus import Bonus
 from dtrpg.core.item import (
     Item, ItemSlot, ItemStack, NotEquippableException, ItemNotEquippedException, SlotNotEquippedException
 )
@@ -58,6 +59,14 @@ class Creature(GameObject):
     @property
     def equipped_items(self) -> Iterable['Item']:
         return [v for v in self.item_slots.values() if v]
+
+    @property
+    def bonuses(self):
+        bonus = Bonus()
+        for item in self.equipped_items:
+            if item.bonus:
+                bonus += item.bonus
+        return bonus
 
 
 class Fighter(Creature):
