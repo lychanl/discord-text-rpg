@@ -288,6 +288,20 @@ class TestEvents(unittest.TestCase):
         e.if_.fire.assert_not_called()
         e.else_.fire.assert_called_once()
 
+    def test_add_timed_bonus(self) -> None:
+        c = mock.Mock()
+        c.add_timed_bonus.return_value = None
+
+        e = events.AddTimedBonusEvent()
+        e.bonus = object()
+        e.time = 2
+
+        ret = e.fire(c)
+        self.assertIs(ret.bonus, e.bonus)
+        self.assertEqual(ret.time, e.time)
+
+        c.add_timed_bonus.assert_called_once_with(e.bonus, e.time)
+
 
 class TestStateMachineEvents(unittest.TestCase):
     def test_state_init_event(self) -> None:

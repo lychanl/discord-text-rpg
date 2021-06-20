@@ -204,6 +204,32 @@ class TestResource(unittest.TestCase):
         self.assertEqual(r.value, 15)
         self.assertEqual(r.value, 20)
 
+    def test_resource_bonus_gen_expired(self) -> None:
+        c = creature.Creature()
+        res = creature.Resource()
+        r = creature.CreatureResource()
+        clock = mock.Mock()
+        clock.configure_mock(**{'now.return_value': 2, 'diff.return_value': 0, 'now_plus.return_value': 4})
+        c.clock = clock
+        r.resource = res
+        r.creature = c
+
+        bonus = creature.Bonus()
+        bonus.resource_bonuses = {res: ResourceBonus(regen_rate=1)}
+
+        c.add_timed_bonus(bonus, 2)
+
+        c.resources = {res: r}
+
+        r.value = 10
+        r.base_gen_rate = 1
+
+        clock.now.return_value = 6
+        clock.diff.return_value = 2
+
+        self.assertEqual(r.value, 16)
+        self.assertEqual(r.value, 18)
+
     def test_killed(self) -> None:
         r = creature.Resource()
         r.vital = True
@@ -294,6 +320,49 @@ class TestBonus(unittest.TestCase):
         self.assertEqual(s.resource_bonuses[r1].regen_rate, 0)
         self.assertEqual(s.resource_bonuses[r2].max_value, 3)
         self.assertEqual(s.resource_bonuses[r2].regen_rate, 4)
+
+    def test_timed_bonuses(self) -> None:
+        b = creature.Bonus()
+        c = creature.Creature()
+        c.clock = mock.Mock()
+        c.clock.now_plus.return_value = 3
+        c.clock.now.return_value = 2
+
+        s = object()
+        b.statistic_bonuses = {s: 2}
+        c.statistics.statistics = {s: 1}
+
+        c.add_timed_bonus(b, 1)
+
+        self.assertDictEqual(c.bonuses.statistic_bonuses, {s: 2})
+
+        c.clock.now.return_value = 4
+
+        self.assertDictEqual(c.bonuses.statistic_bonuses, {})
+
+    def test_timed_bonuses_existing(self) -> None:
+        b = creature.Bonus()
+        c = creature.Creature()
+        c.clock = mock.Mock()
+        c.clock.now_plus.return_value = 4
+        c.clock.now.return_value = 2
+
+        s = object()
+        b.statistic_bonuses = {s: 2}
+        c.statistics.statistics = {s: 1}
+
+        c.add_timed_bonus(b, 2)
+        self.assertDictEqual(c.timed_bonuses, {b: 4})
+
+        c.clock.now_plus.return_value = 3
+
+        c.add_timed_bonus(b, 2)
+        self.assertDictEqual(c.timed_bonuses, {b: 4})
+
+        c.clock.now_plus.return_value = 5
+
+        c.add_timed_bonus(b, 2)
+        self.assertDictEqual(c.timed_bonuses, {b: 5})
 
 
 class TestSkill(unittest.TestCase):

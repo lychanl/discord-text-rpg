@@ -1,3 +1,4 @@
+from datetime import datetime
 from dtrpg.core.game_object import GameObject, GameObjectFactory
 from dtrpg.core.creature.statistic import CreatureStatistics
 from dtrpg.core.creature.bonus import Bonus, ResourceBonus
@@ -5,7 +6,7 @@ from dtrpg.core.item import (
     Item, ItemSlot, ItemStack, NotEquippableException, ItemNotEquippedException, SlotNotEquippedException
 )
 
-from typing import Iterable, TYPE_CHECKING
+from typing import Iterable, TYPE_CHECKING, Tuple
 
 if TYPE_CHECKING:
     from dtrpg.core.clock import Clock
@@ -25,6 +26,7 @@ class Creature(GameObject):
         self.item_slots = {}
         self.loot_events = ()
         self._clock = None
+        self.timed_bonuses = {}
 
     def on_event(self, event: 'Event'):
         pass
@@ -67,22 +69,45 @@ class Creature(GameObject):
         for item in self.equipped_items:
             if item.bonus:
                 bonus += item.bonus
+        for timed_bonus in self.timed_bonuses:
+            bonus += timed_bonus
         return bonus
 
     @property
-    def bonuses(self):
+    def bonuses(self) -> Bonus:
         self.update_timed()
         return self._bonuses()
 
-    def update_timed(self):
+    def _get_first_expired_bonus(self, now: datetime) -> Tuple[Bonus, datetime]:
+        first = None
+        first_time = None
+        for bonus, time in self.timed_bonuses.items():
+            if time <= now and (not first_time or first_time > time):
+                first = bonus
+                first_time = time
+
+        return first, first_time
+
+    def _update_timed_resources(self, to: datetime) -> None:
         bonus = self._bonuses()
 
+        for resource, value in self.resources.items():
+            value.update_timed(bonus.resource_bonuses.get(resource, ResourceBonus()), to)
+
+    def update_timed(self) -> None:
         if not self._clock:
             return
 
         now = self._clock.now()
-        for resource, value in self.resources.items():
-            value.update_timed(bonus.resource_bonuses.get(resource, ResourceBonus()), now)
+
+        expired, expired_time = self._get_first_expired_bonus(now)
+
+        while expired:
+            self._update_timed_resources(expired_time)
+            del self.timed_bonuses[expired]
+            expired, expired_time = self._get_first_expired_bonus(now)
+
+        self._update_timed_resources(now)
 
     @property
     def clock(self) -> 'Clock':
@@ -92,6 +117,14 @@ class Creature(GameObject):
     def clock(self, clock: 'Clock') -> None:
         self._clock = clock
         self.update_timed()
+
+    def add_timed_bonus(self, bonus: Bonus, time: float) -> None:
+        self.update_timed()
+        target_time = self._clock.now_plus(time)
+        if bonus in self.timed_bonuses:
+            self.timed_bonuses[bonus] = max(self.timed_bonuses[bonus], target_time)
+        else:
+            self.timed_bonuses[bonus] = target_time
 
 
 class Fighter(Creature):
