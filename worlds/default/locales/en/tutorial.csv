@@ -17,7 +17,7 @@ nothingthere_dialogue_fish_report,REGEX,(what to do )?next\??
 nothingthere_dialogue_fish_report_event,EVENT_NOW,"I have just heard that Tom is going offshore and wants a helping hand. Meet him at the coast.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
 tutorial_captain_talk_dialogue,NAME,Do you need some help?
 tutorial_captain_talk_dialogue,REGEX,((do you )?need (some )?)?help\??
-tutorial_captain_talk_dialogue_event,EVENT_NOW,"Yeah, gonna set off soon. Ready?{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+tutorial_captain_talk_dialogue_event,EVENT_NOW,"Yea, gonna set off soon. Ready?{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
 tutorial_captain_talk_dialogue_accept,NAME,Yes
 tutorial_captain_talk_dialogue_accept,REGEX,yes|ready
 tutorial_captain_talk_dialogue_exit_event,EVENT_NOW,You set off after some quick preparations. Fishing goes great for some time, however the weather changes. The wind gets strong, it starts to rain. Suddenly, a large wave washes you overboard. Some debris hits you in the head and you lose consciousness for a some time.
@@ -28,8 +28,29 @@ tutorial_captain_talk_dialogue_decline,REGEX,no|not|(not yet)
 tutorial_captain_talk_dialogue_decline_event,EVENT_NOW,"Sure.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
 tutorial_captain_talk_journey_return,NAME,Are you all right?
 tutorial_captain_talk_journey_return,REGEX,(are you )?(all right|fine)\??
-tutorial_captain_talk_dialogue_journey_return_event,EVENT_NOW,Yeap. See you made it too.
+tutorial_captain_talk_dialogue_journey_return_event,EVENT_NOW,"Yeap, got 'urt, but ol' lady 'elped. See you made it too.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
 tutorial_nothingthere_dialogue_journey_return,NAME,I'm back
 tutorial_nothingthere_dialogue_journey_return,REGEX,(i'm )?back
-tutorial_nothingthere_dialogue_journey_return_event,EVENT_NOW,"Good. I see that you are hurt, but nothing that time won't heal.
+tutorial_nothingthere_dialogue_journey_return_event,EVENT_NOW,"Good. I see that you are hurt, but nothing that time won't heal.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}
 I don't have anything to do for you now."
+tutorial_old_lady_quest,JOURNAL_NAME,Tutorial - the old lady
+tutorial_old_lady_ask,JOURNAL_ENTRY,"You heard about some old lady, who helped a fisherman with his injuries. Ask around to find out how to find her"
+tutorial_old_lady_find,JOURNAL_ENTRY,"You heard about some old lady, who helped a fisherman with his injuries. She lives in the forest. It may be a good idea to go visit her."
+tutorial_old_lady_herbs,JOURNAL_ENTRY,"You found the old lady. She agreed to help you if you find some herbs."
+tutorial_captain_talk_old_lady_dialogue,NAME,Who is this old lady?
+tutorial_captain_talk_old_lady_dialogue,REGEX,(who (is )?(this )?)?old lady\??
+nothingthere_forest_witch_visibility_init,EVENT_NOW,"She's old. 'elps sometimes. Lives in forest, deep. Dunno much more 'bout 'er.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_dialogue_old_lady,NAME,Who is the old lady?
+nothingthere_dialogue_old_lady,REGEX,(who (is )?(the )?)?old lady\??
+nothingthere_dialogue_old_lady_visible,NAME,Who is the old lady?
+nothingthere_dialogue_old_lady_visible,REGEX,(who (is )?(the )?)?old lady\??
+nothingthere_dialogue_old_lady_event,EVENT_NOW,"Doesn't really matter. And better stay away from her, there is something suspicious her...{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_old_lady_first_talk,NAME,Talk to the old lady
+nothingthere_old_lady_first_talk,REGEX,(talk|speak)(( to| with)?( the)?(( old)? lady))?
+nothingthere_old_lady_herbs_talk,NAME,Talk to the old lady
+nothingthere_old_lady_herbs_talk,REGEX,(talk|speak)(( to| with)?( the)?(( old)? lady))?
+nothingthere_old_lady_first_talk_event,EVENT_NOW,"So, you too want some herbal tea? Sure, just bring me 3 herbs and I will be brew you some."
+nothingthere_old_lady_not_enough_herbs_event,EVENT_NOW,"If you want the tea, then bring me the herbs."
+nothingthere_old_lady_remove_herbs,EVENT_NOW,"OK, give me the herbs..."
+nothingthere_old_lady_can_talk_init,EVENT_NOW,"Good. Wait a few minutes, I will brew the tea..."
+nothingthere_old_lady_herbs_talk_info,CAUSE_NOW,Here you go. 

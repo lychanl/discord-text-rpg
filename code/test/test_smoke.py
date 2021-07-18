@@ -31,14 +31,14 @@ class TestSmoke(unittest.TestCase):
         game = prepare_game(**GAME_ARGS)
         io = TestIO(game)
 
-        clock = game.config.player_factory.resource_factories[0].clock
+        clock = game.config.player_factory.clock
         action_points = io._get_object('action points', core.creature.Resource)
         default_tester = game.game_objects(core.Tester)[0]
 
         clock.now = mock.Mock()
         clock.now.return_value = object()
-        clock.now_with_diff = mock.Mock()
-        clock.now_with_diff.return_value = (object(), 0)
+        clock.diff = mock.Mock()
+        clock.diff.return_value = 0
 
         self.assertRegex(io.test('here'), r'.*not started.*start.*')
         self.assertRegex(io.test('start'), r'.*finally awake.*')
@@ -57,11 +57,11 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('get a job'), r'.*job.*get.*5.*gold.*')
         self.assertRegex(io.test('me'), r'.*have 58/60 action points.*have 10 gold.*have 0/10 items.*in.*village.*')
 
-        clock.now_with_diff.return_value = object(), 0.1
+        clock.diff.return_value = 0.1
 
         self.assertRegex(io.test('me'), r'.*have 59/60 action points.*have 10.*You are in.*village.*')
 
-        clock.now_with_diff.return_value = object(), 0
+        clock.diff.return_value = 0
 
         game.player(TestIO.TEST_PLAYER).resources[action_points].value = 0
 
@@ -244,9 +244,9 @@ class TestSmoke(unittest.TestCase):
         self.assertNotRegex(io.test('here'), 'small bay')
         self.assertRegex(io.test('Travel to the small bay'), 'Invalid command')
         self.assertRegex(io.test('Talk to the fisherman'), 'need some help')
-        self.assertRegex(io.test('Do you need some help?'), 'Yeah.*Ready')
+        self.assertRegex(io.test('Do you need some help?'), 'Yea.*Ready')
         self.assertRegex(io.test('No'), 'need some help')
-        self.assertRegex(io.test('Do you need some help?'), 'Yeah.*Ready')
+        self.assertRegex(io.test('Do you need some help?'), 'Yea.*Ready')
         self.assertRegex(io.test('Yes'), 'awake on the coast')
         self.assertRegex(io.test('here'), 'in the small bay')
         self.assertRegex(io.test('search'), 'rusty spear')

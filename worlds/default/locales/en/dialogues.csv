@@ -21,3 +21,19 @@ nothingthere_captain_dialogue_exit_event,EVENT_NOW,Yeap.
 nothingthere_captain_who,NAME,Who are you?
 nothingthere_captain_who,REGEX,who( are)?( you)\??
 nothingthere_captain_who_event,EVENT_NOW,"I'm Tom.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_old_lady_dialogue_init,NAME,Talk to the old lady
+nothingthere_old_lady_dialogue_init,REGEX,(talk|speak)(( to| with)?( the)?(( old)? lady))?
+nothingthere_old_lady_dialogue_init_event,EVENT_NOW,"You walk toward the old lady. She looks up and says 'Ah, you return'.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_old_lady_dialogue_more_tea,NAME,Could you make me some more tea?
+nothingthere_old_lady_dialogue_more_tea,REGEX,((could|can) you )?make (me )?(some )?(more )?tea\??
+nothingthere_old_lady_dialogue_more_tea_not_enough_herbs,EVENT_NOW,"At least bring me enough herbs. 3 should be enough.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_old_lady_dialogue_more_tea_event,EVENT_NOW,Here you go.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}
+nothingthere_old_lady_dialogue_who,NAME,Who are you?
+nothingthere_old_lady_dialogue_who,REGEX,who( are)?( you)\??
+nothingthere_old_lady_dialogue_who_event,EVENT_NOW,You can call me Ksanda.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}
+nothingthere_old_lady_dialogue_book,NAME,What are you reading?
+nothingthere_old_lady_dialogue_book,REGEX,what are you reading\??
+nothingthere_old_lady_dialogue_book_event,EVENT_NOW,Nothing you would understand.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}
+nothingthere_old_lady_dialogue_exit,NAME,Bye
+nothingthere_old_lady_dialogue_exit,REGEX,bye|goodbye
+nothingthere_old_lady_dialogue_exit_event,EVENT_NOW,Bye bye.

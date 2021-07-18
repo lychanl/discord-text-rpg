@@ -94,6 +94,7 @@ class PlayerFactory(FighterFactory):
         self.available_tactics = ()
         self.default_variable_values = {}
         self.default_invalid_action_event = None
+        self.clock = None
 
     def create(self) -> Player:
         player = self._create()
@@ -103,5 +104,6 @@ class PlayerFactory(FighterFactory):
         player.default_attack = self.default_attack
         player.available_tactics = self.available_tactics
         player.default_invalid_action_event = self.default_invalid_action_event
+        player.clock = self.clock
 
         return player

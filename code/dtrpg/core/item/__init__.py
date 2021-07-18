@@ -12,5 +12,6 @@ from dtrpg.core.item.trade import TradeOffer, OfferNotFoundException
 from dtrpg.core.item.events import (
     ItemReceivedEventResult, RemoveItemEventResult, ItemReceiveEvent, RemoveItemEvent,
     EquipItemEvent, EquipEventResult, UnequipItemEvent, UnequipSlotEvent, UnequipEventResult,
-    ItemEquippedRequirement, ItemsRequirement, FreeSpaceRequirement
+    ItemEquippedRequirement, ItemsRequirement, FreeSpaceRequirement, UseItemEvent, UseItemEventResult,
+    UnusableItemException
 )

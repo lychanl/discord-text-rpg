@@ -1,7 +1,6 @@
 from dtrpg.core.game_object import GameObject
 
-from typing import Tuple
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class Clock(GameObject):
@@ -12,10 +11,12 @@ class Clock(GameObject):
     def now(self) -> datetime:
         return datetime.now()
 
-    def now_with_diff(self, prev: datetime) -> Tuple[datetime, float]:
-        now = datetime.now()
-        delta = now - prev
+    def diff(self, current: datetime, prev: datetime) -> float:
+        delta = current - prev
 
-        hours = delta.total_seconds() / 3600
+        hours = delta.total_seconds() / self.base
 
-        return now, hours
+        return hours
+
+    def now_plus(self, time: float) -> datetime:
+        return datetime.now() + timedelta(seconds=time * self.base)
