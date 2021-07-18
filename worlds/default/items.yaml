@@ -38,6 +38,16 @@ Item item_rusty_spear:
   slot: itemslot_hand
   attack: rusty_spear_attack
 
+Item item_herbal_tea:
+  max_stack: 10
+  (AddTimedBonusEvent) use:
+    time: 1
+    (Bonus item_herbal_tea_bonus) bonus:
+      resource_bonuses:
+        health:
+          regen_rate: 4
+  remove_on_use: True
+
 Attack stone_throw:
   hit_skill: ranged_fighting
   evasion_skill: evasion

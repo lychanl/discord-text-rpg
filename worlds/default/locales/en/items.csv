@@ -19,3 +19,7 @@ itemslot_hand,NAME,hand
 item_rusty_spear,NAME,rusty spear
 item_rusty_spear,REGEX_NAME,rusty spear(s)?
 rusty_spear_attack,NAME,rusty spear
+item_herbal_tea,NAME,herbal tea
+item_herbal_tea,REGEX_NAME,herbal tea
+item_herbal_tea,ON_USE,Use to increase health regeneration.
+item_herbal_tea_bonus,NAME,Herbal tea
