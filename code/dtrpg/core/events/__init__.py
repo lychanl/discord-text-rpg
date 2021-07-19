@@ -2,12 +2,12 @@
 from dtrpg.core.events.action import Action, ActionGroup, Requirement
 from dtrpg.core.events.event_result import (
     AddTimedBonusEventResult, EventResult, InfoEventResult,
-    ResourceChangeEventResult, VariableSetEventResult, ExceptionEventResult
+    ResourceChangeEventResult, ExceptionEventResult
 )
 from dtrpg.core.events.event import (
     EventsManager,
-    AddTimedBonusEvent, ComplexEvent, Event, InfoEvent, ResourceChangesEvent, SequenceEvent,
-    VariableSetEvent, ChanceEvent, ConditionEvent
+    AddTimedBonusEvent, ComplexEvent, Event, InfoEvent, ResourceChangesEvent,
+    SequenceEvent, ChanceEvent, ConditionEvent
 )
 from dtrpg.core.events.trade import (
     BuyAction, BuyEvent, SellAction, SellEvent, TradeEventResult, BuyEventResult, SellEventResult,
