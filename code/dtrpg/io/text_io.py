@@ -1,7 +1,9 @@
+from dtrpg.data.persistency.persistency import Persistency
 from dtrpg.core import Game, GameObject, QuitGameException
 from dtrpg.utils import similarity_with_wildcards
 
 import re
+import signal
 
 from typing import Any, Hashable, Iterable, Sequence, TYPE_CHECKING
 
@@ -16,11 +18,28 @@ class ArgumentError(Exception):
 
 
 class TextIO:
-    def __init__(self, game: Game, **kwargs):
+    def __init__(self, game: Game, save_path=None, **kwargs):
         self._game = game
+        self._persistency = Persistency(game)
         self._basic_commands = {
             game.config.strings['START']: self._start,
         }
+
+        self._save_path = save_path
+
+        if save_path:
+            print("Restoring game from save...")
+            self._persistency.load(save_path)
+
+        signal.signal(signal.SIGINT, self._interrupt_handler)
+
+    def _possibly_save(self):
+        if self._save_path:
+            self._persistency.save(self._save_path)
+            print(f"Game saved to {self._save_path}")
+
+    def _interrupt_handler(self, signum, frame) -> None:
+        raise KeyboardInterrupt
 
     def command(self, player_id: Hashable, command: str) -> Sequence[str]:
         try:
@@ -103,4 +122,10 @@ class TextIO:
         self._game.remove_player(player_id)
 
     def run(self, *args: Any, **kwargs: Any) -> Any:
+        try:
+            self._run(*args, **kwargs)
+        except KeyboardInterrupt:
+            self._possibly_save()
+
+    def _run(self, *args: Any, **kwargs: Any) -> Any:
         raise NotImplementedError

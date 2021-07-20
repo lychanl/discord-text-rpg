@@ -19,7 +19,6 @@ class Player(Fighter):
         self.base_armor = 0
         self.tactic = None
         self.available_tactics = ()
-        self.variable_holder = None
 
         self.default_invalid_action_event = None
 

@@ -46,7 +46,7 @@ class DiscordBotIO(Client, TextIO):
         TextIO.__init__(self, game)
         Client.__init__(self)
 
-    def run(self) -> None:
+    def _run(self) -> None:
         Client.run(self, self._token)
 
     async def on_message(self, message: Message) -> None:

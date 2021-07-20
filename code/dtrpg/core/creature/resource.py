@@ -115,6 +115,20 @@ class CreatureResource(GameObject):
             bonus.regen_rate + self._base_gen_rate if self._base_gen_rate else 0
         )
 
+    @property
+    def state(self) -> dict:
+        return {
+            'value': self._value,
+            'last_time': self._last_time,
+            'accumulated': self._accumulated,
+        }
+
+    @state.setter
+    def state(self, state) -> None:
+        self._value = state['value']
+        self._last_time = state['last_time']
+        self._accumulated = state['accumulated']
+
 
 class CreatureResourceFactory(GameObjectFactory):
     def __init__(self):

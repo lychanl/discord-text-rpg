@@ -404,12 +404,12 @@ class TestSkill(unittest.TestCase):
 
         p = pf.create()
 
-        self.assertEqual(p.skills[s1]._experience, 0)
+        self.assertEqual(p.skills[s1].experience, 0)
         self.assertEqual(p.skills[s1].value, 1)
 
         p.skills[s1].add_experience(1)
 
-        self.assertEqual(p.skills[s1]._experience, 1)
+        self.assertEqual(p.skills[s1].experience, 1)
         self.assertEqual(p.skills[s1].value, 2)
 
         st = creature.SkillTest()
@@ -422,7 +422,7 @@ class TestSkill(unittest.TestCase):
         self.assertFalse(st.test(p))
         st.tester.test.assert_called_once_with(2, 3)
 
-        self.assertEqual(p.skills[s1]._experience, 3)
+        self.assertEqual(p.skills[s1].experience, 3)
         self.assertEqual(p.skills[s1].value, 2)
 
         st.tester.test.return_value = True
@@ -430,7 +430,7 @@ class TestSkill(unittest.TestCase):
         self.assertTrue(st.test(p))
         st.tester.test.assert_called_with(2, 3)
 
-        self.assertEqual(p.skills[s1]._experience, 6)
+        self.assertEqual(p.skills[s1].experience, 6)
         self.assertEqual(p.skills[s1].value, 3)
 
 
