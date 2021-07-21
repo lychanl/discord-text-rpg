@@ -18,7 +18,7 @@ class ArgumentError(Exception):
 
 
 class TextIO:
-    def __init__(self, game: Game, save_path=None, **kwargs):
+    def __init__(self, game: Game, save_path: str = None, **kwargs):
         self._game = game
         self._persistency = Persistency(game)
         self._basic_commands = {

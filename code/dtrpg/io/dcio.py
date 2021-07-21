@@ -1,7 +1,7 @@
 from dtrpg.io.text_io import TextIO
 from dtrpg.utils import split_messages
 
-from asyncio import Lock
+from asyncio import Lock, sleep
 from discord import Client, Guild, Message
 import os
 from traceback import print_exception
@@ -17,7 +17,8 @@ class DiscordBotIO(Client, TextIO):
 
     def __init__(
             self, game: 'Game', token: str, channel: str = None, prefix: str = '',
-            admin_prefix: str = '', admin_channel: str = None, config_path: str = None):
+            admin_prefix: str = '', admin_channel: str = None, config_path: str = None,
+            backup_file: str = None, backup_freq: int = 1800, *args, **kwargs):
         self._token = token
         self._action_lock = Lock()
         self._settings_lock = Lock()
@@ -43,10 +44,27 @@ class DiscordBotIO(Client, TextIO):
                 with open(self._config_path, 'r') as config:
                     self._guild_settings = yaml.safe_load(config)
 
-        TextIO.__init__(self, game)
+        TextIO.__init__(self, game, *args, **kwargs)
         Client.__init__(self)
 
+        self._backup_task = self._prepare_backup(backup_file, backup_freq)
+
+    def _prepare_backup(self, file: str, freq: int) -> None:
+        async def backup():
+            while True:
+                async with self._action_lock:
+                    self._persistency.save(file)
+                    print("Game backup saved...")
+                await sleep(freq)
+
+        print("Preparing backup...")
+        return self.loop.create_task(backup())
+
+    def run(self, *args, **kwargs) -> None:
+        return TextIO.run(self, *args, **kwargs)
+
     def _run(self) -> None:
+        print("Starting game")
         Client.run(self, self._token)
 
     async def on_message(self, message: Message) -> None:
@@ -59,7 +77,7 @@ class DiscordBotIO(Client, TextIO):
                 out = await self.on_admin_message(message, admin_message)
 
                 if out:
-                    for msg in split_messages(out):
+                    for msg in split_messages(out, self.LIMIT):
                         await message.channel.send(msg)
                 return
         except Exception as e:
@@ -76,7 +94,7 @@ class DiscordBotIO(Client, TextIO):
                 out = await self.on_game_message(message, game_message)
 
                 if out:
-                    for msg in self.split_messages(out):
+                    for msg in split_messages(out, self.LIMIT):
                         await message.channel.send(msg)
 
         except Exception as e:

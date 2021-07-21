@@ -119,14 +119,14 @@ class CreatureResource(GameObject):
     def state(self) -> dict:
         return {
             'value': self._value,
-            'last_time': self._last_time,
+            'last_time': self._last_time.timestamp() if self._last_time else None,
             'accumulated': self._accumulated,
         }
 
     @state.setter
     def state(self, state) -> None:
         self._value = state['value']
-        self._last_time = state['last_time']
+        self._last_time = datetime.fromtimestamp(state['last_time']) if state['last_time'] else None
         self._accumulated = state['accumulated']
 
 
