@@ -11,7 +11,7 @@ def split_message(message: str, limit: int) -> Sequence[str]:
         out.append(lines[0])
         for line in lines[1:]:
             if len(out[-1]) + len(line) + 1 < limit:
-                out[-1] += out[-1] + '\n' + line
+                out[-1] = out[-1] + '\n' + line
             else:
                 out.append(line)
 

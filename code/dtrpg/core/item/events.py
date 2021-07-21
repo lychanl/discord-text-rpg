@@ -132,7 +132,7 @@ class ItemsRequirement(Requirement):
         self.number = 1
 
     def meets(self, player: 'Player') -> bool:
-        return player.items.count(self.item) > self.number
+        return player.items.count(self.item) >= self.number
 
     def assert_meets(self, player: 'Player') -> None:
         if not self.meets(player):

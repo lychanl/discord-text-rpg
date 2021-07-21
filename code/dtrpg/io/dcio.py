@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class DiscordBotIO(Client, TextIO):
-    LIMIT = 2000
+    LIMIT = 1900
 
     def __init__(
             self, game: 'Game', token: str, channel: str = None, prefix: str = '',
@@ -52,10 +52,10 @@ class DiscordBotIO(Client, TextIO):
     def _prepare_backup(self, file: str, freq: int) -> None:
         async def backup():
             while True:
+                await sleep(freq)
                 async with self._action_lock:
                     self._persistency.save(file)
                     print("Game backup saved...")
-                await sleep(freq)
 
         print("Preparing backup...")
         return self.loop.create_task(backup())
@@ -105,7 +105,7 @@ class DiscordBotIO(Client, TextIO):
             print('Sender:')
             print(message.author)
 
-            await message.channel.send(self._game.config['UNHANDLED_EXCEPTION'])
+            await message.channel.send(self._game.config.strings['UNHANDLED_EXCEPTION'])
 
     def check_channel(self, message: Message, setting: str, default: str) -> bool:
         guild_id = message.channel.guild.id

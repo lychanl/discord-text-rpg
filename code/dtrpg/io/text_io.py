@@ -125,7 +125,8 @@ class TextIO:
         try:
             self._run(*args, **kwargs)
         except KeyboardInterrupt:
-            self._possibly_save()
+            pass
+        self._possibly_save()
 
     def _run(self, *args: Any, **kwargs: Any) -> Any:
         raise NotImplementedError
