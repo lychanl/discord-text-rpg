@@ -1,3 +1,4 @@
+import os
 from dtrpg.data.persistency.persistency import Persistency
 from dtrpg.core import Game, GameObject, QuitGameException
 from dtrpg.utils import similarity_with_wildcards
@@ -27,7 +28,7 @@ class TextIO:
 
         self._save_path = save_path
 
-        if save_path:
+        if save_path and os.path.exists(save_path):
             print("Restoring game from save...")
             self._persistency.load(save_path)
 
