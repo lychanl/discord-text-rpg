@@ -1,3 +1,6 @@
+from typing import Tuple
+
+
 class Loader:
     @property
     def can_load_str(self) -> bool:
@@ -7,10 +10,24 @@ class Loader:
     def try_load_obj_first(self) -> bool:
         return False
 
+    def _split_typename_and_obj_name(self, typename: str) -> Tuple[str, str]:
+        typename = typename.strip()
+
+        if ' ' in typename:
+            typename, obj_name = typename.split()
+            typename = typename.strip()
+            obj_name = obj_name.strip()
+        else:
+            obj_name = None
+
+        return typename, obj_name
+
     def preload(self) -> object:
         raise NotImplementedError
 
-    def load(self, obj: object, objects_dict: dict, values: dict, game_objects: list) -> object:
+    def load(
+            self, obj: object, name: str, id: str, typename: str, objects_dict: dict,
+            values: dict, game_objects: list, type_loaders: dict) -> object:
         raise NotImplementedError
 
 
@@ -32,7 +49,11 @@ class BuiltInLoader(Loader):
     def class_(self) -> type:
         return self._class
 
-    def load(self, obj: object, objects_dict: dict, values: dict, game_objects: list) -> object:
+    def load(
+            self, obj: object, name: str, id: str, typename: str, objects_dict: dict,
+            values: dict, game_objects: list, type_loaders: dict) -> object:
+        assert not typename, "Cannot explicitly specify type for this field"
+        assert not name, "Cannot explicitly name this object"
         return self.class_(values)
 
 
@@ -49,5 +70,9 @@ class TypenameLoader(Loader):
     def class_(self) -> type:
         return type
 
-    def load(self, obj: object, objects_dict: dict, values: dict, game_objects: list) -> type:
+    def load(
+            self, obj: object, name: str, id: str, typename: str, objects_dict: dict,
+            values: dict, game_objects: list, type_loaders: dict) -> object:
+        assert not typename, "Cannot explicitly specify type for this field"
+        assert not name, "Cannot explicitly name this object"
         return self._types_dict[values].class_

@@ -55,10 +55,15 @@ MoveDestination.FLEE,NAME,flee
 MoveDestination.MELEE,MOVE_TO,move to melee
 MoveDestination.RANGED,MOVE_TO,move to ranged
 MoveDestination.FLEE,MOVE_TO,flee
-Item,INFO,"{self.strings['ITS']} {self.strings['NAME']}{'\n' + self.strings['STATS'] if self.statistic_bonuses else ''}{'\n' + self.strings['ATTACK'] if self.attack else ''}"
+Item,INFO,"{self.strings['ITS']} {self.strings['NAME']}{'\n' + self.bonus.strings['INFO'] if self.bonus else ''}{'\n' + self.strings['ATTACK'] if self.attack else ''}{'\n' + self.strings['ON_USE'] if self.use else ''}"
 Item,ITS,It's a
 Item,ATTACK,Attack: {self.attack.strings['INFO']}
-Item,STATS,"{'\n'.join(stat.strings['NAME'] + ' ' + '%+d' % bonus for stat, bonus in self.statistic_bonuses.items())}"
+UseItemEventResult,EVENT_NOW,You use {self.item.strings['NAME']}.
+AddTimedBonusEventResult,EVENT_NOW,You get the following bonus for {timedelta(hours=self.time)}:{self.bonus.strings['INFO']}
+Bonus,INFO,{'\n' + self.strings['STATS'] if self.statistic_bonuses else ''}{'\n' + self.strings['RESOURCES'] if self.resource_bonuses else ''}
+Bonus,STATS,"{'\n'.join(stat.strings['NAME'] + ' ' + '%+d' % bonus for stat, bonus in self.statistic_bonuses.items())}"
+Bonus,RESOURCES,"{'\n'.join(resource.strings['NAME'] + ' ' + bonus.strings['INFO'] for resource, bonus in self.resource_bonuses.items())}"
+ResourceBonus,INFO,"{'max value %+d' % self.max_value if self.max_value else ''}{' ' if self.max_value and self.regen_rate else ''}{'regeneration rate %+d/h' % self.regen_rate if self.regen_rate else ''}"
 EquipEventResult,EVENT_NOW,You equip {self.item.strings['NAME']} to your {self.item.slot.strings['NAME']}
 UnequipEventResult,EVENT_NOW,You remove {self.item.strings['NAME']} from your {self.item.slot.strings['NAME']}
 Tactic,INFO,"{self.strings['PREDICATES', {'predicates': self.move_predicates}]}

@@ -30,6 +30,20 @@ For a list of features for future versions see [https://github.com/lychanl/disco
 
 ## Changelog
 
+#### 0.3.0
+##### Engine
+ - Timed bonuses to resource regeneration and maximum value
+ - State-based default action
+ - More powerful config, with type and name specification for nested object definitions
+ - Game state persistency
+##### UI
+ - fixed error where too long messages weren't correctly sent
+##### Default world
+ - 1 new NPC
+ - 1 new item
+ - use item action
+ - tutorial sideline quests
+
 #### 0.2.0
 ##### Engine
  - Player state via active and passive state machine with state-dependant actions, visibility and requirements

@@ -499,6 +499,17 @@ class TestTactic(unittest.TestCase):
 
         self.assertEqual(tactic.get_move(None, None), 2)
 
+    def set_tactic_event(self) -> None:
+        fighter = c.Fighter()
+        fighter.tactic = object()
+        event = f.SetTacticEvent()
+        event.tactic = object()
+
+        res = event.fire(fighter)
+
+        self.assertIs(fighter.tactic, event.tactic)
+        self.assertIs(res.tactic, event.tactic)
+
 
 class TestFightingActions(unittest.TestCase):
     def test_target_priority(self) -> None:

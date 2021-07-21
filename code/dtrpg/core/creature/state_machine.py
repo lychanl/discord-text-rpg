@@ -85,4 +85,5 @@ class ActiveStateMachine(StateMachine):
     def __init__(self):
         super().__init__(True)
 
+        self.invalid_action_event = None
         self.allowed_action_groups = []

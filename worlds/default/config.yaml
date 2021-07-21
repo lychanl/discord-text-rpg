@@ -9,3 +9,5 @@ ProportionalTester default_tester: {}
 # some useful, universal objects:
 
 FreeSpaceRequirement free_space_req: {}
+
+InfoEvent dialogue_invalid_action_event: {}

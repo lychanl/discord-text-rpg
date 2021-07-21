@@ -1,3 +1,4 @@
+from datetime import datetime
 from dtrpg.core.game_object import GameObject, GameObjectFactory
 from dtrpg.core.game_exception import GameException
 
@@ -7,7 +8,8 @@ from operator import add
 from typing import Any, Callable, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from dtrpg.core.clock import Clock
+    from dtrpg.core.creature.bonus import ResourceBonus
+    from dtrpg.core.creature.creature import Creature
     from dtrpg.core.creature.player import Player
 
 
@@ -29,32 +31,39 @@ class CreatureResource(GameObject):
         super().__init__()
         self._value = 0
         self._max = None
+        self._creature = None
+        self.resource = None
 
         self._base_gen_rate = None
-        self._clock = None
         self._last_time = None
         self._accumulated = 0
 
     @property
     def value(self) -> int:
-        self._update()
+        if self._creature:
+            self._creature.update_timed()
         return self._value
 
     @value.setter
     def value(self, value: int) -> None:
-        self._value = max(min(value, self._max) if self._max else value, 0)
-        self._update()
+        self._value = max(min(value, self.max) if self._max else value, 0)
+        if self._creature:
+            self._creature.update_timed()
 
     @property
     def max(self) -> int:
-        return self._max
+        bonus = 0
+        if self._creature and self.resource in self._creature.bonuses.resource_bonuses:
+            bonus = self._creature.bonuses.resource_bonuses[self.resource].max_value
+        return self._max + bonus
 
     @max.setter
     def max(self, m: int) -> None:
         self._max = m
         if m:
             self._value = min(self._value, m)
-        self._update()
+        if self._creature:
+            self._creature.update_timed()
 
     @property
     def base_gen_rate(self) -> int:
@@ -62,37 +71,63 @@ class CreatureResource(GameObject):
 
     @base_gen_rate.setter
     def base_gen_rate(self, rate: float) -> None:
-        self._update()
+        if self._creature:
+            self._creature.update_timed()
         self._base_gen_rate = rate
+        if self._creature:
+            self._creature.update_timed()
 
     @property
-    def clock(self) -> 'Clock':
-        return self._clock
+    def creature(self) -> 'Creature':
+        return self._creature
 
-    @clock.setter
-    def clock(self, clock: 'Clock') -> None:
-        self._clock = clock
-        self._update()
+    @creature.setter
+    def creature(self, c: int) -> None:
+        self._creature = c
+        if self._creature:
+            self._creature.update_timed()
 
-    def _update(self) -> None:
-        if self._value == self._max or not self._clock or not self._base_gen_rate:
+    def _update(self, to: datetime, max_value: int, gen_rate: int) -> None:
+        if self._value == max_value or not gen_rate:
             self._last_time = None
             self._accumulated = 0
 
         elif not self._last_time:
-            self._last_time = self._clock.now()
+            self._last_time = to
             self._accumulated = 0
 
         else:
-            self._last_time, dt = self._clock.now_with_diff(self._last_time)
-            self._accumulated += dt * self._base_gen_rate
+            dt = self._creature.clock.diff(to, self._last_time)
+            self._last_time = to
+            self._accumulated += dt * gen_rate
             inc, self._accumulated = divmod(self._accumulated, 1)
             inc = int(inc)
-            self._value = min(self._max, self._value + inc) if self._max else self._value + inc
+            self._value = min(max_value, self._value + inc) if max_value else self._value + inc
 
-            if self._value == self._max:
+            if self._value == max_value:
                 self._last_time = None
                 self._accumulated = 0
+
+    def update_timed(self, bonus: 'ResourceBonus', to: datetime) -> None:
+        self._update(
+            to,
+            bonus.max_value + self._max if self._max else 0,
+            bonus.regen_rate + self._base_gen_rate if self._base_gen_rate else 0
+        )
+
+    @property
+    def state(self) -> dict:
+        return {
+            'value': self._value,
+            'last_time': self._last_time.timestamp() if self._last_time else None,
+            'accumulated': self._accumulated,
+        }
+
+    @state.setter
+    def state(self, state) -> None:
+        self._value = state['value']
+        self._last_time = datetime.fromtimestamp(state['last_time']) if state['last_time'] else None
+        self._accumulated = state['accumulated']
 
 
 class CreatureResourceFactory(GameObjectFactory):
@@ -103,7 +138,6 @@ class CreatureResourceFactory(GameObjectFactory):
         self.max = None
 
         self.base_gen_rate = None
-        self.clock = None
 
     def create(self) -> Resource:
         resource = self._create()
@@ -112,7 +146,6 @@ class CreatureResourceFactory(GameObjectFactory):
         resource.resource = self.resource
 
         resource.base_gen_rate = self.base_gen_rate
-        resource.clock = self.clock
 
         return resource
 

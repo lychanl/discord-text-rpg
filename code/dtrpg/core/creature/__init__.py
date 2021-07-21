@@ -1,4 +1,5 @@
 # flake8: noqa: F401
+from dtrpg.core.creature.bonus import Bonus, ResourceBonus
 from dtrpg.core.creature.creature import Creature, Fighter, FighterFactory
 from dtrpg.core.creature.player import Player, PlayerFactory
 from dtrpg.core.creature.resource import (

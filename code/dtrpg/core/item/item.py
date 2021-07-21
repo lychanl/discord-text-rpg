@@ -34,8 +34,10 @@ class Item(GameObject):
         super().__init__()
         self.max_stack = 1
         self.slot = None
-        self.statistic_bonuses = {}
+        self.bonus = None
         self.attack = None
+        self.use = None
+        self.remove_on_use = False
 
 
 class ItemStack(GameObject):

@@ -1,3 +1,4 @@
+from dtrpg.core.game_object import GameObject
 from dtrpg.data.loaders.schema_loader import SchemaLoader
 from dtrpg.data.loaders.type_loader import TypeLoader
 from dtrpg.data.locale.locale_loader import LocaleLoader
@@ -69,11 +70,15 @@ class DataLoader:
             try:
                 loader = self._loaders[type_]
                 obj = objects[name]
-                loader.load(obj, objects, dict_, game_objects)
+                loader.load(obj, name, name, None, objects, dict_, game_objects, self._loaders)
             except Exception as e:
                 raise LoadException(f'Error while loading {name}: {e}') from e
 
-        return objects, game_objects
+        named_objects = {name: obj for name, obj in game_objects if name}
+        named_objects.update(objects)
+        all_game_objects = [obj for _, obj in game_objects if isinstance(obj, GameObject)]
+
+        return named_objects, all_game_objects
 
     def _split_name_type(self, value: str) -> None:
         tokens = value.split()

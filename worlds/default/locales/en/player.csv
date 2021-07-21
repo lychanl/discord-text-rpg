@@ -6,6 +6,7 @@ You're finally awake, welcome to this cliche. Take your time, then come talk to 
 You walk out of the room and find yourself in a small fishing village.
 
 _hint: use 'help' for help_"
+default_invalid_action_event,EVENT_NOW,"You can't do that... (Invalid command){'\nDid you mean _' + self.params['best_action'].strings['HINT'].replace('*', '\*') + '_?' if self.params['best_similarity'] > 0.5 else ''}"
 player_factory,GOODBYE,Bye!
 herbalism,NAME,Herbalism
 melee_fighting,NAME,Melee fighting
@@ -35,7 +36,11 @@ me_event,EVENT_NOW,"{'\n'.join([r.strings['YOU_HAVE'] for r in self.player.resou
 
 You have {self.player.items.strings['USAGE']} items.
 
-{self.player.location.strings['YOU_ARE_HERE']}"
+{self.player.location.strings['YOU_ARE_HERE']}
+
+Active bonuses:
+{'None' if not self.player.timed_bonuses else self.strings['TIMED_BONUSES']}"
+me_event,TIMED_BONUSES,"{'\n'.join(bonus.strings['NAME'] + ' (' + str(time - datetime.now()).split('.')[0] + ')' + colon + bonus.strings['INFO'] for bonus, time in self.player.timed_bonuses.items())}"
 journal_action,REGEX,journal|quests
 journal_action,NAME,journal
 journal_action,INFO,lists active quests and their entries
@@ -81,6 +86,10 @@ item_action,HINT,item *
 item_action,NAME,item _item_
 item_action,INFO,shows information about an item
 item_info_event,EVENT_NOW,"{self.params['item'].strings['INFO']}"
+use_item_action,REGEX,use ((a|an|the) )?(?P<item>.+)
+use_item_action,HINT,use *
+use_item_action,NAME,use _item_
+use_item_action,INFO,uses an item
 equip_action,REGEX,equip (?P<item>.+)
 equip_action,HINT,equip *
 equip_action,NAME,equip _item_
@@ -105,7 +114,7 @@ tactics_list_event,EVENT_NOW,"Available tactics:
 tactics_list_action,REGEX,(list )?(available )?tactics
 tactics_list_action,NAME,list tactics
 tactics_list_action,INFO,lists available tactics
-set_tactic_action,REGEX,set (?P<value>.+) tactic
+set_tactic_action,REGEX,set (?P<tactic>.+) tactic
 set_tactic_action,HINT,set * tactic
 set_tactic_action,NAME,set _tactic_ tactic
 set_tactic_action,INFO,sets current tactic
@@ -114,6 +123,7 @@ default_player_attack,NAME,fist
 quit_game_action,NAME,exit
 quit_game_action,REGEX,exit
 quit_game_ask_sm_enter,EVENT_NOW,"Are you sure?{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+invalid_quit_game_response_event,EVENT_NOW,"Please confirm or cancel quitting game.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
 confirm_quit_game,REGEX,yes
 confirm_quit_game,NAME,yes
 reject_quit_game,REGEX,no

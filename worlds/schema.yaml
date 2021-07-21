@@ -1,7 +1,6 @@
 GameObjectFactory:
   _class: dtrpg.core.GameObjectFactory
   _abstract: True
-  optional default_variables: {str: object}
 
 Location:
   _class: dtrpg.core.map.Location
@@ -42,15 +41,6 @@ Event:
 
 ExceptionEventResult:
   _class: dtrpg.core.events.ExceptionEventResult
-
-VariableSetEvent:
-  _class: dtrpg.core.events.VariableSetEvent
-  _base: Event
-  required variable: str
-  optional value: object
-
-VariableSetEventResult:
-  _class: dtrpg.core.events.VariableSetEventResult
 
 ResourceChangesEvent:
   _class: dtrpg.core.events.ResourceChangesEvent
@@ -209,6 +199,8 @@ PlayerFactory:
   required default_attack: Attack
   optional on_killed: Event
   optional available_tactics: [ Tactic ]
+  optional default_invalid_action_event: Event
+  optional clock: Clock
 
 NPCFighterFactory:
   _class: dtrpg.core.creature.NPCFighterFactory
@@ -230,9 +222,11 @@ ContainerFactory:
 Item:
   _class: dtrpg.core.item.Item
   optional max_stack: int
-  optional statistic_bonuses: { Statistic: int }
+  optional bonus: Bonus
   optional slot: ItemSlot
   optional attack: Attack
+  optional use: Event
+  optional remove_on_use: bool
 
 ItemStackFactory:
   _class: dtrpg.core.item.ItemStackFactory
@@ -243,6 +237,14 @@ ItemStackFactory:
 ItemSlot:
   _class: dtrpg.core.item.ItemSlot
 
+UseItemEvent:
+  _class: dtrpg.core.item.UseItemEvent
+  _base: Event
+  optional item: Item
+
+UseItemEventResult:
+  _class: dtrpg.core.item.UseItemEventResult
+
 CreatureResourceFactory:
   _class: dtrpg.core.creature.CreatureResourceFactory
   _base: GameObjectFactory
@@ -250,7 +252,6 @@ CreatureResourceFactory:
   optional initial: int
   optional max: int
   optional base_gen_rate: float
-  optional clock: Clock
 
 CreatureSkillFactory:
   _class: dtrpg.core.creature.CreatureSkillFactory
@@ -303,6 +304,25 @@ ResourceCost:
   _class: dtrpg.core.creature.ResourceCost
   required resource: Resource
   required cost: int
+
+Bonus:
+  _class: dtrpg.core.creature.Bonus
+  optional statistic_bonuses: {Statistic: int}
+  optional resource_bonuses: {Resource: ResourceBonus}
+
+ResourceBonus:
+  _class: dtrpg.core.creature.ResourceBonus
+  optional max_value: int
+  optional regen_rate: int
+
+AddTimedBonusEventResult:
+  _class: dtrpg.core.events.event.AddTimedBonusEventResult
+
+AddTimedBonusEvent:
+  _class: dtrpg.core.events.event.AddTimedBonusEvent
+  _base: Event
+  required bonus: Bonus
+  required time: float
 
 Config:
   _class: dtrpg.core.Config
@@ -367,6 +387,14 @@ TacticQuantifier:
   _class: dtrpg.core.fighting.TacticQuantifier
   _enum: True
 
+TacticSetEvent:
+  _class: dtrpg.core.fighting.TacticSetEvent
+  _base: Event
+  optional tactic: Tactic
+
+TacticSetEventResult:
+  _class: dtrpg.core.fighting.TacticSetEventResult
+
 StatusFlag:
   _class: dtrpg.core.fighting.StatusFlag
   _enum: True
@@ -428,6 +456,7 @@ ActiveStateMachine:
   _class: dtrpg.core.creature.ActiveStateMachine
   required initial: ActiveState
   optional allowed_action_groups: [ActionGroup]
+  optional invalid_action_event: Event
 
 ActiveState:
   _class: dtrpg.core.creature.ActiveState

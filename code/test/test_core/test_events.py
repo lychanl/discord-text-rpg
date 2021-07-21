@@ -1,3 +1,4 @@
+from dtrpg.core.events.event_result import ExceptionEventResult
 import unittest
 import unittest.mock as mock
 
@@ -61,6 +62,69 @@ class TestEvents(unittest.TestCase):
         self.assertIs(e2.overflow.stack.item, i)
         self.assertEqual(e2.overflow.stack.stack, 1)
         self.assertEqual(p.items.count(i), 3)
+
+    def test_use_item(self) -> None:
+        e = item.UseItemEvent()
+        i = item.Item()
+        p = creature.Player()
+        p.items = item.Container()
+        p.items.add(item.ItemStack(i))
+
+        i.use = object()
+        param = object()
+
+        e.item = i
+
+        e.fire(p, **{'use.param': param})
+
+        self.assertSequenceEqual(p.events.events, [(i.use, {'param': param})])
+        self.assertEqual(p.items.count(i), 1)
+
+    def test_use_item_remove(self) -> None:
+        e = item.UseItemEvent()
+        i = item.Item()
+        p = creature.Player()
+        p.items = item.Container()
+        p.items.add(item.ItemStack(i))
+
+        i.use = object()
+        i.remove_on_use = True
+        param = object()
+
+        e.item = i
+
+        e.fire(p, **{'use.param': param})
+
+        self.assertSequenceEqual(p.events.events, [(i.use, {'param': param})])
+        self.assertEqual(p.items.count(i), 0)
+
+    def test_use_item_insufficient(self) -> None:
+        e = item.UseItemEvent()
+        i = item.Item()
+        p = creature.Player()
+        p.items = item.Container()
+
+        i.use = object()
+        param = object()
+
+        e.item = i
+
+        result = e.fire(p, **{'use.param': param})
+        self.assertIsInstance(result, ExceptionEventResult)
+
+    def test_use_item_unusable(self) -> None:
+        e = item.UseItemEvent()
+        i = item.Item()
+        p = creature.Player()
+        p.items = item.Container()
+        p.items.add(item.ItemStack(i))
+
+        param = object()
+
+        e.item = i
+
+        result = e.fire(p, **{'use.param': param})
+        self.assertIsInstance(result, ExceptionEventResult)
 
     def test_action_cost(self) -> None:
         a = events.Action()
@@ -232,20 +296,6 @@ class TestEvents(unittest.TestCase):
         e.fire(p)
         self.assertIs(p.events.events[0][0], e.false)
 
-    def test_variable_set_event(self) -> None:
-        e = events.VariableSetEvent()
-        e.variable = 'VAR'
-        e.value = 'value'
-
-        p = creature.Player()
-        p.variable_properties['var'] = 'VAR'
-
-        res = e.fire(p)
-
-        self.assertEqual(res.variable, 'VAR')
-        self.assertEqual(res.value, 'value')
-        self.assertEqual(p.var, 'value')
-
     def test_chance_event(self) -> None:
         e = events.ChanceEvent()
 
@@ -287,6 +337,20 @@ class TestEvents(unittest.TestCase):
         self.assertSequenceEqual(ret, [r2])
         e.if_.fire.assert_not_called()
         e.else_.fire.assert_called_once()
+
+    def test_add_timed_bonus(self) -> None:
+        c = mock.Mock()
+        c.add_timed_bonus.return_value = None
+
+        e = events.AddTimedBonusEvent()
+        e.bonus = object()
+        e.time = 2
+
+        ret = e.fire(c)
+        self.assertIs(ret.bonus, e.bonus)
+        self.assertEqual(ret.time, e.time)
+
+        c.add_timed_bonus.assert_called_once_with(e.bonus, e.time)
 
 
 class TestStateMachineEvents(unittest.TestCase):

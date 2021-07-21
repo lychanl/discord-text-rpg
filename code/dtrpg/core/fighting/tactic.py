@@ -1,6 +1,7 @@
 from dtrpg.core.game_object import GameObject
 from dtrpg.core.fighting.engine import FightStatus, StatusFlag, MoveDestination
 from dtrpg.core.fighting.fight_action import FightAction, EmptyAction
+from dtrpg.core.events import Event, EventResult
 
 from enum import Enum
 
@@ -86,3 +87,23 @@ class MovePredicate(TacticPredicate):
 
 class ActionPredicate(TacticPredicate):
     pass
+
+
+class TacticSetEventResult(EventResult):
+    def __init__(self):
+        super().__init__()
+        self.tactic = None
+
+
+class TacticSetEvent(Event):
+    def __init__(self):
+        super().__init__(TacticSetEventResult)
+        self.tactic = None
+
+    def _fire(self, fighter: 'Fighter') -> TacticSetEventResult:
+        event = self.create()
+
+        event.tactic = self.tactic
+        fighter.tactic = self.tactic
+
+        return event

@@ -29,12 +29,12 @@ class CreatureSkill(GameObject):
 
         self.skill = None
         self.value = 1
-        self._experience = 0
+        self.experience = 0
 
     def add_experience(self, value: int) -> None:
         if self.skill.progression:
-            self._experience += value
-            while self.skill.get_next_level_experience(self.value) <= self._experience:
+            self.experience += value
+            while self.skill.get_next_level_experience(self.value) <= self.experience:
                 self.value += 1
 
 

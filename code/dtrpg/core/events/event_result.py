@@ -19,14 +19,14 @@ class ResourceChangeEventResult(EventResult):
         self.resource_changes = {}
 
 
-class VariableSetEventResult(EventResult):
-    def __init__(self):
-        super().__init__()
-        self.variable = None
-        self.value = None
-
-
 class ExceptionEventResult(EventResult):
     def __init__(self, e: Exception):
         super().__init__()
         self.exception = e
+
+
+class AddTimedBonusEventResult(EventResult):
+    def __init__(self):
+        super().__init__()
+        self.bonus = None
+        self.time = None

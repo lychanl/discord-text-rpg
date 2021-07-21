@@ -123,16 +123,96 @@ PassiveStateRequirement tutorial_journey_return_req:
   machine: tutorial_quest
   state: tutorial_journey_return
 
-Action tutorial_captain_talk_journey_return:
-  visibility:
-    - tutorial_journey_return_req
-  event: tutorial_captain_talk_dialogue_journey_return_event
-
-InfoEvent tutorial_captain_talk_dialogue_journey_return_event: {}
-
 Action tutorial_nothingthere_dialogue_journey_return:
   visibility:
     - tutorial_journey_return_req
   event: tutorial_nothingthere_dialogue_journey_return_event
 
 InfoEvent tutorial_nothingthere_dialogue_journey_return_event: {}
+
+PassiveStateMachine tutorial_old_lady_quest:
+  initial: tutorial_old_lady_ask
+
+PassiveState tutorial_old_lady_ask:
+  transitions:
+    nothingthere_forest_witch_visibility_init:
+      to: tutorial_old_lady_find
+
+PassiveState tutorial_old_lady_find:
+  transitions:
+    nothingthere_old_lady_first_talk_event:
+      to: tutorial_old_lady_herbs
+
+PassiveState tutorial_old_lady_herbs:
+  transitions:
+    nothingthere_old_lady_herbs_event:
+      to: tutorial_old_lady_after_herbs
+
+PassiveState tutorial_old_lady_after_herbs: {}
+
+Action tutorial_captain_talk_journey_return:
+  visibility:
+    - tutorial_journey_return_req
+  event: tutorial_captain_talk_dialogue_journey_return_event
+
+PassiveStateMachineInitEvent tutorial_captain_talk_dialogue_journey_return_event:
+  machine: tutorial_old_lady_quest
+
+Action tutorial_captain_talk_old_lady_dialogue:
+  visibility:
+    - (PassiveStateRequirement):
+        machine: tutorial_old_lady_quest
+        state: tutorial_old_lady_ask
+  event: nothingthere_forest_witch_visibility_init
+
+PassiveStateMachineInitEvent nothingthere_forest_witch_visibility_init:
+  machine: nothingthere_forest_witch_visibility
+
+Action nothingthere_dialogue_old_lady:
+  visibility:
+    - (PassiveStateRequirement):
+        machine: tutorial_old_lady_quest
+        state: tutorial_old_lady_ask
+  event: nothingthere_dialogue_old_lady_event
+
+Action nothingthere_dialogue_old_lady_visible:
+  visibility:
+    - (PassiveStateRequirement):
+        machine: nothingthere_forest_witch_visibility
+        state: nothingthere_forest_witch_visible
+  event: nothingthere_dialogue_old_lady_event
+
+InfoEvent nothingthere_dialogue_old_lady_event: {}
+
+Action nothingthere_old_lady_first_talk:
+  visibility:
+    - (PassiveStateRequirement):
+        machine: tutorial_old_lady_quest
+        state: tutorial_old_lady_find
+  event: nothingthere_old_lady_first_talk_event
+
+InfoEvent nothingthere_old_lady_first_talk_event: {}
+
+Action nothingthere_old_lady_herbs_talk:
+  visibility:
+    - (PassiveStateRequirement):
+        machine: tutorial_old_lady_quest
+        state: tutorial_old_lady_herbs
+  (ConditionEvent) event:
+    (ItemsRequirement) condition:
+      item: item_herbs
+      number: 3
+    'true': nothingthere_old_lady_herbs_event
+    (InfoEvent nothingthere_old_lady_not_enough_herbs_event) false: {}
+
+SequenceEvent nothingthere_old_lady_herbs_event:
+  events:
+    - (RemoveItemEvent nothingthere_old_lady_remove_herbs):
+        item: item_herbs
+        number: 3
+    - (PassiveStateMachineInitEvent nothingthere_old_lady_can_talk_init):
+        machine: nothingthere_old_lady_can_talk
+    - (ItemReceiveEvent nothingthere_old_lady_herbs_talk_info):
+        item_factory:
+          item: item_herbal_tea
+          stack: 1

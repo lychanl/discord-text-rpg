@@ -1,5 +1,12 @@
 Item item_fish:
   max_stack: 10
+  (AddTimedBonusEvent) use:
+    time: 2
+    (Bonus item_fish_bonus) bonus:
+      resource_bonuses:
+        action_points:
+          regen_rate: 2
+  remove_on_use: True
 
 Item item_herbs:
   max_stack: 20
@@ -13,8 +20,9 @@ Item item_small_fur:
 
 Item item_linen_jacket:
   max_stack: 1
-  statistic_bonuses:
-    armor: 1
+  bonus:
+    statistic_bonuses:
+      armor: 1
   slot: itemslot_body
 
 Item item_stones:
@@ -24,10 +32,21 @@ Item item_stones:
 
 Item item_rusty_spear:
   max_stack: 1
-  statistic_bonuses:
-    armor: 1
+  bonus:
+    statistic_bonuses:
+      armor: 1
   slot: itemslot_hand
   attack: rusty_spear_attack
+
+Item item_herbal_tea:
+  max_stack: 10
+  (AddTimedBonusEvent) use:
+    time: 1
+    (Bonus item_herbal_tea_bonus) bonus:
+      resource_bonuses:
+        health:
+          regen_rate: 4
+  remove_on_use: True
 
 Attack stone_throw:
   hit_skill: ranged_fighting

@@ -37,6 +37,11 @@ Location loc_nothingthere_coast:
 Location loc_nothingthere_forest:
   travel_actions:
     - { to: loc_nothingthere_village }
+    - to: loc_nothingthere_witch_home
+      visibility:
+        - (PassiveStateRequirement):
+            machine: nothingthere_forest_witch_visibility
+            state: nothingthere_forest_witch_visible
   local_actions:
     - nothingthere_forest_herbs
     - nothingthere_rat_hunt
@@ -47,6 +52,14 @@ Location loc_nothingthere_small_bay:
     - { to: loc_nothingthere_coast }
   local_actions:
     - nothingthere_bay_search_skeleton
+
+Location loc_nothingthere_witch_home:
+  travel_actions:
+    - { to: loc_nothingthere_forest }
+  local_actions:
+    - nothingthere_old_lady_first_talk
+    - nothingthere_old_lady_herbs_talk
+    - nothingthere_old_lady_dialogue_init
 
 Action nothingthere_village_elder_dialogue:
   event: nothingthere_dialogue_init
@@ -60,6 +73,7 @@ ActiveStateMachine nothingthere_dialogue:
     - action_group_help
     - action_group_info
     - action_group_admin
+  invalid_action_event: dialogue_invalid_action_event
 
 ActiveState nothingthere_dialogue_root:
   actions:
@@ -70,6 +84,8 @@ ActiveState nothingthere_dialogue_root:
     - nothingthere_dialogue_job_report
     - nothingthere_dialogue_fish_report
     - tutorial_nothingthere_dialogue_journey_return
+    - nothingthere_dialogue_old_lady
+    - nothingthere_dialogue_old_lady_visible
 
 Action nothingthere_dialogue_exit:
   event: nothingthere_dialogue_exit_event
@@ -99,6 +115,7 @@ ActiveStateMachine nothingthere_captain_dialogue:
     - action_group_help
     - action_group_info
     - action_group_admin
+  invalid_action_event: dialogue_invalid_action_event
 
 ActiveState nothingthere_captain_dialogue_root:
   actions:
@@ -106,6 +123,7 @@ ActiveState nothingthere_captain_dialogue_root:
     - nothingthere_captain_who
     - tutorial_captain_talk_dialogue
     - tutorial_captain_talk_journey_return
+    - tutorial_captain_talk_old_lady_dialogue
   transitions:
     tutorial_captain_talk_dialogue_event:
       to: tutorial_captain_talk_confirmation
@@ -247,13 +265,63 @@ InfoEvent nothingthere_bay_search_skeleton_search_free_space_event: {}
 
 SequenceEvent nothingthere_bay_search_skeleton_search_successful_event:
   events:
-    - nothingthere_bay_skeleton_searched_init_flag
-    - nothingthere_bay_search_skeleton_search_successful_spear_event
+    - (PassiveStateMachineInitEvent nothingthere_bay_skeleton_searched_init_flag):
+        machine: nothingthere_bay_skeleton_flag
+    - (ItemReceiveEvent):
+        item_factory:
+          item: item_rusty_spear
+          stack: 1
 
-PassiveStateMachineInitEvent nothingthere_bay_skeleton_searched_init_flag:
-  machine: nothingthere_bay_skeleton_flag
+PassiveStateMachine nothingthere_forest_witch_visibility:
+  initial: nothingthere_forest_witch_visible
 
-ItemReceiveEvent nothingthere_bay_search_skeleton_search_successful_spear_event:
-  item_factory:
-    item: item_rusty_spear
-    stack: 1
+PassiveState nothingthere_forest_witch_visible: {}
+
+PassiveStateMachine nothingthere_old_lady_can_talk:
+  initial: nothingthere_old_lady_can_talk_flag
+
+PassiveState nothingthere_old_lady_can_talk_flag: {}
+
+ActiveStateMachine nothingthere_old_lady_dialogue:
+  initial: nothingthere_old_lady_dialogue_root
+  allowed_action_groups: 
+    - action_group_help
+    - action_group_info
+    - action_group_admin
+  invalid_action_event: dialogue_invalid_action_event
+
+ActiveState nothingthere_old_lady_dialogue_root:
+  actions:
+   - nothingthere_old_lady_dialogue_more_tea
+   - nothingthere_old_lady_dialogue_who
+   - nothingthere_old_lady_dialogue_book
+   - nothingthere_old_lady_dialogue_exit
+
+Action nothingthere_old_lady_dialogue_init:
+  visibility:
+    - "(PassiveStateRequirement)":
+        machine: nothingthere_old_lady_can_talk
+        state: nothingthere_old_lady_can_talk_flag
+  (ActiveStateMachineInitEvent nothingthere_old_lady_dialogue_init_event) event:
+    machine: nothingthere_old_lady_dialogue
+
+Action nothingthere_old_lady_dialogue_more_tea:
+  (ConditionEvent) event:
+    (ItemsRequirement) condition:
+      item: item_herbs
+      number: 3
+    (InfoEvent nothingthere_old_lady_dialogue_more_tea_not_enough_herbs) false: {}
+    (ItemReceiveEvent nothingthere_old_lady_dialogue_more_tea_event) true:
+      item_factory:
+        item: item_herbal_tea
+        stack: 1
+
+Action nothingthere_old_lady_dialogue_who:
+  (InfoEvent nothingthere_old_lady_dialogue_who_event) event: {}
+
+Action nothingthere_old_lady_dialogue_book:
+  (InfoEvent nothingthere_old_lady_dialogue_book_event) event: {}
+
+Action nothingthere_old_lady_dialogue_exit:
+  (ActiveStateMachineExitEvent nothingthere_old_lady_dialogue_exit_event) event:
+    machine: nothingthere_old_lady_dialogue

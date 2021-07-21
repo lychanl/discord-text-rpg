@@ -23,9 +23,7 @@ class CreatureStatistics:
         self.statistics = {}
 
     def __getitem__(self, statistic: Statistic):
-        return self.statistics[statistic].base + sum(
-            i.statistic_bonuses.get(statistic, 0) for i in self.creature.equipped_items
-        )
+        return self.statistics[statistic].base + self.creature.bonuses.statistic_bonuses.get(statistic, 0)
 
     def items(self):
         for stat in self.statistics:
