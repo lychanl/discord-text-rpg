@@ -70,7 +70,7 @@ class DataLoader:
             try:
                 loader = self._loaders[type_]
                 obj = objects[name]
-                loader.load(obj, name, None, objects, dict_, game_objects, self._loaders)
+                loader.load(obj, name, name, None, objects, dict_, game_objects, self._loaders)
             except Exception as e:
                 raise LoadException(f'Error while loading {name}: {e}') from e
 

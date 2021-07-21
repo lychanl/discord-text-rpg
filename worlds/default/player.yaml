@@ -43,10 +43,7 @@ PlayerFactory player_factory:
     - ranged
     - ranged_cautious
 
-  default_variables: {
-    TACTIC: melee_berserk
-  }
-  tactic: variable(TACTIC)
+  tactic: melee_berserk
   default_attack: default_player_attack
   on_killed: player_killed_event
   (InfoEvent default_invalid_action_event) default_invalid_action_event: {}
@@ -145,12 +142,11 @@ InfoEvent tactics_list_event: {}
 Action set_tactic_action:
   event: set_tactic_event
   args:
-    value: Tactic
+    tactic: Tactic
   groups:
     - action_group_info
 
-VariableSetEvent set_tactic_event:
-  variable: TACTIC
+TacticSetEvent set_tactic_event: {}
 
 Action skills_action: {event: skills_stats_event }
 Action stats_action: {event: skills_stats_event }

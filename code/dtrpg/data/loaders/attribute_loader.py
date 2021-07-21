@@ -1,3 +1,4 @@
+from dtrpg.data.locale.localized_object import LocalizedObject
 from dtrpg.data.loaders import Loader
 from dtrpg.data.loaders.qualifier import Qualifiers
 
@@ -13,13 +14,13 @@ class AmbigousTypeError(Exception):
 
 class AttributeLoader(Loader):
     def _load_single(
-        self, name: str, objects_dict: dict, values: dict,
+        self, name: str, id: str, objects_dict: dict, values: dict,
         default_loader: 'TypeLoader', game_objects: list, type_loaders: dict
     ) -> object:
         if default_loader and default_loader.try_load_obj_first and isinstance(values, str) and values in objects_dict:
             return objects_dict[values]
         if default_loader and default_loader.can_load_str or not isinstance(values, str):
-            obj = default_loader.load(None, name, None, objects_dict, values, game_objects, type_loaders)
+            obj = default_loader.load(None, name, id, None, objects_dict, values, game_objects, type_loaders)
             if default_loader and not isinstance(obj, default_loader.class_):
                 raise TypeError
             return obj
@@ -38,10 +39,10 @@ class SimpleAttributeLoader(AttributeLoader):
         return self._type_loader
 
     def load(
-            self, obj: object, name: str, typename: str, objects_dict: dict,
+            self, obj: object, name: str, id: str, typename: str, objects_dict: dict,
             values: dict, game_objects: list, type_loaders: dict) -> object:
         default_loader = type_loaders[typename] if typename else self._type_loader
-        obj = self._load_single(name, objects_dict, values, default_loader, game_objects, type_loaders)
+        obj = self._load_single(name, id, objects_dict, values, default_loader, game_objects, type_loaders)
 
         if not isinstance(obj, self._type_loader.class_):
             raise TypeError(f'Invalid object type, {self._type_loader.class_.__name__} expected')
@@ -63,13 +64,13 @@ class CollectionLoader(AttributeLoader):
         return value, None, None
 
     def load(
-            self, obj: object, name: str, typename: str, objects_dict: dict,
+            self, obj: object, name: str, id: str, typename: str, objects_dict: dict,
             values: dict, game_objects: list, type_loaders: dict) -> object:
         assert not typename, "Cannot explicitly specify type for this field"
         assert not name, "Cannot explicitly name collection"
         collection = []
 
-        for value in values:
+        for i, value in enumerate(values):
             value, typename, name = self._split_value_and_type_spec(value)
             if typename:
                 default_loader = type_loaders[typename]
@@ -78,7 +79,9 @@ class CollectionLoader(AttributeLoader):
             else:
                 default_loader = None
 
-            obj = self._load_single(name, objects_dict, value, default_loader, game_objects, type_loaders)
+            obj = self._load_single(
+                name, name or f'{id}[{i}]', objects_dict, value, default_loader, game_objects, type_loaders
+            )
             if not any(isinstance(obj, t[0].type_loader.class_) for t in self._attributes):
                 raise TypeError
             collection.append(obj)
@@ -101,8 +104,14 @@ class DictLoader(AttributeLoader):
         super(DictLoader, self).__init__()
         self._types = types
 
+    def _get_key_id(self, key: object):
+        if isinstance(key, LocalizedObject):
+            return key.id
+        else:
+            return str(key)
+
     def load(
-            self, obj: object, name: str, typename: str, objects_dict: dict,
+            self, obj: object, name: str, id: str, typename: str, objects_dict: dict,
             values: dict, game_objects: list, type_loaders: dict) -> object:
         assert not typename, "Cannot explicitly specify type for this field"
         assert not name, "Cannot explicitly name mapping"
@@ -116,8 +125,9 @@ class DictLoader(AttributeLoader):
             value_loader = next(iter(self._types.values())).type_loader
 
         for key, value in values.items():
-            key_obj = self._load_single(None, objects_dict, key, key_loader, game_objects, type_loaders)
-            val_obj = self._load_single(None, objects_dict, value, value_loader, game_objects, type_loaders)
+            key_obj = self._load_single(None, None, objects_dict, key, key_loader, game_objects, type_loaders)
+            val_id = f'{id}[{self._get_key_id(key_obj)}]'
+            val_obj = self._load_single(None, val_id, objects_dict, value, value_loader, game_objects, type_loaders)
 
             dict_[key_obj] = val_obj
 

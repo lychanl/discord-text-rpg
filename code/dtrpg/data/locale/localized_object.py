@@ -11,6 +11,8 @@ class DuplicateStringError(Exception):
 
 class LocalizedObject:
     _class_strings = {}
+    id = None
+    factory_id = None
 
     @classmethod
     def _get_class_strings(cls) -> Mapping[str, str]:
@@ -47,6 +49,7 @@ class LocalizedObjectFactory(LocalizedObject):
     def _create(self, *args: list, **kwargs: dict) -> LocalizedObject:
         obj = self._cls(*args, **kwargs)
         obj._obj_strings.update(self._obj_strings)
+        obj.factory_id = self.id
         return obj
 
     def create(self) -> LocalizedObject:

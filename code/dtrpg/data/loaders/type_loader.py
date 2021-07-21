@@ -81,7 +81,7 @@ class TypeLoader(Loader):
         return name, None, None
 
     def _load(
-        self, objects_dict: dict, values: dict, attr_values: dict,
+        self, id: str, objects_dict: dict, values: dict, attr_values: dict,
         variables: dict, game_objects: list, type_loaders: dict
     ) -> Tuple[dict, dict, dict]:
         unused = {}
@@ -94,7 +94,9 @@ class TypeLoader(Loader):
                     variables[name] = value[len('variable('):-1]
                 else:
                     attr_values[name] = self._attributes[name][0].load(
-                        None, obj_name, typename, objects_dict, value, game_objects, type_loaders)
+                        None, obj_name, obj_name or f'{id}.{name}', typename,
+                        objects_dict, value, game_objects, type_loaders
+                    )
             else:
                 unused[name] = value
 
@@ -110,7 +112,7 @@ class TypeLoader(Loader):
                 raise QualifierCheckFailed(f'Qualifier check failed for {name}: {e}') from e
 
         if self._base:
-            return self._base._load(objects_dict, unused, attr_values, variables, game_objects, type_loaders)
+            return self._base._load(id, objects_dict, unused, attr_values, variables, game_objects, type_loaders)
         else:
             return unused, attr_values, variables
 
@@ -118,12 +120,12 @@ class TypeLoader(Loader):
         return self._class[value]
 
     def _load_obj(
-            self, obj: object, objects_dict: dict, values: Union[dict, str],
+            self, id: str, obj: object, objects_dict: dict, values: Union[dict, str],
             game_objects: list, type_loaders: dict) -> object:
         if obj is None:
             obj = self.preload()
 
-        unused, attr_values, variables = self._load(objects_dict, values, {}, {}, game_objects, type_loaders)
+        unused, attr_values, variables = self._load(id, objects_dict, values, {}, {}, game_objects, type_loaders)
 
         if unused:
             raise KeyError(f'Undefined attributes: {list(unused.keys())}')
@@ -136,13 +138,15 @@ class TypeLoader(Loader):
         return obj
 
     def load(
-            self, obj: object, name: str, typename: str, objects_dict: dict,
+            self, obj: object, name: str, id: str, typename: str, objects_dict: dict,
             values: Union[dict, str], game_objects: list, type_loaders: dict) -> object:
         if self._enum:
             obj = self._load_enum(values)
         else:
-            obj = self._load_obj(obj, objects_dict, values, game_objects, type_loaders)
+            obj = self._load_obj(id, obj, objects_dict, values, game_objects, type_loaders)
 
         game_objects.append((name, obj))
+
+        obj.id = id
 
         return obj

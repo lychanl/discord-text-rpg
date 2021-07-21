@@ -1,7 +1,6 @@
 GameObjectFactory:
   _class: dtrpg.core.GameObjectFactory
   _abstract: True
-  optional default_variables: {str: object}
 
 Location:
   _class: dtrpg.core.map.Location
@@ -42,15 +41,6 @@ Event:
 
 ExceptionEventResult:
   _class: dtrpg.core.events.ExceptionEventResult
-
-VariableSetEvent:
-  _class: dtrpg.core.events.VariableSetEvent
-  _base: Event
-  required variable: str
-  optional value: object
-
-VariableSetEventResult:
-  _class: dtrpg.core.events.VariableSetEventResult
 
 ResourceChangesEvent:
   _class: dtrpg.core.events.ResourceChangesEvent
@@ -396,6 +386,14 @@ TacticCondition:
 TacticQuantifier:
   _class: dtrpg.core.fighting.TacticQuantifier
   _enum: True
+
+TacticSetEvent:
+  _class: dtrpg.core.fighting.TacticSetEvent
+  _base: Event
+  optional tactic: Tactic
+
+TacticSetEventResult:
+  _class: dtrpg.core.fighting.TacticSetEventResult
 
 StatusFlag:
   _class: dtrpg.core.fighting.StatusFlag

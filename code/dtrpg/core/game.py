@@ -31,28 +31,28 @@ class QuitGameEvent(Event):
 class Game:
     def __init__(self, config: Config, world_objects: Iterable['GameObject']):
         self._config = config
-        self._players = {}
-        self._global_objects = world_objects
+        self.players = {}
+        self.global_objects = world_objects
 
     @property
     def config(self) -> Config:
         return self._config
 
     def create_player(self, id_: Hashable) -> Player:
-        if id_ in self._players:
+        if id_ in self.players:
             raise DuplicatePlayerError
 
-        self._players[id_] = self._config.player_factory.create()
-        return self._players[id_]
+        self.players[id_] = self._config.player_factory.create()
+        return self.players[id_]
 
     def remove_player(self, id_: Hashable) -> None:
-        del self._players[id_]
+        del self.players[id_]
 
     def player(self, id_: Hashable) -> Player:
         try:
-            return self._players[id_]
+            return self.players[id_]
         except KeyError:
             raise InvalidPlayerError
 
     def game_objects(self, clss: type) -> Iterable['GameObject']:
-        return [o for o in self._global_objects if isinstance(o, clss)]
+        return [o for o in self.global_objects if isinstance(o, clss)]

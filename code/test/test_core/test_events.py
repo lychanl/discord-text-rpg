@@ -296,20 +296,6 @@ class TestEvents(unittest.TestCase):
         e.fire(p)
         self.assertIs(p.events.events[0][0], e.false)
 
-    def test_variable_set_event(self) -> None:
-        e = events.VariableSetEvent()
-        e.variable = 'VAR'
-        e.value = 'value'
-
-        p = creature.Player()
-        p.variable_properties['var'] = 'VAR'
-
-        res = e.fire(p)
-
-        self.assertEqual(res.variable, 'VAR')
-        self.assertEqual(res.value, 'value')
-        self.assertEqual(p.var, 'value')
-
     def test_chance_event(self) -> None:
         e = events.ChanceEvent()
 

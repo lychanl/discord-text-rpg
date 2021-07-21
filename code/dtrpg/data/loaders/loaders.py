@@ -26,7 +26,7 @@ class Loader:
         raise NotImplementedError
 
     def load(
-            self, obj: object, name: str, typename: str, objects_dict: dict,
+            self, obj: object, name: str, id: str, typename: str, objects_dict: dict,
             values: dict, game_objects: list, type_loaders: dict) -> object:
         raise NotImplementedError
 
@@ -50,7 +50,7 @@ class BuiltInLoader(Loader):
         return self._class
 
     def load(
-            self, obj: object, name: str, typename: str, objects_dict: dict,
+            self, obj: object, name: str, id: str, typename: str, objects_dict: dict,
             values: dict, game_objects: list, type_loaders: dict) -> object:
         assert not typename, "Cannot explicitly specify type for this field"
         assert not name, "Cannot explicitly name this object"
@@ -71,7 +71,7 @@ class TypenameLoader(Loader):
         return type
 
     def load(
-            self, obj: object, name: str, typename: str, objects_dict: dict,
+            self, obj: object, name: str, id: str, typename: str, objects_dict: dict,
             values: dict, game_objects: list, type_loaders: dict) -> object:
         assert not typename, "Cannot explicitly specify type for this field"
         assert not name, "Cannot explicitly name this object"

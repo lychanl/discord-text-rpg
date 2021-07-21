@@ -114,7 +114,7 @@ tactics_list_event,EVENT_NOW,"Available tactics:
 tactics_list_action,REGEX,(list )?(available )?tactics
 tactics_list_action,NAME,list tactics
 tactics_list_action,INFO,lists available tactics
-set_tactic_action,REGEX,set (?P<value>.+) tactic
+set_tactic_action,REGEX,set (?P<tactic>.+) tactic
 set_tactic_action,HINT,set * tactic
 set_tactic_action,NAME,set _tactic_ tactic
 set_tactic_action,INFO,sets current tactic

@@ -1,3 +1,4 @@
+from dtrpg.data.persistency.persistency import Persistency
 import unittest
 from unittest import mock
 
@@ -36,7 +37,9 @@ class TestSmoke(unittest.TestCase):
         default_tester = game.game_objects(core.Tester)[0]
 
         clock.now = mock.Mock()
-        clock.now.return_value = object()
+        clock.now.return_value.timestamp.return_value = 100
+        clock.now_plus = mock.Mock()
+        clock.now_plus.return_value.timestamp.return_value = 100
         clock.diff = mock.Mock()
         clock.diff.return_value = 0
 
@@ -253,3 +256,19 @@ class TestSmoke(unittest.TestCase):
         self.assertNotRegex(io.test('search'), 'rusty spear')
         self.assertRegex(io.test('Travel to the coast'), 'You travel')
         self.assertRegex(io.test('here'), 'small bay')
+
+        # SAVING
+        me = io.test('me')
+        journal = io.test('journal')
+        items = io.test('items')
+
+        persistency = Persistency(game)
+        data = persistency.serialize()
+
+        game.players = {}
+
+        persistency.deserialize(data)
+
+        self.assertEqual(me, io.test('me'))
+        self.assertEqual(journal, io.test('journal'))
+        self.assertEqual(items, io.test('items'))

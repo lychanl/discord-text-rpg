@@ -2,7 +2,7 @@ from dtrpg.core.game_object import GameObjectFactory
 from dtrpg.core.game_exception import GameException
 from dtrpg.core.events.event_result import (
     AddTimedBonusEventResult, EventResult, ResourceChangeEventResult,
-    InfoEventResult, VariableSetEventResult, ExceptionEventResult
+    InfoEventResult, ExceptionEventResult
 )
 
 import copy
@@ -125,23 +125,6 @@ class ConditionEvent(ComplexEvent):
         else:
             if self.false:
                 player.events.register(self.false, **self._get_subevent_params('false'))
-
-
-class VariableSetEvent(Event):
-    def __init__(self):
-        super().__init__(VariableSetEventResult)
-        self.variable = None
-        self.value = None
-
-    def _fire(self, player: 'Player') -> VariableSetEventResult:
-        event = self.create()
-
-        event.variable = self.variable
-        event.value = self.value
-
-        player.set_variable(self.variable, self.value)
-
-        return event
 
 
 class ChanceEvent(ComplexEvent):
