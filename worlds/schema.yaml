@@ -24,9 +24,13 @@ Action:
   optional costs: [ ResourceCost ]
   optional requirements: [ Requirement ]
   optional visibility: [ Requirement ]
-  optional args: { str: type }
+  optional args: { str: ActionArgument }
   required event: Event
   optional groups: [ ActionGroup ]
+
+ActionArgument:
+  _class: dtrpg.core.events.ActionArgument
+  required type: type
 
 Requirement:
   _class: dtrpg.core.events.Requirement

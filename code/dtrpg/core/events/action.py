@@ -1,10 +1,12 @@
+from dtrpg.data.locale.localized_object import LocalizedObject
 from dtrpg.core.game_object import GameObject
 from dtrpg.core.events.event_result import EventResult, ExceptionEventResult
 
-from typing import Sequence, Mapping, TYPE_CHECKING
+from typing import Sequence, Mapping, TYPE_CHECKING, Type
 
 if TYPE_CHECKING:
     from dtrpg.core.creature.creature import Player
+    from dtrpg.data.parsing.parser import Parser
 
 
 class Requirement(GameObject):
@@ -13,6 +15,26 @@ class Requirement(GameObject):
 
     def assert_meets(player: 'Player') -> None:
         raise NotImplementedError
+
+
+class ActionArgument:
+    def __init__(self, type: Type = None) -> None:
+        self.type = type
+        self._parser = None
+
+    @property
+    def parser(self) -> 'Parser':
+        if self._parser:
+            return self._parser
+
+        if issubclass(self.type, LocalizedObject):
+            return self.type.default_parser
+
+        return self.type
+
+    @parser.setter
+    def parser(self, parser: 'Parser') -> None:
+        self._parser = parser
 
 
 class Action(GameObject):

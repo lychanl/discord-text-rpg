@@ -1,6 +1,7 @@
 import os
 from dtrpg.data.persistency.persistency import Persistency
-from dtrpg.core import Game, GameObject, QuitGameException
+from dtrpg.data.parsing.parser import ArgumentError
+from dtrpg.core import Game, QuitGameException
 from dtrpg.utils import similarity_with_wildcards
 
 import re
@@ -10,12 +11,6 @@ from typing import Any, Hashable, Iterable, Sequence, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.core.events import Action, EventResult
-
-
-class ArgumentError(Exception):
-    def __init__(self, value: str):
-        super().__init__()
-        self.value = value
 
 
 class TextIO:
@@ -64,25 +59,9 @@ class TextIO:
             else:
                 raise
 
-    def _get_object(self, name: str, t: type) -> object:
-        if not name:
-            return None
-        if issubclass(t, GameObject):
-            for obj in self._game.game_objects(t):
-                if 'NAME' in obj.strings and name == obj.strings['NAME']:
-                    return obj
-                if 'REGEX_NAME' in obj.strings and re.fullmatch(obj.strings['REGEX_NAME'], name):
-                    return obj
-            raise ArgumentError(name)
-        else:
-            try:
-                return t(name)
-            except ValueError:
-                raise ArgumentError(name)
-
     def _parse_args(self, action: 'Action', match: re.Match) -> Iterable[object]:
         return {
-            arg: self._get_object(value, action.args[arg]) for arg, value in match.groupdict().items() if value
+            arg: action.args[arg].parser(value) for arg, value in match.groupdict().items() if value
         }
 
     def action(self, player_id: Hashable, command: str) -> Sequence['EventResult']:

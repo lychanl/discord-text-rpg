@@ -11,8 +11,7 @@ class DuplicateStringError(Exception):
 
 class LocalizedObject:
     _class_strings = {}
-    id = None
-    factory_id = None
+    default_parser = None
 
     @classmethod
     def _get_class_strings(cls) -> Mapping[str, str]:
@@ -21,6 +20,8 @@ class LocalizedObject:
         return cls._class_strings[cls]
 
     def __init__(self):
+        self.id = None
+        self.factory_id = None
         self._obj_strings = {}
         self._strings_mapper = ObjectStrings(self._obj_strings, self._get_class_strings(), self)
 
