@@ -1,0 +1,25 @@
+object,string,value
+TacticParser,PARSER,"predicate*
+predicate: action_predicate | move_predicate
+conditions: condition (""and"" condition)*
+condition: quantifier flag
+
+target_priority: ""target""? ""priority""? flag"
+ActionPredicate,PARSER,"""else""? (""if"" conditions ""then"")? action_arg"
+MovePredicate,PARSER,"""else""? (""if"" conditions ""then"")? ((""move"" | ""go"") ""to"")? destination"
+FightAction,PARSER,action
+TacticQuantifier.SELF,PARSER,"""I"" (""am"" | ""have"")?"
+TacticQuantifier.ANY_ALLY,PARSER,"""an""? ""ally"" (""is"" | ""has"")?"
+TacticQuantifier.ALL_ALLIES,PARSER,"""all""? ""allies"" (""are"" | ""have"")?"
+TacticQuantifier.ANY_ENEMY,PARSER,"""an""? ""enemy"" (""is"" | ""has"")?"
+TacticQuantifier.ALL_ENEMIES,PARSER,"""all""? ""enemies"" (""are"" | ""have"")?"
+StatusFlag.MELEE,PARSER,"""melee"""
+StatusFlag.RANGED,PARSER,"""ranged"""
+StatusFlag.LOW_HEALTH,PARSER,"""low"" ""health"""
+StatusFlag.HIGH_HEALTH,PARSER,"""high"" ""health"""
+StatusFlag.FULL_HEALTH,PARSER,"""full"" ""health"""
+MoveDestination.MELEE,PARSER,"""melee"""
+MoveDestination.RANGED,PARSER,"""ranged"""
+MoveDestination.FLEE,PARSER,"""flee"""
+FightAction.ATTACK,PARSER,"""attack"" (""("" target_priority "")"")?"
+FightAction.EMPTY,PARSER,"""do""? ""nothing"""

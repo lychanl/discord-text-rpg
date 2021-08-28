@@ -2,9 +2,10 @@ from enum import Enum
 
 from typing import Collection, Mapping, TYPE_CHECKING
 
+from dtrpg.data.locale.localized_object import LocalizedObject
+
 if TYPE_CHECKING:
     from dtrpg.data.loaders.type_loader import TypeLoader
-    from dtrpg.data.locale.localized_object import LocalizedObject
 
 
 class LocaleLoader:
@@ -26,3 +27,6 @@ class LocaleLoader:
                     world[obj].add_string(string, value)
                 else:
                     loaders[obj].class_.add_class_string(string, value)
+        for obj in world.values():
+            if isinstance(obj, LocalizedObject):
+                obj.finalize_locale()

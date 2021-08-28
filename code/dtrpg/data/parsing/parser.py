@@ -1,5 +1,8 @@
+import difflib
 import re
 from typing import Any, Iterable, Type
+
+import lark
 from dtrpg.data.locale.localized_object import LocalizedObject
 
 
@@ -7,6 +10,35 @@ class ArgumentError(Exception):
     def __init__(self, value: str):
         super().__init__()
         self.value = value
+
+
+class ParserError(Exception):
+    def __init__(self, value: str) -> None:
+        super().__init__(value)
+
+
+class ParsingError(Exception):
+    def __init__(self, text: str, lark_exception: lark.exceptions.UnexpectedInput) -> None:
+        super().__init__()
+
+        self.exception = lark_exception
+        self.matched_line, self.unmatched = self._hint_base(lark_exception)
+        self.hints = [(r, self.matched_line + h) for r, h in self._hints(
+            self.unmatched,
+            lark_exception.allowed if hasattr(lark_exception, 'allowed') else lark_exception.expected
+        )]
+
+    def _hint_base(self, text, lp, cp):
+        line = text.splitlines()[lp - 1]
+        parsed = line[:cp - 1]
+        unparsed = line[cp - 1:]
+        return parsed, unparsed
+
+    def _hints(self, unparsed, allowed):
+        return list(reversed(sorted(
+            (difflib.SequenceMatcher(None, unparsed.lower(), possibility.lower()).ratio(), possibility.lower())
+            for possibility in allowed
+        )))
 
 
 class Parser(LocalizedObject):

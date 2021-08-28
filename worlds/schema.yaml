@@ -31,6 +31,7 @@ Action:
 ActionArgument:
   _class: dtrpg.core.events.ActionArgument
   required type: type
+  optional parser: Parser
 
 Requirement:
   _class: dtrpg.core.events.Requirement
@@ -510,3 +511,11 @@ PassiveStateMachineExitEvent:
   _class: dtrpg.core.events.StateMachineExitEvent
   _base: Event
   required machine: PassiveStateMachine
+
+Parser:
+  _class: dtrpg.data.parsing.Parser
+  _abstract: True
+
+TacticParser:
+  _class: dtrpg.data.parsing.TacticParser
+  _base: Parser
