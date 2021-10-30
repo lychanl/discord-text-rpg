@@ -16,6 +16,7 @@ Available topics:
  - fight
  - items
  - npcs
+ - tactic
 
 You may use _exit_ action to delete current progress."
 help_event,HELP_ACTIONS,"Actions are what allows you to interact with the game.
@@ -51,7 +52,7 @@ Some items may be equipped on inventory slots to improve statistics.
 Items may be bought and sold. However, a location may only have offers for a limited number of item types."
 help_event,HELP_FIGHT,"The world is a dangerous place and sometimes it may be necessary to fight.
 
-Fighting occurs automatically, according to selected tactics.
+Fighting occurs automatically, according to selected tactics (see **help tactic** for details).
 
 On each round, participants make moves and actions.
 
@@ -60,4 +61,24 @@ For moves, any conflicts are resolved using speed skill tests.
 A typical action is the attack action. An attack may be ranged or melee, and uses appropriate skill when checking if it hits, opposed to the evasion skill. If the attack hits, damage is determined randomly based on attack properties and target armor.
 
 Fight takes place for 60 rounds, unless some side has no fighters (because all have fled or were defeated)."
-help_event,HELP_NPCS,"NPCs are characters that are part of the world. With some of them you can interact, for example talk to them. When talking to an NPC some actions may be locked, e.g. traveling.
+help_event,HELP_NPCS,"NPCs are characters that are part of the world. With some of them you can interact, for example talk to them. When talking to an NPC some actions may be locked, e.g. traveling."
+help_event,HELP_TACTIC,"A tactic is a list of conditional instructions that specify how a character behaves in a fight.
+
+Instruction may specify how the character moves or which action the character makes. When a move or action is selected, instructions of a tactic are searched, and the character uses the first instrucion that matches the current situation. If no instrucions matches current situation, then the character tries to keep the current distance or does no action.
+
+You may use one of the predefined tactics (use action **tactics** for a list of available predefined tactis) or specify a custom tactic. To specify a custom tactic, use the **set custom tactic** action, followed by the tactic.
+
+A tactic is a list of instructions. For example, the *melee cautious* tactic is defined as:
+
+```
+if you have low health then flee
+else move to melee
+attack if possible
+```
+
+An instruction may start with a number of conditions. A condition specifies the creature (you, an enemy, all enemies, an ally, all allies) and a status (has low/high health, is in melee/ranged). Use 'I' when referring to yourself.
+After the condition put the move destination (move to melee/move to ranged/flee) or action (attack/do nothing).
+
+If you want to attack, you may specify the target priority by adding ""(prority STATUS)"" after the ""attack"" action name, where STATUS may be, similarly to the condition, low/high health, melee or ranged. For example,
+
+Attack (priority low health)"

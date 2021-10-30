@@ -1,9 +1,13 @@
+from dtrpg.core.fighting.fight_action import FightActions
+from dtrpg.core.fighting.engine import MoveDestination
 import os
-from typing import Any
+from typing import Any, Union
 from dtrpg.core.game import Game
 from dtrpg.core.creature import Player, CreatureSkill
 from dtrpg.core.item import ItemStack
+from dtrpg.core.fighting.tactic import ActionPredicate, MovePredicate, Tactic, TacticCondition, TacticPredicate, TacticQuantifier, StatusFlag
 
+from enum import Enum
 from datetime import datetime
 import yaml
 
@@ -36,11 +40,38 @@ class Persistency:
         obj = self._objects[top]
         return self._get_subobject(obj, id[len(top):])
 
+    def _serialize_enum(self, enum: Enum) -> str:
+        return enum.name if enum else None
+
+    def _deserialize_enum(self, value: str, enum: type) -> Enum:
+        return enum[value] if value else None
+
     def _serialize_skill(self, skill: 'CreatureSkill') -> dict:
         return {
             'skill': skill.skill.id,
             'value': skill.value,
             'experience': skill.experience,
+        }
+
+    def _serialize_predicate(self, predicate: 'TacticPredicate') -> dict:
+        return {
+            'conditions': [{
+                'quantifier': self._serialize_enum(cond.quantifier),
+                'condition': self._serialize_enum(cond.condition)
+            } for cond in predicate.conditions],
+            'result': self._serialize_enum(predicate.result),
+            'arguments': {
+                'target_priority': self._serialize_enum(predicate.target_priority)
+            }
+        }
+
+    def _serialize_tactic(self, tactic: 'Tactic') -> Union[dict, str]:
+        if tactic.id:
+            return tactic.id
+
+        return {
+            'move_predicates': [self._serialize_predicate(pred) for pred in tactic.move_predicates],
+            'action_predicates': [self._serialize_predicate(pred) for pred in tactic.action_predicates]
         }
 
     def _serialize_player(self, player: 'Player') -> dict:
@@ -51,7 +82,7 @@ class Persistency:
             'items': [(stack.item.id, stack.stack) for stack in player.items.items],
             'item_slots': {slot.id: item.id for slot, item in player.item_slots.items() if item},
             'timed_bonuses': {bonus.id: time.timestamp() for bonus, time in player.timed_bonuses.items()},
-            'tactic': player.tactic.id,
+            'tactic': self._serialize_tactic(player.tactic),
             'location': player.location.id,
             'active_states': [(state.id, machine.id) for state, machine in player.active_states],
             'passive_states': {machine.id: state.id for machine, state in player.passive_states.items()},
@@ -61,6 +92,34 @@ class Persistency:
         return {
             id: self._serialize_player(player) for id, player in self._game.players.items()
         }
+
+    def _deserialize_predicate(self, state: Union[dict, str], clss: type, result_clss: type) -> 'TacticPredicate':
+        pred = clss()
+
+        pred.conditions = [
+            TacticCondition(
+                self._deserialize_enum(cond['quantifier'], TacticQuantifier),
+                self._deserialize_enum(cond['condition'], StatusFlag)
+            )
+            for cond in state['conditions']
+        ]
+        pred.result = self._deserialize_enum(state['result'], result_clss)
+        pred.target_priority = self._deserialize_enum(state['arguments']['target_priority'], StatusFlag)
+
+        return pred
+
+    def _deserialize_tactic(self, state: Union[dict, str]) -> 'Tactic':
+        if isinstance(state, str):
+            return self._get_by_id(state)
+
+        move_predicates = [
+            self._deserialize_predicate(pred, MovePredicate, MoveDestination) for pred in state['move_predicates']
+        ]
+        action_predicates = [
+            self._deserialize_predicate(pred, ActionPredicate, FightActions) for pred in state['action_predicates']
+        ]
+
+        return Tactic(move_predicates, action_predicates)
 
     def _deserialize_player(self, state: dict) -> 'Player':
         player = self._get_by_id(state['factory']).create()
@@ -81,7 +140,7 @@ class Persistency:
         for bonus, expiration in state['timed_bonuses'].items():
             player.timed_bonuses[self._get_by_id(bonus)] = datetime.fromtimestamp(expiration)
 
-        player.tactic = self._get_by_id(state['tactic'])
+        player.tactic = self._deserialize_tactic(state['tactic'])
         player.location = self._get_by_id(state['location'])
 
         player.active_states = [(self._get_by_id(s), self._get_by_id(m)) for s, m in state['active_states']]

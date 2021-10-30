@@ -102,7 +102,7 @@ unequip_slot_action,REGEX,unequip from (?P<slot>.+)
 unequip_slot_action,HINT,unequip from *
 unequip_slot_action,NAME,unequip from _slot_
 unequip_slot_action,INFO,unequips an item
-tactic_info_event,CURRENT,"Current tactic: {self.player.tactic.strings['NAME']}
+tactic_info_event,CURRENT,"Current tactic: {self.player.tactic.strings['NAME'] if 'NAME' in self.player.tactic.strings else 'custom'}
 {self.player.tactic.strings['INFO']}"
 tactic_info_event,EVENT_NOW,{self.params['tactic'].strings['INFO'] if 'tactic' in self.params else self.strings['CURRENT']}
 tactic_info_action,REGEX,tactic( info)?( (?P<tactic>.+))?
@@ -118,6 +118,10 @@ set_tactic_action,REGEX,set (?P<tactic>.+) tactic
 set_tactic_action,HINT,set * tactic
 set_tactic_action,NAME,set _tactic_ tactic
 set_tactic_action,INFO,sets current tactic
+set_custom_tactic_action,REGEX,set custom tactic(\s+)(?P<tactic>.+)
+set_custom_tactic_action,HINT,set custom tactic *
+set_custom_tactic_action,NAME,set custom tactic _tactic_
+set_custom_tactic_action,INFO,sets custom tactic (see *help tactic* for details)
 set_tactic_event,EVENT_NOW,Tactic set.
 default_player_attack,NAME,fist
 quit_game_action,NAME,exit

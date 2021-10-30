@@ -1,5 +1,5 @@
 from typing import Any, Iterable, TYPE_CHECKING, Tuple, Type
-from dtrpg.data.parsing.parser import Parser, ParserError, ParsingError
+from dtrpg.data.parsing.parser import Parser, ParserError, ParsingErrorUnexpected, ParsingErrorEOF, WS
 
 import re
 
@@ -22,9 +22,11 @@ class TacticParser(Parser):
 
     def __init__(self):
         # to avoid circular imports
-        global ActionPredicate, MovePredicate, Tactic, MoveDestination, StatusFlag, FightActions, TacticQuantifier
+        global ActionPredicate, MovePredicate, Tactic, MoveDestination, StatusFlag, FightActions
+        global TacticQuantifier, TacticCondition
         from dtrpg.core.fighting import (
-            ActionPredicate, MovePredicate, Tactic, MoveDestination, StatusFlag, FightActions, TacticQuantifier
+            ActionPredicate, MovePredicate, Tactic, MoveDestination, StatusFlag, FightActions,
+            TacticQuantifier, TacticCondition
         )
         super().__init__()
         self._types_mapping = {}
@@ -60,8 +62,8 @@ start: {self._get_parser_string(self.strings, 'TacticParser')}
 
 {self._prepare_enum_rules(self.DESTINATION)}
 
-%import common.WS
-%ignore WS
+%import common.WS -> {WS}
+%ignore {WS}
         """
 
         self._parser = lark.Lark(grammar, g_regex_flags=re.IGNORECASE)
@@ -85,9 +87,11 @@ start: {self._get_parser_string(self.strings, 'TacticParser')}
 
     def _parse_tactic(self, value: str) -> 'Tactic':
         try:
-            return self._make_tactic(self._parser.parse(value))
-        except lark.exceptions.UnexpectedInput as e:
-            raise ParsingError(value, e)
+            return self._make_tactic(self._parser.parse(value.strip() + " "))
+        except lark.exceptions.UnexpectedCharacters as e:
+            raise ParsingErrorUnexpected(value, e)
+        except lark.exceptions.UnexpectedEOF as e:
+            raise ParsingErrorEOF(value, e)
 
     def _make_tactic(self, tree: lark.Tree) -> 'Tactic':
         move_trees, action_trees = self._get_tree_elements(tree, self.MOVE_PREDICATE, self.ACTION_PREDICATE)

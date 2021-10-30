@@ -31,6 +31,7 @@ PlayerFactory player_factory:
     - tactic_info_action
     - tactics_list_action
     - set_tactic_action
+    - set_custom_tactic_action
     - quit_game_action
 
   item_slots:
@@ -143,6 +144,15 @@ Action set_tactic_action:
   event: set_tactic_event
   args:
     tactic: { type: Tactic }
+  groups:
+    - action_group_info
+
+Action set_custom_tactic_action:
+  event: set_tactic_event
+  args:
+    tactic:
+      type: Tactic
+      parser: tactic_parser
   groups:
     - action_group_info
 

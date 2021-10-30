@@ -71,7 +71,7 @@ class TextIO:
         best_match = None
 
         for action in player.available_actions:
-            match = re.fullmatch(action.strings['REGEX'], command, flags=re.IGNORECASE)
+            match = re.fullmatch(action.strings['REGEX'], command, flags=re.IGNORECASE + re.MULTILINE + re.DOTALL)
             if match:
                 try:
                     args = self._parse_args(action, match)

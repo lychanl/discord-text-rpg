@@ -6,6 +6,15 @@ import lark
 from dtrpg.data.locale.localized_object import LocalizedObject
 
 
+WS = "_WS"
+
+HINT_MAPPING = {
+    "_ws": "",
+    "lpar": "(",
+    "rpar": ")"
+}
+
+
 class ArgumentError(Exception):
     def __init__(self, value: str):
         super().__init__()
@@ -13,25 +22,28 @@ class ArgumentError(Exception):
 
 
 class ParserError(Exception):
-    def __init__(self, value: str) -> None:
-        super().__init__(value)
+    def __init__(self, value: str):
+        super().__init__()
+        self.value = value
 
 
-class ParsingError(Exception):
-    def __init__(self, text: str, lark_exception: lark.exceptions.UnexpectedInput) -> None:
+class ParsingErrorUnexpected(Exception):
+    def __init__(self, text: str, lark_exception: lark.exceptions.UnexpectedCharacters) -> None:
         super().__init__()
 
         self.exception = lark_exception
-        self.matched_line, self.unmatched = self._hint_base(lark_exception)
-        self.hints = [(r, self.matched_line + h) for r, h in self._hints(
+        self.matched_line, self.unmatched = self._hint_base(text, lark_exception.line, lark_exception.column)
+        self.hints = [(r, self.matched_line + HINT_MAPPING.get(h, h)) for r, h in self._hints(
             self.unmatched,
             lark_exception.allowed if hasattr(lark_exception, 'allowed') else lark_exception.expected
         )]
 
     def _hint_base(self, text, lp, cp):
-        line = text.splitlines()[lp - 1]
-        parsed = line[:cp - 1]
-        unparsed = line[cp - 1:]
+        actual_line = lp - 1 if lp > 0 else lp
+        actual_col = cp - 1 if cp > 0 else None
+        line = text.splitlines()[actual_line]
+        parsed = line[:actual_col]
+        unparsed = line[actual_col:] if actual_col else ""
         return parsed, unparsed
 
     def _hints(self, unparsed, allowed):
@@ -39,6 +51,17 @@ class ParsingError(Exception):
             (difflib.SequenceMatcher(None, unparsed.lower(), possibility.lower()).ratio(), possibility.lower())
             for possibility in allowed
         )))
+
+
+class ParsingErrorEOF(Exception):
+    def __init__(self, text: str, lark_exception: lark.exceptions.UnexpectedEOF) -> None:
+        super().__init__()
+
+        self.exception = lark_exception
+        self.text = text
+
+        self.hints = {HINT_MAPPING.get(e.lower(), e.lower()) for e in lark_exception.expected}
+        self.hints = {h for h in self.hints if h}
 
 
 class Parser(LocalizedObject):

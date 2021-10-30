@@ -257,10 +257,37 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('Travel to the coast'), 'You travel')
         self.assertRegex(io.test('here'), 'small bay')
 
+        # CUSTOM TACTIC
+
+        self.assertRegex(io.test(
+            'set custom tactic\nIf all enemies have high health and I have low health then flee' +
+            '\nElse go to melee\nIf any ally is melee then do nothing\nElse attack (target priority low health)'),
+            r'.*Tactic set.*'
+        )
+
+        self.assertRegex(
+            io.test('tactic'),
+            r'.*if all enemies.*high health.*and.*low health then flee.*else.*melee.' +
+            r'*any ally.*melee.*do nothing.*else.*attack.*target priority low health.*'
+        )
+
+        self.assertRegex(io.test(
+            'set custom tactic\nIf all enemies have high health and I have low health then flee' +
+            '\nElse go to melee\nIf any ally is melee then do nothng\nElse attack (target priority low health)'),
+            r'.*Did you mean.*ally is melee.*do nothing.*ally is melee.*do nothng.*'
+        )
+
+        self.assertRegex(io.test(
+            'set custom tactic\nIf all enemies have high health and I have low health then flee' +
+            '\nElse go to melee\nIf any ally'),
+            r'.*unfinished command.*'
+        )
+
         # SAVING
         me = io.test('me')
         journal = io.test('journal')
         items = io.test('items')
+        tactic = io.test('tactic')
 
         persistency = Persistency(game)
         data = persistency.serialize()
@@ -272,3 +299,4 @@ class TestSmoke(unittest.TestCase):
         self.assertEqual(me, io.test('me'))
         self.assertEqual(journal, io.test('journal'))
         self.assertEqual(items, io.test('items'))
+        self.assertEqual(tactic, io.test('tactic'))

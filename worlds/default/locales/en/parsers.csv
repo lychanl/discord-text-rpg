@@ -1,25 +1,25 @@
 object,string,value
-TacticParser,PARSER,"predicate*
+TacticParser,PARSER,"predicate (_WS predicate)*
 predicate: action_predicate | move_predicate
-conditions: condition (""and"" condition)*
-condition: quantifier flag
+conditions: condition (_WS ""and"" _WS condition)*
+condition: quantifier _WS flag
 
-target_priority: ""target""? ""priority""? flag"
-ActionPredicate,PARSER,"""else""? (""if"" conditions ""then"")? action_arg"
-MovePredicate,PARSER,"""else""? (""if"" conditions ""then"")? ((""move"" | ""go"") ""to"")? destination"
+target_priority: (""target"" _WS)? (""priority"" _WS)? flag"
+ActionPredicate,PARSER,"(""else"" _WS)? (""if"" _WS conditions _WS ""then"" _WS)? action_arg"
+MovePredicate,PARSER,"(""else"" _WS)? (""if"" _WS conditions _WS ""then"" _WS)? ((""move"" | ""go"") _WS ""to"" _WS)? destination"
 FightAction,PARSER,action
-TacticQuantifier.SELF,PARSER,"""I"" (""am"" | ""have"")?"
-TacticQuantifier.ANY_ALLY,PARSER,"""an""? ""ally"" (""is"" | ""has"")?"
-TacticQuantifier.ALL_ALLIES,PARSER,"""all""? ""allies"" (""are"" | ""have"")?"
-TacticQuantifier.ANY_ENEMY,PARSER,"""an""? ""enemy"" (""is"" | ""has"")?"
-TacticQuantifier.ALL_ENEMIES,PARSER,"""all""? ""enemies"" (""are"" | ""have"")?"
+TacticQuantifier.SELF,PARSER,"""I"" (_WS (""am"" | ""have""))?"
+TacticQuantifier.ANY_ALLY,PARSER,"(""any"" _WS)? ""ally"" (_WS (""is"" | ""has""))?"
+TacticQuantifier.ALL_ALLIES,PARSER,"(""all"" _WS)? ""allies"" (_WS (""are"" | ""have""))?"
+TacticQuantifier.ANY_ENEMY,PARSER,"(""any"" _WS)? ""enemy"" (_WS (""is"" | ""has""))?"
+TacticQuantifier.ALL_ENEMIES,PARSER,"(""all"" _WS)? ""enemies"" (_WS (""are"" | ""have""))?"
 StatusFlag.MELEE,PARSER,"""melee"""
 StatusFlag.RANGED,PARSER,"""ranged"""
-StatusFlag.LOW_HEALTH,PARSER,"""low"" ""health"""
-StatusFlag.HIGH_HEALTH,PARSER,"""high"" ""health"""
-StatusFlag.FULL_HEALTH,PARSER,"""full"" ""health"""
+StatusFlag.LOW_HEALTH,PARSER,"""low"" _WS ""health"""
+StatusFlag.HIGH_HEALTH,PARSER,"""high"" _WS ""health"""
+StatusFlag.FULL_HEALTH,PARSER,"""full"" _WS ""health"""
 MoveDestination.MELEE,PARSER,"""melee"""
 MoveDestination.RANGED,PARSER,"""ranged"""
 MoveDestination.FLEE,PARSER,"""flee"""
-FightAction.ATTACK,PARSER,"""attack"" (""("" target_priority "")"")?"
-FightAction.EMPTY,PARSER,"""do""? ""nothing"""
+FightAction.ATTACK,PARSER,"""attack"" (_WS? ""("" _WS? target_priority _WS? "")"")?"
+FightAction.EMPTY,PARSER,"(""do"" _WS)? ""nothing"""
