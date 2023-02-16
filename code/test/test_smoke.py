@@ -19,11 +19,14 @@ class TestIO(TextIO):
         return ' '.join(' '.join(out).splitlines())
 
 
+GAME_ROOT = os.path.join(os.path.dirname(__file__), '..', '..')
+
+
 GAME_ARGS = {
-    'schema_path': os.path.join('..', 'worlds', 'schema.yaml'),
-    'world_path': os.path.join('..', 'worlds', 'default'),
+    'schema_path': os.path.join(GAME_ROOT, 'worlds', 'schema.yaml'),
+    'world_path': os.path.join(GAME_ROOT, 'worlds', 'default'),
     'config_name': os.path.join('config'),
-    'locale_path': os.path.join('..', 'worlds', 'default', 'locales', 'en'),
+    'locale_path': os.path.join(GAME_ROOT, 'worlds', 'default', 'locales', 'en'),
 }
 
 
