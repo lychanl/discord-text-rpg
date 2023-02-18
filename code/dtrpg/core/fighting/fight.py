@@ -43,6 +43,7 @@ class FightEvent(ComplexEvent):
         self.victory = None
         self.defeat = None
         self.draw = None
+        self.allow_melee = True
 
     def _fire(self, player: 'Player') -> FightEventResult:
         result = self.create()
@@ -52,7 +53,7 @@ class FightEvent(ComplexEvent):
         result.group1 = [player]
         result.group2 = enemies
 
-        result.result, result.events, killed, fled = self.fight_engine.fight([player], enemies)
+        result.result, result.events, killed, fled = self.fight_engine.fight([player], enemies, self.allow_melee)
 
         if result.result == FightResult.GROUP1:
             for enemy in enemies:

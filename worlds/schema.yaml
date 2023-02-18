@@ -439,6 +439,7 @@ FightEvent:
   optional victory: Event
   optional defeat: Event
   optional draw: Event
+  optional allow_melee: bool
   required enemy_factories: [ NPCFighterFactory ]
   required fight_engine: FightEngine
 
