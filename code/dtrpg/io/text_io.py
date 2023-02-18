@@ -64,6 +64,9 @@ class TextIO:
             arg: action.args[arg].parser(value) for arg, value in match.groupdict().items() if value
         }
 
+    def check_action_command_match(self, action, command):
+        return re.fullmatch(action.strings['REGEX'], command, flags=re.IGNORECASE + re.MULTILINE + re.DOTALL)
+
     def action(self, player_id: Hashable, command: str) -> Sequence['EventResult']:
         player = self._game.player(player_id)
 
@@ -71,7 +74,7 @@ class TextIO:
         best_match = None
 
         for action in player.available_actions:
-            match = re.fullmatch(action.strings['REGEX'], command, flags=re.IGNORECASE + re.MULTILINE + re.DOTALL)
+            match = self.check_action_command_match(action, command)
             if match:
                 try:
                     args = self._parse_args(action, match)

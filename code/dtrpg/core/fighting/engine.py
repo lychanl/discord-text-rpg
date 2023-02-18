@@ -124,7 +124,7 @@ class FightEngine:
             ranged2_moves = {f: f.tactic.get_move(f, status) for f in ranged2}
 
             flee1, ranged1, melee1, melee2, ranged2, flee2, move_events = self._make_moves(
-                ranged1_moves, melee1_moves, melee2_moves, ranged2_moves)
+                ranged1_moves, melee1_moves, melee2_moves, ranged2_moves, allow_melee)
 
             fled |= flee1 | flee2
             events.extend(move_events)

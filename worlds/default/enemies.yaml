@@ -71,3 +71,36 @@ Attack wolf_attack:
     damaged_resource: health
     armor: armor
     tester: default_tester
+
+NPCFighterFactory dummy_factory:
+  resource_factories:
+    - resource: health
+      max: 1
+      initial: 1
+
+  skill_factories: 
+    - skill: melee_fighting
+      initial: 0
+    - skill: evasion
+      initial: 0
+    - skill: speed
+      initial: 0
+
+  statistic_factories:
+    - statistic: armor
+      base: 0
+
+  attack: dummy_attack
+  tactic: immobile_object
+
+Attack dummy_attack:
+  hit_skill: melee_fighting
+  evasion_skill: evasion
+  tester: default_tester
+  (Damage) on_hit:
+    damage_tests_number: 0
+    damage_test_mod: 0
+    damage_per_hit: 0
+    damaged_resource: health
+    armor: armor
+    tester: default_tester

@@ -148,7 +148,17 @@ PassiveState tutorial_old_lady_herbs:
     nothingthere_old_lady_herbs_event:
       to: tutorial_old_lady_after_herbs
 
-PassiveState tutorial_old_lady_after_herbs: {}
+PassiveState tutorial_old_lady_after_herbs:
+  transitions:
+    nothingthere_old_lady_need_help_talk_event:
+      to: tutorial_old_lady_combat_tutorial_wait
+
+PassiveState tutorial_old_lady_combat_tutorial_wait:
+  transitions:
+    nothingthere_veteran_tutorial_after_ranged_event:
+      to: tutorial_old_lady_after_combat_tutorial
+
+PassiveState tutorial_old_lady_after_combat_tutorial: {}
 
 Action tutorial_captain_talk_journey_return:
   visibility:
@@ -216,3 +226,87 @@ SequenceEvent nothingthere_old_lady_herbs_event:
         item_factory:
           item: item_herbal_tea
           stack: 1
+
+Action nothingthere_old_lady_need_help_talk:
+  visibility:
+    - (PassiveStateRequirement):
+        machine: tutorial_old_lady_quest
+        state: tutorial_old_lady_after_herbs
+  (SequenceEvent) event:
+    events:
+      - nothingthere_old_lady_need_help_talk_event
+      - (PassiveStateMachineInitEvent nothingthere_veteran_dialogue_set_visible):
+          machine: nothingthere_veteran_dialogue_visibility
+
+PassiveStateMachineInitEvent nothingthere_old_lady_need_help_talk_event:
+  machine: tutorial_combat_tutorial_quest
+
+PassiveStateMachine tutorial_combat_tutorial_quest:
+  initial: tutorial_combat_find_veteran
+
+PassiveState tutorial_combat_find_veteran: 
+  transitions:
+    nothingthere_veteran_tutorial_dialogue_ask_about_fighting_basics:
+      to: tutorial_combat_veteran_melee
+
+PassiveState tutorial_combat_veteran_melee:
+  transitions:
+    nothingthere_veteran_tutorial_after_melee_event:
+      to: tutorial_combat_veteran_ranged
+
+PassiveState tutorial_combat_veteran_ranged:
+  transitions:
+    nothingthere_veteran_tutorial_after_ranged_event:
+      to: tutorial_combat_veteran_after_ranged
+
+PassiveState tutorial_combat_veteran_after_ranged: {}
+
+Action nothingthere_veteran_dialogue_combat_tutorial_init:
+  visibility:
+    - (PassiveStateRequirement):
+        machine: tutorial_combat_tutorial_quest
+        state: tutorial_combat_find_veteran
+  event: nothingthere_veteran_tutorial_dialogue_ask_about_fighting_basics
+
+InfoEvent nothingthere_veteran_tutorial_dialogue_ask_about_fighting_basics: {}
+
+Action nothingthere_veteran_dialogue_combat_tutorial_melee:
+  visibility:
+    - (PassiveStateRequirement):
+        machine: tutorial_combat_tutorial_quest
+        state: tutorial_combat_veteran_melee
+  (SequenceEvent) event:
+    events:
+      - (InfoEvent nothingthere_veteran_tutorial_before_melee_event): {}
+      - (FightEvent nothingthere_veteran_tutorial_melee_tutorial_event):
+          enemy_factories:
+            - dummy_factory
+          fight_engine: fight_engine
+          victory: nothingthere_veteran_tutorial_after_melee_event
+          defeat: nothingthere_veteran_tutorial_melee_failure
+          draw: nothingthere_veteran_tutorial_melee_failure
+
+InfoEvent nothingthere_veteran_tutorial_melee_failure: {}
+
+InfoEvent nothingthere_veteran_tutorial_after_melee_event: {}
+
+Action nothingthere_veteran_dialogue_combat_tutorial_ranged:
+  visibility:
+    - (PassiveStateRequirement):
+        machine: tutorial_combat_tutorial_quest
+        state: tutorial_combat_veteran_ranged
+  (SequenceEvent) event:
+    events:
+      - (InfoEvent nothingthere_veteran_tutorial_before_ranged_event): {}
+      - (FightEvent nothingthere_veteran_tutorial_ranged_tutorial_event):
+          enemy_factories:
+            - dummy_factory
+          fight_engine: fight_engine
+          victory: nothingthere_veteran_tutorial_after_ranged_event
+          defeat: nothingthere_veteran_tutorial_ranged_failure
+          draw: nothingthere_veteran_tutorial_ranged_failure
+          allow_melee: false
+
+InfoEvent nothingthere_veteran_tutorial_ranged_failure: {}
+
+InfoEvent nothingthere_veteran_tutorial_after_ranged_event: {}

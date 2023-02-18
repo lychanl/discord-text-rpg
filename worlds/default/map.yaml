@@ -19,6 +19,7 @@ Market loc_nothingthere_village:
   travel_actions:
     - { to: loc_nothingthere_coast }
     - { to: loc_nothingthere_forest }
+    - { to: loc_nothingthere_fields }
   local_actions:
     - nothingthere_job
     - nothingthere_village_elder_dialogue
@@ -37,6 +38,7 @@ Location loc_nothingthere_coast:
 Location loc_nothingthere_forest:
   travel_actions:
     - { to: loc_nothingthere_village }
+    - { to: loc_nothingthere_fields }
     - to: loc_nothingthere_witch_home
       visibility:
         - (PassiveStateRequirement):
@@ -60,6 +62,27 @@ Location loc_nothingthere_witch_home:
     - nothingthere_old_lady_first_talk
     - nothingthere_old_lady_herbs_talk
     - nothingthere_old_lady_dialogue_init
+
+Location loc_nothingthere_fields:
+  travel_actions:
+    - { to: loc_nothingthere_village }
+    - { to: loc_nothingthere_forest }
+  local_actions:  # TODO NPC Mike
+    - (Action nothingthere_fields_job):
+        costs:
+          - resource: action_points
+            cost: 2
+        (ResourceChangesEvent nothingthere_fields_job_event) event:
+          resource_changes:
+            - resource: gold
+              value: 8
+    - (Action nothingthere_fields_veteran_dialogue_init):
+        visibility:  # TODO finish
+          - (PassiveStateRequirement):
+              machine: nothingthere_veteran_dialogue_visibility
+              state: nothingthere_veteran_dialogue_visible
+        (ActiveStateMachineInitEvent nothingthere_veteran_dialogue_init) event:
+          machine: nothingthere_veteran_dialogue
 
 Action nothingthere_village_elder_dialogue:
   event: nothingthere_dialogue_init
@@ -294,6 +317,7 @@ ActiveState nothingthere_old_lady_dialogue_root:
   actions:
    - nothingthere_old_lady_dialogue_more_tea
    - nothingthere_old_lady_dialogue_who
+   - nothingthere_old_lady_need_help_talk
    - nothingthere_old_lady_dialogue_book
    - nothingthere_old_lady_dialogue_exit
 
@@ -325,3 +349,28 @@ Action nothingthere_old_lady_dialogue_book:
 Action nothingthere_old_lady_dialogue_exit:
   (ActiveStateMachineExitEvent nothingthere_old_lady_dialogue_exit_event) event:
     machine: nothingthere_old_lady_dialogue
+
+PassiveStateMachine nothingthere_veteran_dialogue_visibility:
+  initial: nothingthere_veteran_dialogue_visible
+
+PassiveState nothingthere_veteran_dialogue_visible: {}
+
+# TODO DIALOGUE LOCALE
+ActiveStateMachine nothingthere_veteran_dialogue:
+  initial: nothingthere_veteran_dialogue_root
+  allowed_action_groups:
+    - action_group_help
+    - action_group_info
+    - action_group_admin
+  invalid_action_event: dialogue_invalid_action_event
+
+ActiveState nothingthere_veteran_dialogue_root:
+  actions:
+    - (Action nothingthere_veteran_dialogue_missing_hand):
+        (InfoEvent nothingthere_veteran_dialogue_missing_hand_event) event: {}
+    - nothingthere_veteran_dialogue_combat_tutorial_init
+    - nothingthere_veteran_dialogue_combat_tutorial_melee
+    - nothingthere_veteran_dialogue_combat_tutorial_ranged
+    - (Action nothingthere_veteran_dialogue_exit):
+        (ActiveStateMachineExitEvent nothingthere_veteran_dialogue_exit_event) event:
+          machine: nothingthere_veteran_dialogue

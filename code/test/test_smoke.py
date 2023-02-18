@@ -32,6 +32,7 @@ GAME_ARGS = {
 
 class TestSmoke(unittest.TestCase):
     def test_smoke(self) -> None:
+        # Setup
         game = prepare_game(**GAME_ARGS)
         io = TestIO(game)
 
@@ -45,6 +46,17 @@ class TestSmoke(unittest.TestCase):
         clock.now_plus.return_value.timestamp.return_value = 100
         clock.diff = mock.Mock()
         clock.diff.return_value = 0
+
+        # Basic sanity checks
+
+        for action in game.game_objects(core.events.Action):
+            self.assertIn('NAME', action.strings, f'Missing NAME for {action.id}')
+            self.assertTrue(
+                io.check_action_command_match(action, action.strings['NAME']),
+                f'NAME does not fit REGEX for {action.id}'
+            )
+
+        # Smoke test
 
         self.assertRegex(io.test('here'), r'.*not started.*start.*')
         self.assertRegex(io.test('start'), r'.*finally awake.*')

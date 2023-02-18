@@ -37,6 +37,9 @@ tutorial_old_lady_quest,JOURNAL_NAME,Tutorial - the old lady
 tutorial_old_lady_ask,JOURNAL_ENTRY,"You heard about some old lady, who helped a fisherman with his injuries. Ask around to find out how to find her"
 tutorial_old_lady_find,JOURNAL_ENTRY,"You heard about some old lady, who helped a fisherman with his injuries. She lives in the forest. It may be a good idea to go visit her."
 tutorial_old_lady_herbs,JOURNAL_ENTRY,"You found the old lady. She agreed to help you if you find some herbs."
+tutorial_old_lady_after_herbs,JOURNAL_ENTRY,"You found the old lady. You may ask her if she needs some help."
+tutorial_old_lady_combat_tutorial_wait,JOURNAL_ENTRY,"The old lady said that she may use your help - but she needs to make sure you can handle yourself. Progress the Tutorial - combat questline."
+tutorial_old_lady_after_combat_tutorial,JOURNAL_ENTRY,This is the end of this quest in the current version.
 tutorial_captain_talk_old_lady_dialogue,NAME,Who is this old lady?
 tutorial_captain_talk_old_lady_dialogue,REGEX,(who (is )?(this )?)?old lady\??
 nothingthere_forest_witch_visibility_init,EVENT_NOW,"She's old. 'elps sometimes. Lives in forest, deep. Dunno much more 'bout 'er.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
@@ -54,3 +57,28 @@ nothingthere_old_lady_not_enough_herbs_event,EVENT_NOW,"If you want the tea, the
 nothingthere_old_lady_remove_herbs,EVENT_NOW,"OK, give me the herbs..."
 nothingthere_old_lady_can_talk_init,EVENT_NOW,"Good. Wait a few minutes, I will brew the tea..."
 nothingthere_old_lady_herbs_talk_info,CAUSE_NOW,Here you go. 
+nothingthere_old_lady_need_help_talk,NAME,Do you need any help?
+nothingthere_old_lady_need_help_talk,REGEX,((do you )?need (any )?)?help\??
+nothingthere_old_lady_need_help_talk_event,EVENT_NOW,"Hmmmm... Yes, there is this thing... But I am not sure if you can handle it."
+nothingthere_veteran_dialogue_set_visible,EVENT_NOW,"Go to the fields and ask for Mike, a man without a hand. Ask him for some fighting basics, then come back to me."
+tutorial_combat_tutorial_quest,JOURNAL_NAME,Tutorial - combat
+tutorial_combat_find_veteran,JOURNAL_ENTRY,The old lady told you to find Mike. He should be in the fields.
+tutorial_combat_veteran_melee,JOURNAL_ENTRY,Mike asked you to defeat a training dummy. Talk to him about it.
+tutorial_combat_veteran_ranged,JOURNAL_ENTRY,Mike asked you to defeat a training dummy using a ranged weapon. Talk to him about it. *Hint: there may be some stones on the beach that are good for throwing. Remember that you may set tactic to ranged (see help for more on tactics).*
+tutorial_combat_veteran_after_ranged,JOURNAL_ENTRY,This is the end of this quest in the current version.
+nothingthere_veteran_dialogue_combat_tutorial_init,NAME,Can you teach me fighting basics?
+nothingthere_veteran_dialogue_combat_tutorial_init,REGEX,(can |could |would )?(you )?(teach|train)( me)?( fighting)?( basics)?\??
+nothingthere_veteran_tutorial_dialogue_ask_about_fighting_basics,EVENT_NOW,"Eh, okay. We will start with some melee basics. Let me know when you're ready.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_veteran_dialogue_combat_tutorial_melee,NAME,I am ready for melee training
+nothingthere_veteran_dialogue_combat_tutorial_melee,REGEX,((i am )|(i'm ))?ready( for)?( melee)?( training)?|melee|training|melee training
+nothingthere_veteran_tutorial_before_melee_event,EVENT_NOW,"Mike takes you to a prepared wooden training dummy. 
+*Show me what you can do* he says"
+nothingthere_veteran_tutorial_melee_failure,EVENT_NOW,"Eh, you had to try hard for that, didn't you? Talk to me when you are ready to try again.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_veteran_tutorial_after_melee_event,EVENT_NOW,"Okay, you got some basics. Let's try ranged fighting next - if you don't have any ranged weapon, try to gather some stones on the shore. 
+*Hint: remember that you can change your tactic - see help for more*{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_veteran_dialogue_combat_tutorial_ranged,NAME,I am ready for ranged training
+nothingthere_veteran_dialogue_combat_tutorial_ranged,REGEX,((i am )|(i'm ))?ready( for)?( ranged)?( training)?|ranged|training|ranged training
+nothingthere_veteran_tutorial_before_ranged_event,EVENT_NOW,"Mike takes you to a prepared wooden training dummy. 
+*Show me what you can do*, he says, *but this time don't get close to the dummy*"
+nothingthere_veteran_tutorial_ranged_failure,EVENT_NOW,"Make sure you have a ranged weapon, at least some stones from the shore. Talk to me when you are ready to try again.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_veteran_tutorial_after_ranged_event,EVENT_NOW,"Okay, I will let her know that you seem capable.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
