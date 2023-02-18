@@ -12,7 +12,7 @@ class TestFightMoving(unittest.TestCase):
 
         e = f.FightEngine()
         fl1, r1, m1, m2, r2, fl2, events = e._make_moves(
-            {}, {f1: f.MoveDestination.MELEE}, {f2: f.MoveDestination.MELEE}, {})
+            {}, {f1: f.MoveDestination.MELEE}, {f2: f.MoveDestination.MELEE}, {}, True)
 
         self.assertEqual(len(fl1), 0)
         self.assertEqual(len(fl2), 0)
@@ -27,7 +27,7 @@ class TestFightMoving(unittest.TestCase):
 
         e = f.FightEngine()
         fl1, r1, m1, m2, r2, fl2, events = e._make_moves(
-            {f1: f.MoveDestination.MELEE}, {}, {}, {f2: f.MoveDestination.MELEE})
+            {f1: f.MoveDestination.MELEE}, {}, {}, {f2: f.MoveDestination.MELEE}, True)
 
         self.assertEqual(len(fl1), 0)
         self.assertEqual(len(fl2), 0)
@@ -36,13 +36,28 @@ class TestFightMoving(unittest.TestCase):
         self.assertSetEqual(m1, {f1})
         self.assertSetEqual(m2, {f2})
 
+    def test_ranged_into_melee_melee_disabled(self) -> None:
+        f1 = c.Fighter()
+        f2 = c.Fighter()
+
+        e = f.FightEngine()
+        fl1, r1, m1, m2, r2, fl2, events = e._make_moves(
+            {f1: f.MoveDestination.MELEE}, {}, {}, {f2: f.MoveDestination.MELEE}, False)
+
+        self.assertEqual(len(fl1), 0)
+        self.assertEqual(len(fl2), 0)
+        self.assertSetEqual(r1, {f1})
+        self.assertSetEqual(r2, {f2})
+        self.assertEqual(len(m1), 0)
+        self.assertEqual(len(m2), 0)
+
     def test_melee_into_ranged(self) -> None:
         f1 = c.Fighter()
         f2 = c.Fighter()
 
         e = f.FightEngine()
         fl1, r1, m1, m2, r2, fl2, events = e._make_moves(
-            {}, {f1: f.MoveDestination.RANGED}, {f2: f.MoveDestination.RANGED}, {})
+            {}, {f1: f.MoveDestination.RANGED}, {f2: f.MoveDestination.RANGED}, {}, True)
 
         self.assertEqual(len(fl1), 0)
         self.assertEqual(len(fl2), 0)
@@ -57,7 +72,7 @@ class TestFightMoving(unittest.TestCase):
 
         e = f.FightEngine()
         fl1, r1, m1, m2, r2, fl2, events = e._make_moves(
-            {f1: f.MoveDestination.RANGED}, {}, {}, {f2: f.MoveDestination.RANGED})
+            {f1: f.MoveDestination.RANGED}, {}, {}, {f2: f.MoveDestination.RANGED}, True)
 
         self.assertEqual(len(fl1), 0)
         self.assertEqual(len(fl2), 0)
@@ -75,7 +90,7 @@ class TestFightMoving(unittest.TestCase):
 
         e = f.FightEngine()
         fl1, r1, m1, m2, r2, fl2, events = e._make_moves(
-            {}, {f1: f.MoveDestination.FLEE}, {f2: f.MoveDestination.FLEE}, {})
+            {}, {f1: f.MoveDestination.FLEE}, {f2: f.MoveDestination.FLEE}, {}, True)
 
         self.assertEqual(len(fl1), 0)
         self.assertEqual(len(fl2), 0)
@@ -97,7 +112,7 @@ class TestFightMoving(unittest.TestCase):
 
         e = f.FightEngine()
         fl1, r1, m1, m2, r2, fl2, events = e._make_moves(
-            {f1: f.MoveDestination.FLEE}, {}, {}, {f2: f.MoveDestination.FLEE})
+            {f1: f.MoveDestination.FLEE}, {}, {}, {f2: f.MoveDestination.FLEE}, True)
 
         self.assertEqual(len(r1), 0)
         self.assertEqual(len(r2), 0)
@@ -122,7 +137,7 @@ class TestFightMoving(unittest.TestCase):
         e.move_test.test.return_value = True
 
         fl1, r1, m1, m2, r2, fl2, events = e._make_moves(
-            {}, {f1: f.MoveDestination.MELEE}, {f2: f.MoveDestination.FLEE}, {})
+            {}, {f1: f.MoveDestination.MELEE}, {f2: f.MoveDestination.FLEE}, {}, True)
 
         e.move_test.test.assert_called_once_with(f1, f2)
 
@@ -140,7 +155,7 @@ class TestFightMoving(unittest.TestCase):
         e.move_test.test.return_value = False
 
         fl1, r1, m1, m2, r2, fl2, events = e._make_moves(
-            {}, {f1: f.MoveDestination.MELEE}, {f2: f.MoveDestination.FLEE}, {})
+            {}, {f1: f.MoveDestination.MELEE}, {f2: f.MoveDestination.FLEE}, {}, True)
 
         e.move_test.test.assert_called_once_with(f1, f2)
 
@@ -165,7 +180,7 @@ class TestFightMoving(unittest.TestCase):
         e = f.FightEngine()
 
         fl1, r1, m1, m2, r2, fl2, events = e._make_moves(
-            {}, {f1: f.MoveDestination.RANGED}, {f2: f.MoveDestination.FLEE}, {})
+            {}, {f1: f.MoveDestination.RANGED}, {f2: f.MoveDestination.FLEE}, {}, True)
 
         self.assertEqual(len(fl1), 0)
         self.assertEqual(len(fl2), 0)
@@ -183,7 +198,7 @@ class TestFightMoving(unittest.TestCase):
         e.move_test.test.return_value = True
 
         fl1, r1, m1, m2, r2, fl2, events = e._make_moves(
-            {f1: f.MoveDestination.RANGED}, {}, {}, {f2: f.MoveDestination.FLEE})
+            {f1: f.MoveDestination.RANGED}, {}, {}, {f2: f.MoveDestination.FLEE}, True)
 
         e.move_test.test.assert_called_once_with(f1, f2)
 
@@ -202,7 +217,7 @@ class TestFightMoving(unittest.TestCase):
         e.move_test.test.return_value = False
 
         fl1, r1, m1, m2, r2, fl2, events = e._make_moves(
-            {f1: f.MoveDestination.RANGED}, {}, {}, {f2: f.MoveDestination.FLEE})
+            {f1: f.MoveDestination.RANGED}, {}, {}, {f2: f.MoveDestination.FLEE}, True)
 
         e.move_test.test.assert_called_once_with(f1, f2)
 
@@ -228,7 +243,7 @@ class TestFightMoving(unittest.TestCase):
         e.move_test.test.return_value = True
 
         fl1, r1, m1, m2, r2, fl2, events = e._make_moves(
-            {f1: f.MoveDestination.MELEE}, {}, {}, {f2: f.MoveDestination.FLEE})
+            {f1: f.MoveDestination.MELEE}, {}, {}, {f2: f.MoveDestination.FLEE}, True)
 
         e.move_test.test.assert_called_once_with(f1, f2)
 
@@ -250,7 +265,7 @@ class TestFightMoving(unittest.TestCase):
         e.move_test.test.return_value = False
 
         fl1, r1, m1, m2, r2, fl2, events = e._make_moves(
-            {f1: f.MoveDestination.MELEE}, {}, {}, {f2: f.MoveDestination.FLEE})
+            {f1: f.MoveDestination.MELEE}, {}, {}, {f2: f.MoveDestination.FLEE}, True)
 
         e.move_test.test.assert_called_once_with(f1, f2)
 
@@ -279,7 +294,7 @@ class TestFightMoving(unittest.TestCase):
             f1: f.MoveDestination.RANGED, f2: f.MoveDestination.MELEE
         }, {}, {}, {
             f3: f.MoveDestination.FLEE, f4: f.MoveDestination.MELEE
-        })
+        }, True)
 
         self.assertEqual(len(fl1), 0)
         self.assertEqual(len(r2), 0)
@@ -310,7 +325,7 @@ class TestFightMoving(unittest.TestCase):
             f1: f.MoveDestination.RANGED, f2: f.MoveDestination.MELEE
         }, {}, {}, {
             f3: f.MoveDestination.FLEE, f4: f.MoveDestination.FLEE
-        })
+        }, True)
 
         e.move_test.test.assert_has_calls([
             mock.call(f1, f3), mock.call(f2, f3), mock.call(f1, f4), mock.call(f2, f4)
@@ -338,7 +353,7 @@ class TestFightMoving(unittest.TestCase):
             f1: f.MoveDestination.RANGED, f2: f.MoveDestination.MELEE
         }, {}, {}, {
             f3: f.MoveDestination.FLEE, f4: f.MoveDestination.FLEE
-        })
+        }, True)
 
         e.move_test.test.assert_has_calls([
             mock.call(f1, f3), mock.call(f2, f3), mock.call(f1, f4), mock.call(f2, f4)
@@ -637,7 +652,7 @@ class TestFightEvent(unittest.TestCase):
         self.assertEqual(loot, lr)
 
         e.victory.fire.assert_called_once()
-        e.fight_engine.fight.assert_called_once_with([fighter], [enemy])
+        e.fight_engine.fight.assert_called_once_with([fighter], [enemy], True)
         enemy.loot_events[0].fire.assert_called_once_with(fighter)
 
     def test_fight_event_defeat(self) -> None:
@@ -666,7 +681,7 @@ class TestFightEvent(unittest.TestCase):
         self.assertEqual(nxt, dr)
 
         e.defeat.fire.assert_called_once()
-        e.fight_engine.fight.assert_called_once_with([fighter], [enemy])
+        e.fight_engine.fight.assert_called_once_with([fighter], [enemy], True)
         fighter.on_killed.assert_not_called()
 
     def test_fight_event_defeat_killed(self) -> None:
@@ -698,7 +713,7 @@ class TestFightEvent(unittest.TestCase):
         self.assertEqual(killed, okr)
 
         e.defeat.fire.assert_called_once()
-        e.fight_engine.fight.assert_called_once_with([fighter], [enemy])
+        e.fight_engine.fight.assert_called_once_with([fighter], [enemy], True)
         fighter.on_killed.fire.assert_called_once_with(fighter)
 
     def test_fight_event_draw(self) -> None:
@@ -725,4 +740,4 @@ class TestFightEvent(unittest.TestCase):
         self.assertEqual(nxt, dr)
 
         e.draw.fire.assert_called_once()
-        e.fight_engine.fight.assert_called_once_with([fighter], [enemy])
+        e.fight_engine.fight.assert_called_once_with([fighter], [enemy], True)

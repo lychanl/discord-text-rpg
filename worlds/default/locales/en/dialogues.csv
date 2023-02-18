@@ -1,5 +1,5 @@
 object,string,value
-dialogue_invalid_action_event,EVENT_NOW,"*It would be rude to leave in the middle of a conversation*{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+dialogue_invalid_action_event,EVENT_NOW,"*It would be rude to leave in the middle of a conversation (invalid command)*{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
 nothingthere_village_elder_dialogue,NAME,Talk to the village elder
 nothingthere_village_elder_dialogue,REGEX,(talk|speak)(( to| with)?( the)?( village)?( elder))?
 nothingthere_dialogue_init,EVENT_NOW,"You approach the village elder. He looks at you, waiting.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
@@ -37,3 +37,12 @@ nothingthere_old_lady_dialogue_book_event,EVENT_NOW,Nothing you would understand
 nothingthere_old_lady_dialogue_exit,NAME,Bye
 nothingthere_old_lady_dialogue_exit,REGEX,bye|goodbye
 nothingthere_old_lady_dialogue_exit_event,EVENT_NOW,Bye bye.
+nothingthere_fields_veteran_dialogue_init,NAME,"Talk to the one-handed man"
+nothingthere_fields_veteran_dialogue_init,REGEX,"talk( to the)?( one-handed| one handed| onehanded)?( man| person)?"
+nothingthere_veteran_dialogue_init,EVENT_NOW,"You come to the one-handed man and greet him. He doesn't seem to be interested until you mention that the old lady sent you.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_veteran_dialogue_missing_hand,NAME,"What happened to your hand?"
+nothingthere_veteran_dialogue_missing_hand,REGEX,"(what happened)|((what happened )?(to )?(your )?hand\??")
+nothingthere_veteran_dialogue_missing_hand_event,EVENT_NOW,"Long story, maybe someday I will tell you.{self.player.strings['POSSIBLE_STATE_ACTIONS_HINT']}"
+nothingthere_veteran_dialogue_exit,NAME,Bye
+nothingthere_veteran_dialogue_exit,REGEX,bye|goodbye
+nothingthere_veteran_dialogue_exit_event,EVENT_NOW,Goodbye.

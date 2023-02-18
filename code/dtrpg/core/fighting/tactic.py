@@ -12,10 +12,10 @@ if TYPE_CHECKING:
 
 
 class Tactic(GameObject):
-    def __init__(self):
+    def __init__(self, move_predicates=(), action_predicates=()):
         super().__init__()
-        self.move_predicates = []
-        self.action_predicates = []
+        self.move_predicates = move_predicates
+        self.action_predicates = action_predicates
 
     def get_move(self, fighter: 'Fighter', fight_status: 'FightStatus') -> MoveDestination:
         for p in self.move_predicates:
@@ -48,10 +48,10 @@ class TacticQuantifier(GameObject, Enum):
 
 
 class TacticCondition(GameObject):
-    def __init__(self):
+    def __init__(self, quantifier=None, condition=None):
         super().__init__()
-        self.quantifier = None
-        self.condition = None
+        self.quantifier = quantifier
+        self.condition = condition
 
     def check(self, fighter: 'Fighter', fight_status: 'FightStatus') -> bool:
         return self.quantifier.quantifier(
@@ -60,11 +60,11 @@ class TacticCondition(GameObject):
 
 
 class TacticPredicate(GameObject):
-    def __init__(self):
+    def __init__(self, conditions=(), result=None, target_priority=None):
         super().__init__()
-        self.conditions = ()
-        self.result = None
-        self.target_priority = None
+        self.conditions = conditions
+        self.result = result
+        self.target_priority = target_priority
 
     def check(self, fighter: 'Fighter', fight_status: 'FightStatus') -> bool:
         if not self.result.can_take(fighter, fight_status):

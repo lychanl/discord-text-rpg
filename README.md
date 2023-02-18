@@ -5,7 +5,7 @@ It is a hobby project. If you are interested in developement, feel free to add a
 
 ## Command line game
 
-It requires python version 3.7 or above and packages from `requirements-cli.txt` (PyYAML).
+It requires python version 3.7 or above and packages from `requirements-cli.txt` (PyYAML, Lark).
 
 To run the game:
 
@@ -14,7 +14,7 @@ To run the game:
 
 ## Discord game
 
-It requires python version 3.7 or above and packages from `requirements.txt` (PyYAML, discord).
+It requires python version 3.7 or above and packages from `requirements.txt` (PyYAML, Lark, discord).
 
 To run the game:
 
@@ -29,6 +29,16 @@ WARNING: The game will reset if the program is reset. This will change in future
 For a list of features for future versions see [https://github.com/lychanl/discord-text-rpg/issues]
 
 ## Changelog
+
+#### 0.4.0
+##### Engine
+ - Custom tactics parsing and setting
+ - FightEvents may now have melee disabled
+ - Impossible to pass/fail tests
+##### Default world
+ - 1 new NPC
+ - set custom tactic action
+ - combat tutorial
 
 #### 0.3.0
 ##### Engine

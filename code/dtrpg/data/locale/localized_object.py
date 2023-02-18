@@ -11,18 +11,19 @@ class DuplicateStringError(Exception):
 
 class LocalizedObject:
     _class_strings = {}
-    id = None
-    factory_id = None
+    default_parser = None
 
     @classmethod
-    def _get_class_strings(cls) -> Mapping[str, str]:
+    def get_class_strings(cls) -> Mapping[str, str]:
         if cls not in cls._class_strings:
             cls._class_strings[cls] = {}
         return cls._class_strings[cls]
 
     def __init__(self):
+        self.id = None
+        self.factory_id = None
         self._obj_strings = {}
-        self._strings_mapper = ObjectStrings(self._obj_strings, self._get_class_strings(), self)
+        self._strings_mapper = ObjectStrings(self._obj_strings, self.get_class_strings(), self)
 
     @property
     def strings(self) -> Mapping[str, str]:
@@ -30,7 +31,7 @@ class LocalizedObject:
 
     @classmethod
     def add_class_string(cls, string: str, value: str) -> None:
-        class_strings = cls._get_class_strings()
+        class_strings = cls.get_class_strings()
         if string in class_strings:
             raise DuplicateStringError
         class_strings[string] = value
@@ -39,6 +40,9 @@ class LocalizedObject:
         if string in self._obj_strings:
             raise DuplicateStringError
         self._obj_strings[string] = value
+
+    def finalize_locale(self) -> None:
+        pass
 
 
 class LocalizedObjectFactory(LocalizedObject):

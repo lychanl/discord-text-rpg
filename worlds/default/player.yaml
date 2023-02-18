@@ -31,6 +31,7 @@ PlayerFactory player_factory:
     - tactic_info_action
     - tactics_list_action
     - set_tactic_action
+    - set_custom_tactic_action
     - quit_game_action
 
   item_slots:
@@ -115,7 +116,7 @@ InfoEvent items_event: {}
 Action item_action:
   event: item_info_event
   args:
-    item: Item
+    item: { type: Item }
   groups:
     - action_group_info
 
@@ -124,7 +125,7 @@ InfoEvent item_info_event: {}
 Action tactic_info_action:
   event: tactic_info_event
   args:
-    tactic: Tactic
+    tactic: { type: Tactic }
   groups:
     - action_group_info
 
@@ -133,7 +134,7 @@ InfoEvent tactic_info_event: {}
 Action tactics_list_action:
   event: tactics_list_event
   args:
-    tactic: Tactic
+    tactic: { type: Tactic }
   groups:
     - action_group_info
 
@@ -142,7 +143,16 @@ InfoEvent tactics_list_event: {}
 Action set_tactic_action:
   event: set_tactic_event
   args:
-    tactic: Tactic
+    tactic: { type: Tactic }
+  groups:
+    - action_group_info
+
+Action set_custom_tactic_action:
+  event: set_tactic_event
+  args:
+    tactic:
+      type: Tactic
+      parser: tactic_parser
   groups:
     - action_group_info
 
@@ -155,29 +165,29 @@ InfoEvent skills_stats_event: {}
 Action drop_action:
   event: drop_event
   args:
-    number: int
-    item: Item
+    number: { type: int }
+    item: { type: Item }
 
 EquipItemEvent equip_event: {}
 
 Action equip_action:
   event: equip_event
   args:
-    item: Item
+    item: { type: Item }
 
 UnequipItemEvent unequip_item_event: {}
 
 Action unequip_item_action:
   event: unequip_item_event
   args:
-    item: Item
+    item: { type: Item }
 
 UnequipSlotEvent unequip_slot_event: {}
 
 Action unequip_slot_action:
   event: unequip_slot_event
   args:
-    slot: ItemSlot
+    slot: { type: ItemSlot }
 
 RemoveItemEvent drop_event: {}
 
@@ -214,7 +224,7 @@ ResourceChangesEvent player_killed_resources_event:
 Action help_action:
   event: help_event
   args:
-    what: str
+    what: { type: str }
   groups:
     - action_group_help
 
@@ -251,4 +261,4 @@ QuitGameEvent quit_game_event: {}
 Action use_item_action:
   (UseItemEvent) event: {}
   args:
-    item: Item
+    item: { type: Item }

@@ -13,13 +13,14 @@ class AttributeRedefinitionError(Exception):
 
 
 class TypeLoader(Loader):
-    def __init__(self):
+    def __init__(self, typename):
         super(TypeLoader, self).__init__()
         self._class = None
         self._abstract = False
         self._base = None
         self._attributes = {}
         self._enum = False
+        self._typename = typename
 
     @property
     def can_load_str(self) -> bool:
@@ -67,8 +68,10 @@ class TypeLoader(Loader):
         self._attributes[name] = loader, qualifiers
 
     def preload(self) -> object:
-        if self._abstract or self._enum:
-            raise AbstractTypeException
+        if self._abstract:
+            raise AbstractTypeException(f'Cannot instantiaze object of type {self._typename} - it is abstract')
+        if self._enum:
+            raise AbstractTypeException(f'Cannot instantiaze object of type {self._typename} - it is an enum')
         return self._class()
 
     def _split_name_and_type(self, name: str) -> Tuple[str, str]:

@@ -2,12 +2,21 @@ from random import random
 
 
 class Tester:
-    def test(self, value: int, difficulty: int) -> bool:
+    def _test(self, value: int, difficulty: int) -> bool:
         raise NotImplementedError
+
+    def test(self, value: int, difficulty: int) -> bool:
+        if value == 0:
+            return False
+        if difficulty == 0:
+            return True
+        if difficulty == -1:
+            return False
+        return self._test(value, difficulty)
 
 
 class RandomTester(Tester):
-    def test(self, value: int, difficulty: int) -> bool:
+    def _test(self, value: int, difficulty: int) -> bool:
         prob = self._prob(value, difficulty)
         return random() <= prob
 
@@ -16,11 +25,7 @@ class RandomTester(Tester):
 
 
 class ProportionalTester(RandomTester):
-    def _prob(self, value: int, difficulty: int) -> bool:
-        if value == 0:
-            return 0
-        if difficulty == 0:
-            return 1
+    def _prob(self, value: int, difficulty: int) -> float:
         return 0.5 * (value / difficulty if value < difficulty else 2 - difficulty / value)
 
 
@@ -37,5 +42,5 @@ class DifferentialTester(RandomTester):
 
 
 class ThresholdTester(Tester):
-    def test(self, value: int, difficulty: int) -> bool:
+    def _test(self, value: int, difficulty: int) -> bool:
         return value >= difficulty

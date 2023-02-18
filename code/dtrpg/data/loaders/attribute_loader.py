@@ -25,7 +25,10 @@ class AttributeLoader(Loader):
                 raise TypeError
             return obj
         elif isinstance(values, str):
-            return objects_dict[values]
+            if values in objects_dict:
+                return objects_dict[values]
+            else:
+                raise KeyError(f"No object named {values}")
         raise AmbigousTypeError
 
 

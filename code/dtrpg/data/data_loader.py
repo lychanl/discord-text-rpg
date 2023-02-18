@@ -1,3 +1,5 @@
+from dtrpg.data.parsing.parser import NameParser
+from dtrpg.data.locale.localized_object import LocalizedObject
 from dtrpg.core.game_object import GameObject
 from dtrpg.data.loaders.schema_loader import SchemaLoader
 from dtrpg.data.loaders.type_loader import TypeLoader
@@ -37,6 +39,7 @@ class DataLoader:
         self._locale_loader = self._load_locale(locale_path)
 
         self._locale_loader.apply(self._world, self._loaders)
+        self._create_default_parsers(self._loaders.values(), self._world.values())
 
     def _load_world(self, world_dir: str) -> dict:
         obj_dicts = self._load_world_files(world_dir)
@@ -113,3 +116,8 @@ class DataLoader:
                         locale_rows.extend(list(csv.DictReader(fp)))
 
         return LocaleLoader(locale_rows)
+
+    def _create_default_parsers(self, loaders: Iterable[TypeLoader], world: Iterable[LocalizedObject]):
+        for loader in loaders:
+            if issubclass(loader.class_, LocalizedObject):
+                loader.class_.default_parser = NameParser(loader.class_, world)

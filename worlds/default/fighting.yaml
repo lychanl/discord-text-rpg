@@ -34,3 +34,16 @@ Tactic ranged_cautious:
     - result: RANGED
   action_predicates:
     - result: ATTACK
+
+Tactic immobile_object:
+  move_predicates:
+    - conditions: 
+      - quantifier: SELF
+        condition: MELEE
+      result: MELEE
+    - conditions: 
+      - quantifier: SELF
+        condition: RANGED
+      result: RANGED
+  action_predicates:
+    - result: EMPTY

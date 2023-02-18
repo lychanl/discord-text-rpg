@@ -17,7 +17,7 @@ class Skill(GameObject):
         return eval(
             self.experience_from_test,
             {'__builtins__': None, 'level': level, 'difficulty': difficulty, 'success': success}
-        ) if self.experience_from_test else 0
+        ) if self.experience_from_test is not None and difficulty != -1 else 0
 
     def get_next_level_experience(self, level: int) -> int:
         return eval(self.progression, {'__builtins__': None, 'level': level})

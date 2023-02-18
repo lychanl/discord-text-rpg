@@ -30,7 +30,7 @@ class SchemaLoader:
         for name in schema:
             if name in self._type_loaders:
                 raise SchemaError(f'Type redefinition: {name}')
-            self._type_loaders[name] = TypeLoader()
+            self._type_loaders[name] = TypeLoader(name)
 
         for name, type_schema in schema.items():
             try:

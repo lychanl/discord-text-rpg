@@ -206,7 +206,7 @@ class EmptyAction(FightAction):
         result.taker = taker
         return result
 
-    def can_take(self, taker: 'Fighter') -> bool:
+    def can_take(self, taker: 'Fighter', status: 'FightStatus') -> bool:
         return True
 
 

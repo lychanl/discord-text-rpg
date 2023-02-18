@@ -70,18 +70,34 @@ Tactic,INFO,"{self.strings['PREDICATES', {'predicates': self.move_predicates}]}
 {self.strings['PREDICATES', {'predicates': self.action_predicates}]}"
 Tactic,PREDICATES,"{'\n'.join(('' if i == 0 else 'else ') + pred.strings['INFO'] for i, pred in enumerate(predicates))}"
 MovePredicate,INFO,{('if ' + ' and '.join(cond.strings['INFO'] for cond in self.conditions) + ' then ') if self.conditions else ''}{self.result.strings['MOVE_TO']}
-ActionPredicate,INFO,{('if ' + ' and '.join(cond.strings['INFO'] for cond in self.conditions) + ' then ') if self.conditions else ''}{self.result.strings['NAME']} if possible
-TacticCondition,INFO,{self.quantifier.strings['NAME']} {self.condition.strings['NAME']}
-TacticQuantifier.ANY_ENEMY,NAME,any enemy is
-TacticQuantifier.ALL_ENEMIES,NAME,all enemies are
-TacticQuantifier.ANY_ALLY,NAME,any ally is
-TacticQuantifier.ALL_ALLIES,NAME,all allies are
-TacticQuantifier.SELF,NAME,you are
-StatusFlag.MELEE,NAME,in melee distance
-StatusFlag.RANGED,NAME,in ranged distance
-StatusFlag.LOW_HEALTH,NAME,at low health
-StatusFlag.HIGH_HEALTH,NAME,at high health
-StatusFlag.FULL_HEALTH,NAME,at full health
+ActionPredicate,INFO,{('if ' + ' and '.join(cond.strings['INFO'] for cond in self.conditions) + ' then ') if self.conditions else ''}{self.result.strings['NAME']} if possible {self.strings['PARAMS']}
+ActionPredicate,PARAMS,{"(target priority " + self.target_priority.strings['NAME'] + ")" if self.target_priority else ""}
+TacticCondition,INFO,{self.quantifier.strings['NAME']} {self.condition.strings['VERB_' + self.quantifier.strings['FORM']]} {self.condition.strings['NAME']}
+TacticQuantifier.ANY_ENEMY,FORM,S
+TacticQuantifier.ANY_ENEMY,NAME,any enemy
+TacticQuantifier.ALL_ENEMIES,FORM,P
+TacticQuantifier.ALL_ENEMIES,NAME,all enemies
+TacticQuantifier.ANY_ALLY,FORM,S
+TacticQuantifier.ANY_ALLY,NAME,any ally
+TacticQuantifier.ALL_ALLIES,FORM,P
+TacticQuantifier.ALL_ALLIES,NAME,all allies
+TacticQuantifier.SELF,FORM,P
+TacticQuantifier.SELF,NAME,you
+StatusFlag.MELEE,VERB_S,is
+StatusFlag.MELEE,VERB_P,are
+StatusFlag.MELEE,NAME,melee
+StatusFlag.RANGED,VERB_S,is
+StatusFlag.RANGED,VERB_P,are
+StatusFlag.RANGED,NAME,ranged
+StatusFlag.LOW_HEALTH,VERB_S,has
+StatusFlag.LOW_HEALTH,VERB_P,have
+StatusFlag.LOW_HEALTH,NAME,low health
+StatusFlag.HIGH_HEALTH,VERB_S,has
+StatusFlag.HIGH_HEALTH,VERB_P,have
+StatusFlag.HIGH_HEALTH,NAME,high health
+StatusFlag.FULL_HEALTH,VERB_S,has
+StatusFlag.FULL_HEALTH,VERB_P,have
+StatusFlag.FULL_HEALTH,NAME,full health
 FightAction.EMPTY,NAME,do nothing
 FightAction.ATTACK,NAME,attack
 Attack,INFO,"{self.strings['NAME']}: {self.strings['ATTACKS']}, {self.on_hit.strings['EFFECT']}"

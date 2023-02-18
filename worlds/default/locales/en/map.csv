@@ -9,6 +9,8 @@ loc_nothingthere_small_bay,YOU_ARE_HERE,"You are in the small bay near the Nothi
 loc_nothingthere_witch_home,NAME,"the house in the forest"
 loc_nothingthere_witch_home,REGEX_NAME,"(the )?house( in (the )?forest)?"
 loc_nothingthere_witch_home,YOU_ARE_HERE,"You got to a small house hidden in the forest, some distance away from the village. An elder woman sits on the porch, reading some book."
+loc_nothingthere_fields,NAME,fields
+loc_nothingthere_fields,YOU_ARE_HERE,"You are in the fields around the Nothingthere village. Despite a difficult terrain, the villagers manage to grow some crops."
 nothingthere_job,REGEX,"((find |take |get )(a )?)?job"
 nothingthere_job,NAME,Find a job
 nothingthere_job_event,CAUSE_NOW,"You got a job helping some fishermen. "
@@ -32,3 +34,6 @@ nothingthere_bay_search_skeleton,REGEX,search( around)?
 nothingthere_bay_search_skeleton_searched_event,EVENT_NOW,You don't find anything new.
 nothingthere_bay_skeleton_searched_init_flag,EVENT_NOW,You find a human skeleton. Near it lies a rusty spear. It may be useful.
 nothingthere_bay_search_skeleton_search_free_space_event,EVENT_NOW,You find a human skeleton. Near it lies a rusty spear. You don't have space to take it right now, so you leave it.
+nothingthere_fields_job,REGEX,"(work|job)( in)?( the)?( fields)?"
+nothingthere_fields_job,NAME,Work in the fields
+nothingthere_fields_job_event,CAUSE_NOW,"You helped in the fields. "

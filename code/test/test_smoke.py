@@ -19,21 +19,25 @@ class TestIO(TextIO):
         return ' '.join(' '.join(out).splitlines())
 
 
+GAME_ROOT = os.path.join(os.path.dirname(__file__), '..', '..')
+
+
 GAME_ARGS = {
-    'schema_path': os.path.join('..', 'worlds', 'schema.yaml'),
-    'world_path': os.path.join('..', 'worlds', 'default'),
+    'schema_path': os.path.join(GAME_ROOT, 'worlds', 'schema.yaml'),
+    'world_path': os.path.join(GAME_ROOT, 'worlds', 'default'),
     'config_name': os.path.join('config'),
-    'locale_path': os.path.join('..', 'worlds', 'default', 'locales', 'en'),
+    'locale_path': os.path.join(GAME_ROOT, 'worlds', 'default', 'locales', 'en'),
 }
 
 
 class TestSmoke(unittest.TestCase):
     def test_smoke(self) -> None:
+        # Setup
         game = prepare_game(**GAME_ARGS)
         io = TestIO(game)
 
         clock = game.config.player_factory.clock
-        action_points = io._get_object('action points', core.creature.Resource)
+        action_points = [o for o in game.game_objects(core.creature.Resource) if o.id == 'action_points'][0]
         default_tester = game.game_objects(core.Tester)[0]
 
         clock.now = mock.Mock()
@@ -42,6 +46,17 @@ class TestSmoke(unittest.TestCase):
         clock.now_plus.return_value.timestamp.return_value = 100
         clock.diff = mock.Mock()
         clock.diff.return_value = 0
+
+        # Basic sanity checks
+
+        for action in game.game_objects(core.events.Action):
+            self.assertIn('NAME', action.strings, f'Missing NAME for {action.id}')
+            self.assertTrue(
+                io.check_action_command_match(action, action.strings['NAME']),
+                f'NAME does not fit REGEX for {action.id}'
+            )
+
+        # Smoke test
 
         self.assertRegex(io.test('here'), r'.*not started.*start.*')
         self.assertRegex(io.test('start'), r'.*finally awake.*')
@@ -257,10 +272,37 @@ class TestSmoke(unittest.TestCase):
         self.assertRegex(io.test('Travel to the coast'), 'You travel')
         self.assertRegex(io.test('here'), 'small bay')
 
+        # CUSTOM TACTIC
+
+        self.assertRegex(io.test(
+            'set custom tactic\nIf all enemies have high health and I have low health then flee' +
+            '\nElse go to melee\nIf any ally is melee then do nothing\nElse attack (target priority low health)'),
+            r'.*Tactic set.*'
+        )
+
+        self.assertRegex(
+            io.test('tactic'),
+            r'.*if all enemies.*high health.*and.*low health then flee.*else.*melee.' +
+            r'*any ally.*melee.*do nothing.*else.*attack.*target priority low health.*'
+        )
+
+        self.assertRegex(io.test(
+            'set custom tactic\nIf all enemies have high health and I have low health then flee' +
+            '\nElse go to melee\nIf any ally is melee then do nothng\nElse attack (target priority low health)'),
+            r'.*Did you mean.*ally is melee.*do nothing.*ally is melee.*do nothng.*'
+        )
+
+        self.assertRegex(io.test(
+            'set custom tactic\nIf all enemies have high health and I have low health then flee' +
+            '\nElse go to melee\nIf any ally'),
+            r'.*unfinished command.*'
+        )
+
         # SAVING
         me = io.test('me')
         journal = io.test('journal')
         items = io.test('items')
+        tactic = io.test('tactic')
 
         persistency = Persistency(game)
         data = persistency.serialize()
@@ -272,3 +314,4 @@ class TestSmoke(unittest.TestCase):
         self.assertEqual(me, io.test('me'))
         self.assertEqual(journal, io.test('journal'))
         self.assertEqual(items, io.test('items'))
+        self.assertEqual(tactic, io.test('tactic'))

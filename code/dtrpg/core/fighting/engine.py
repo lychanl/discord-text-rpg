@@ -104,7 +104,7 @@ class FightEngine:
         self.move_test.skill_versus = skill
 
     def fight(
-        self, group1: Iterable['Fighter'], group2: Iterable['Fighter']
+        self, group1: Iterable['Fighter'], group2: Iterable['Fighter'], allow_melee: bool = True
     ) -> Tuple[FightResult, Iterable[EventResult]]:
         ranged1 = set(group1)
         melee1 = set()
@@ -124,7 +124,7 @@ class FightEngine:
             ranged2_moves = {f: f.tactic.get_move(f, status) for f in ranged2}
 
             flee1, ranged1, melee1, melee2, ranged2, flee2, move_events = self._make_moves(
-                ranged1_moves, melee1_moves, melee2_moves, ranged2_moves)
+                ranged1_moves, melee1_moves, melee2_moves, ranged2_moves, allow_melee)
 
             fled |= flee1 | flee2
             events.extend(move_events)
@@ -188,17 +188,12 @@ class FightEngine:
     def _make_moves(
             self,
             ranged1: Dict['Fighter', MoveDestination], melee1: Dict['Fighter', MoveDestination],
-            melee2: Dict['Fighter', MoveDestination], ranged2: Dict['Fighter', MoveDestination]
+            melee2: Dict['Fighter', MoveDestination], ranged2: Dict['Fighter', MoveDestination],
+            allow_melee: bool
     ) -> Tuple[Iterable['Fighter'], Iterable['Fighter'], Iterable['Fighter'],
                Iterable['Fighter'], Iterable['Fighter'], Iterable['Fighter']]:
-        moves1 = dict(ranged1)
-        moves1.update({
-            f: move if move is not MoveDestination.FLEE else MoveDestination.RANGED for f, move in melee1.items()
-        })
-        moves2 = dict(ranged2)
-        moves2.update({
-            f: move if move is not MoveDestination.FLEE else MoveDestination.RANGED for f, move in melee2.items()
-        })
+        moves1 = self._prepare_moves(melee1, ranged1, allow_melee)
+        moves2 = self._prepare_moves(melee2, ranged2, allow_melee)
 
         new_ranged1, new_melee1, fleeing1 = set(), set(), set()
         new_ranged2, new_melee2, fleeing2 = set(), set(), set()
@@ -234,6 +229,20 @@ class FightEngine:
             set(ranged1), set(melee1), set(melee2), set(ranged2),
             fleeing1, new_ranged1, new_melee1, new_melee2, new_ranged2, fleeing2)
         return fleeing1, new_ranged1, new_melee1, new_melee2, new_ranged2, fleeing2, events
+
+    def _prepare_moves(self, melee: dict, ranged: dict, allow_melee: bool) -> dict:
+        # Prepare dict for all fighters.
+        # Replace destination FLEE with RANGED if fighter is in MELEE, as only RANGED range is available from MELEE
+        # Replace destination MELEE with RANGED if RANGED is not available
+        moves = dict(ranged)
+        moves.update({
+            f: move if move is not MoveDestination.FLEE else MoveDestination.RANGED for f, move in melee.items()
+        })
+        if not allow_melee:
+            moves = {
+                f: move if move is not MoveDestination.MELEE else MoveDestination.RANGED for f, move in moves.items()
+            }
+        return moves
 
     def _moves_fleeing(self, moves: dict, fleeing: set, melee: set, ranged: set, other_moves: dict) -> None:
         moved = []

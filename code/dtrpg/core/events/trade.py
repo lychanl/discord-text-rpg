@@ -1,4 +1,4 @@
-from dtrpg.core.events.action import Action
+from dtrpg.core.events.action import Action, ActionArgument
 from dtrpg.core.events.event import Event
 from dtrpg.core.events.event_result import EventResult
 from dtrpg.core.item import Item, TradeOffer, OfferNotFoundException
@@ -103,18 +103,18 @@ class OffersInfoAction(Action):
     def __init__(self):
         super().__init__()
         self.event = OffersInfoEvent()
-        self.args = {'item': Item}
+        self.args = {'item': ActionArgument(Item)}
 
 
 class BuyAction(Action):
     def __init__(self):
         super().__init__()
         self.event = BuyEvent()
-        self.args = {'item': Item, 'number': int}
+        self.args = {'item': ActionArgument(Item), 'number': ActionArgument(int)}
 
 
 class SellAction(Action):
     def __init__(self):
         super().__init__()
         self.event = SellEvent()
-        self.args = {'item': Item, 'number': int}
+        self.args = {'item': ActionArgument(Item), 'number': ActionArgument(int)}
