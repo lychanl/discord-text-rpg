@@ -67,7 +67,7 @@ Location loc_nothingthere_fields:
   travel_actions:
     - { to: loc_nothingthere_village }
     - { to: loc_nothingthere_forest }
-  local_actions:  # TODO NPC Mike
+  local_actions:
     - (Action nothingthere_fields_job):
         costs:
           - resource: action_points
@@ -77,7 +77,7 @@ Location loc_nothingthere_fields:
             - resource: gold
               value: 8
     - (Action nothingthere_fields_veteran_dialogue_init):
-        visibility:  # TODO finish
+        visibility:
           - (PassiveStateRequirement):
               machine: nothingthere_veteran_dialogue_visibility
               state: nothingthere_veteran_dialogue_visible
@@ -355,7 +355,6 @@ PassiveStateMachine nothingthere_veteran_dialogue_visibility:
 
 PassiveState nothingthere_veteran_dialogue_visible: {}
 
-# TODO DIALOGUE LOCALE
 ActiveStateMachine nothingthere_veteran_dialogue:
   initial: nothingthere_veteran_dialogue_root
   allowed_action_groups:
