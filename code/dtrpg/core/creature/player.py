@@ -1,11 +1,15 @@
+from dtrpg.core.creature.ability import AbilityAlreadyInGroupException
 from dtrpg.core.creature.creature import Fighter, FighterFactory
 from dtrpg.core.creature.state_machine import InvalidStateException, StateMachineAlreadyEnteredException
 from dtrpg.core.events import Action, EventsManager, Event
 
-from typing import Iterable, Tuple, TYPE_CHECKING
+from typing import Dict, Iterable, List, Sequence, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from dtrpg.core.creature.state_machine import State, StateMachine
+    from dtrpg.core.creature.ability import Ability, AbilityGroup
+    from dtrpg.core.creature.state_machine import ActiveState, PassiveState, State, StateMachine, PassiveStateMachine
+    from dtrpg.core.fighting import Attack, Tactic
+    from dtrpg.core.map.location import Location
 
 
 class Player(Fighter):
@@ -13,17 +17,17 @@ class Player(Fighter):
         super().__init__()
         self.events = EventsManager(self)
 
-        self.location = None
-        self.base_actions = []
-        self.default_attack = None
-        self.base_armor = 0
-        self.tactic = None
-        self.available_tactics = ()
+        self.location: 'Location' = None
+        self.base_actions: Sequence[Action] = []
+        self.default_attack: 'Attack' = None
+        self.base_armor: int = 0
+        self.tactic: 'Tactic' = None
+        self.available_tactics: Sequence['Tactic'] = ()
 
-        self.default_invalid_action_event = None
+        self.default_invalid_action_event: Event = None
 
-        self.active_states = []
-        self.passive_states = {}
+        self.active_states: List['ActiveState'] = []
+        self.passive_states: Dict['PassiveStateMachine', 'PassiveState'] = {}
 
     @property
     def invalid_action_event(self) -> Event:
@@ -69,9 +73,19 @@ class Player(Fighter):
         else:
             raise InvalidStateException
 
+    def add_ability(self, ability: 'Ability', group: 'AbilityGroup'):
+        if group not in self.abilities:
+            self.abilities[group] = []
+        if ability in self.abilities[group]:
+            raise AbilityAlreadyInGroupException(ability, group)
+
+        self.abilities[group].append(ability)
+
     @property
     def available_actions(self) -> Iterable['Action']:
-        actions = self.base_actions + self.location.travel_actions + self.location.local_actions
+        actions = self.base_actions + self.location.travel_actions + self.location.local_actions + [
+            ability.action for group in self.abilities.values() for ability in group if ability.in_world
+        ]
 
         state, state_group = self.active_state
 
@@ -87,11 +101,11 @@ class Player(Fighter):
 class PlayerFactory(FighterFactory):
     def __init__(self):
         super().__init__(Player)
-        self.default_location = None
-        self.base_actions = []
-        self.default_attack = None
-        self.available_tactics = ()
-        self.default_variable_values = {}
+        self.default_location: 'Location' = None
+        self.base_actions: Sequence[Action] = []
+        self.default_attack: 'Attack' = None
+        self.available_tactics: Sequence['Tactic'] = ()
+        # self.default_variable_values = {}
         self.default_invalid_action_event = None
         self.clock = None
 

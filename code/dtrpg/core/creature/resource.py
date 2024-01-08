@@ -5,7 +5,7 @@ from dtrpg.core.game_exception import GameException
 from enum import Enum
 from operator import add
 
-from typing import Any, Callable, TYPE_CHECKING
+from typing import Any, Callable, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from dtrpg.core.creature.bonus import ResourceBonus
@@ -23,20 +23,20 @@ class InsufficientResourceError(GameException):
 class Resource(GameObject):
     def __init__(self):
         super().__init__()
-        self.vital = False
+        self.vital: bool = False
 
 
 class CreatureResource(GameObject):
     def __init__(self):
         super().__init__()
-        self._value = 0
-        self._max = None
-        self._creature = None
-        self.resource = None
+        self._value: int = 0
+        self._max: Optional[int] = None
+        self._creature: 'Creature' = None
+        self.resource: Resource = None
 
-        self._base_gen_rate = None
-        self._last_time = None
-        self._accumulated = 0
+        self._base_gen_rate: Optional[float] = None
+        self._last_time: Optional[datetime] = None
+        self._accumulated: float = 0
 
     @property
     def value(self) -> int:
@@ -133,11 +133,11 @@ class CreatureResource(GameObject):
 class CreatureResourceFactory(GameObjectFactory):
     def __init__(self):
         super().__init__(CreatureResource)
-        self.resource = None
-        self.initial = 0
-        self.max = None
+        self.resource: Resource = None
+        self.initial: int = 0
+        self.max: Optional[int] = None
 
-        self.base_gen_rate = None
+        self.base_gen_rate: float = None
 
     def create(self) -> Resource:
         resource = self._create()
@@ -155,7 +155,7 @@ def _set(value: int, change: int) -> int:
 
 
 class ResourceChangeOp(GameObject, Enum):
-    def __init__(self, op: Callable):
+    def __init__(self, op: Callable[[int, int], int]):
         super().__init__()
         self.op = op
 
@@ -169,9 +169,9 @@ class ResourceChangeOp(GameObject, Enum):
 class ResourceChange(GameObject):
     def __init__(self):
         super().__init__()
-        self.resource = None
-        self.value = None
-        self.op = ResourceChangeOp.ADD
+        self.resource: Resource = None
+        self.value: int = None
+        self.op: ResourceChangeOp = ResourceChangeOp.ADD
 
     def apply(self, player: 'Player') -> int:
         old = player.resources[self.resource].value

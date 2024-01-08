@@ -6,27 +6,32 @@ from dtrpg.core.item import (
     Item, ItemSlot, ItemStack, NotEquippableException, ItemNotEquippedException, SlotNotEquippedException
 )
 
-from typing import Iterable, TYPE_CHECKING, Tuple
+from typing import Dict, Iterable, List, Optional, Sequence, TYPE_CHECKING, Tuple
 
 if TYPE_CHECKING:
     from dtrpg.core.clock import Clock
-    from dtrpg.core.fighting.fight_action import Attack
+    from dtrpg.core.fighting import Attack, Tactic
     from dtrpg.core.events import Event
+    from dtrpg.core.creature.ability import Ability, AbilityGroup
+    from dtrpg.core.creature.resource import CreatureResource, CreatureResourceFactory, Resource
+    from dtrpg.core.creature.skill import CreatureSkill, CreatureSkillFactory, Skill
+    from dtrpg.core.creature.statistic import StatisticFactory
+    from dtrpg.core.item.container import Container, ContainerFactory
 
 
 class Creature(GameObject):
     def __init__(self):
         super().__init__()
 
-        self.resources = {}
-        self.skills = {}
-        self._statistics = {}
-        self.statistics = CreatureStatistics(self)
-        self.items = None
-        self.item_slots = {}
-        self.loot_events = ()
-        self._clock = None
-        self.timed_bonuses = {}
+        self.resources: Dict['Resource', 'CreatureResource'] = {}
+        self.skills: Dict['Skill', 'CreatureSkill'] = {}
+        self.statistics: 'CreatureStatistics' = CreatureStatistics(self)
+        self.items: Optional['Container'] = None
+        self.item_slots: Dict[ItemSlot, Item] = {}
+        self.loot_events: Sequence['Event'] = ()
+        self._clock: Optional['Clock'] = None
+        self.timed_bonuses: Dict['Bonus', datetime] = {}
+        self.abilities: Dict['AbilityGroup', List['Ability']] = {}
 
     def on_event(self, event: 'Event'):
         pass
@@ -130,9 +135,9 @@ class Creature(GameObject):
 class Fighter(Creature):
     def __init__(self):
         super().__init__()
-        self.tactic = None
-        self.on_killed = None
-        self.default_attack = None
+        self.tactic: 'Tactic' = None
+        self.on_killed: Optional['Event'] = None
+        self.default_attack: 'Attack' = None
 
     @property
     def killed(self) -> bool:
@@ -149,14 +154,14 @@ class Fighter(Creature):
 class FighterFactory(GameObjectFactory):
     def __init__(self, class_: type):
         super().__init__(class_)
-        self.resource_factories = ()
-        self.skill_factories = ()
-        self.statistic_factories = ()
-        self.tactic = None
-        self.on_killed = None
-        self.item_slots = ()
-        self.container_factory = None
-        self.default_attack = None
+        self.resource_factories: Sequence['CreatureResourceFactory'] = ()
+        self.skill_factories: Sequence['CreatureSkillFactory'] = ()
+        self.statistic_factories: Sequence['StatisticFactory'] = ()
+        self.tactic: 'Tactic' = None
+        self.on_killed: Optional['Event'] = None
+        self.item_slots: Sequence['ItemSlot'] = ()
+        self.container_factory: 'ContainerFactory' = None
+        self.default_attack: 'Attack' = None
 
     def _create(self) -> Fighter:
         creature = super()._create()

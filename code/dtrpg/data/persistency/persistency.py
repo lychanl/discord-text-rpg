@@ -5,7 +5,9 @@ from typing import Any, Union
 from dtrpg.core.game import Game
 from dtrpg.core.creature import Player, CreatureSkill
 from dtrpg.core.item import ItemStack
-from dtrpg.core.fighting.tactic import ActionPredicate, MovePredicate, Tactic, TacticCondition, TacticPredicate, TacticQuantifier, StatusFlag
+from dtrpg.core.fighting.tactic import (
+    ActionPredicate, MovePredicate, Tactic, TacticCondition, TacticPredicate, TacticQuantifier, StatusFlag
+)
 
 from enum import Enum
 from datetime import datetime
@@ -86,6 +88,7 @@ class Persistency:
             'location': player.location.id,
             'active_states': [(state.id, machine.id) for state, machine in player.active_states],
             'passive_states': {machine.id: state.id for machine, state in player.passive_states.items()},
+            'abilities': {group.id: [a.id for a in abilities] for group, abilities in player.abilities.items()}
         }
 
     def serialize(self) -> dict:
@@ -145,6 +148,10 @@ class Persistency:
 
         player.active_states = [(self._get_by_id(s), self._get_by_id(m)) for s, m in state['active_states']]
         player.passive_states = {self._get_by_id(s): self._get_by_id(m) for s, m in state['passive_states'].items()}
+
+        player.abilities = {
+            self._get_by_id(g): [self._get_by_id(a) for a in abilities]
+            for g, abilities in state.get('abilities', {}).items()}
 
         return player
 

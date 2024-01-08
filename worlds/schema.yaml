@@ -520,3 +520,19 @@ Parser:
 TacticParser:
   _class: dtrpg.data.parsing.TacticParser
   _base: Parser
+
+Ability:
+  _class: dtrpg.core.creature.Ability
+  required action: Action
+  optional in_world: bool
+
+AbilityGroup:
+  _class: dtrpg.core.creature.AbilityGroup
+
+AddAbilityEvent:
+  _class: dtrpg.core.events.AddAbilityEvent
+  required ability: Ability
+  required group: AbilityGroup
+
+AddAbilityEventResult:
+  _class: dtrpg.core.events.AddAbilityEventResult

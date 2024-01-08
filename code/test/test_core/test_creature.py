@@ -794,3 +794,42 @@ class TestStateMachine(unittest.TestCase):
 
         m.invalid_action_event = object()
         self.assertIs(p.invalid_action_event, m.invalid_action_event)
+
+
+class TestAbilities(unittest.TestCase):
+    def test_add_ability(self):
+        p = creature.Player()
+        a = creature.Ability()
+        g = creature.AbilityGroup()
+        p.add_ability(a, g)
+
+        self.assertDictEqual(p.abilities, {g: [a]})
+
+    def test_add_ability_repeated(self):
+        p = creature.Player()
+        a = creature.Ability()
+        g = creature.AbilityGroup()
+        p.add_ability(a, g)
+        self.assertRaises(creature.AbilityAlreadyInGroupException, p.add_ability, a, g)
+
+    def test_abilities_actions_in_world(self):
+        p = creature.Player()
+        a = creature.Ability()
+        p.location = map_.Location()
+        a.action = events.Action()
+        a.in_world = True
+        g = creature.AbilityGroup()
+        p.add_ability(a, g)
+
+        self.assertIn(a.action, p.available_actions)
+
+    def test_abilities_actions_not_in_world(self):
+        p = creature.Player()
+        a = creature.Ability()
+        p.location = map_.Location()
+        a.action = events.Action()
+        a.in_world = False
+        g = creature.AbilityGroup()
+        p.add_ability(a, g)
+
+        self.assertNotIn(a.action, p.available_actions)

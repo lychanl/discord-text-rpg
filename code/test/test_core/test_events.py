@@ -392,3 +392,16 @@ class TestStateMachineEvents(unittest.TestCase):
 
         r.state = None
         self.assertFalse(r.meets(p))
+
+
+class TestAbilityEvents(unittest.TestCase):
+    def test_add_ability_event(self):
+        p = mock.Mock()
+        a = creature.Ability()
+        g = creature.AbilityGroup()
+        e = events.AddAbilityEvent()
+        e.ability = a
+        e.group = g
+        e.fire(p)
+
+        p.add_ability.assert_called_once_with(a, g)

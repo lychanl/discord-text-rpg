@@ -1,4 +1,5 @@
 # flake8: noqa: F401
+from dtrpg.core.events.ability import AddAbilityEvent, AddAbilityEventResult
 from dtrpg.core.events.action import Action, ActionArgument, ActionGroup, Requirement
 from dtrpg.core.events.event_result import (
     AddTimedBonusEventResult, EventResult, InfoEventResult,
